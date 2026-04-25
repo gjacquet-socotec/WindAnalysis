@@ -241,6 +241,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
             f"Durée maximale continue (nette): {max_net_duration}h, "
             f"Critère: {required_hours}h, Réussi: {criterion_met}"
         )
+
         return {
             "available_periods": available_periods,
             "unavailable_periods": unavailable_periods,
