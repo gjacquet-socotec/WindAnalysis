@@ -1,12 +1,14 @@
 import re
 from pathlib import Path
 from typing import Optional
+import pandas as pd
 
 from ..base_log_code import (
     BaseLogCodeManager,
     CodeCriticality,
     ErrorCode,
     FunctionalSystem,
+    ResetMode,
 )
 
 
@@ -29,6 +31,16 @@ class NordexN311LogCodeManager(BaseLogCodeManager):
     """
 
     HIGH_OCCURRENCE_THRESHOLD = 50  # Seuil pour considérer un code comme haute priorité
+
+    # Mapping des modes de reset vers leur sévérité opérationnelle
+    # Plus le score est élevé, plus l'intervention est lourde
+    RESET_MODE_SEVERITY = {
+        ResetMode.AUTOMATIC: 0,        # Pas d'intervention humaine
+        ResetMode.SAFETY_REMOTE: 1,    # Intervention à distance possible
+        ResetMode.MANUAL_AUTO: 2,      # Intervention recommandée, auto possible
+        ResetMode.SAFETY_LOCAL: 3,     # Déplacement sur site requis
+        ResetMode.MANUAL: 4,           # Intervention manuelle obligatoire sur site
+    }
 
     # Mapping des plages de codes vers les systèmes fonctionnels
     SYSTEM_CODE_RANGES = {
@@ -284,6 +296,68 @@ class NordexN311LogCodeManager(BaseLogCodeManager):
             "critical": self.get_codes_by_criticality(CodeCriticality.CRITICAL),
             "high": self.get_codes_by_criticality(CodeCriticality.HIGH),
             "medium": self.get_codes_by_criticality(CodeCriticality.MEDIUM),
+        }
+
+    def get_codes_requiring_site_visit(self) -> list[ErrorCode]:
+        """
+        Retourne tous les codes nécessitant un déplacement sur site.
+
+        Returns:
+            Liste des codes avec reset_mode = "M" ou "SL"
+        """
+        return [
+            code
+            for code in self.error_codes.values()
+            if code.reset_mode in ["M", "SL"]
+        ]
+
+    def analyze_operational_impact(
+        self, log_df: pd.DataFrame, code_column: str
+    ) -> dict[str, any]:
+        """
+        Analyse l'impact opérationnel des codes d'erreur basé sur les modes de reset.
+
+        Args:
+            log_df: DataFrame contenant les logs
+            code_column: Nom de la colonne contenant les codes
+
+        Returns:
+            Dictionnaire avec statistiques d'impact opérationnel
+        """
+        analysis = self.analyze_log_codes(log_df, code_column)
+
+        # Classification par mode de reset
+        reset_mode_distribution = {
+            "automatic": [],
+            "remote_reset": [],
+            "manual_possible": [],
+            "site_visit_required": [],
+        }
+
+        for code_str in analysis["code_occurrences"].keys():
+            error_code = self.get_code(code_str)
+            if error_code:
+                if error_code.reset_mode == "A":
+                    reset_mode_distribution["automatic"].append(code_str)
+                elif error_code.reset_mode == "SR":
+                    reset_mode_distribution["remote_reset"].append(code_str)
+                elif error_code.reset_mode == "M(A)":
+                    reset_mode_distribution["manual_possible"].append(code_str)
+                elif error_code.reset_mode in ["M", "SL"]:
+                    reset_mode_distribution["site_visit_required"].append(code_str)
+
+        # Calcul du nombre de déplacements potentiels nécessaires
+        site_visits_codes = reset_mode_distribution["site_visit_required"]
+        total_site_visit_occurrences = sum(
+            analysis["code_occurrences"].get(code, 0) for code in site_visits_codes
+        )
+
+        return {
+            "reset_mode_distribution": reset_mode_distribution,
+            "site_visit_codes_count": len(site_visits_codes),
+            "total_site_visit_occurrences": total_site_visit_occurrences,
+            "automatic_codes_count": len(reset_mode_distribution["automatic"]),
+            "remote_resettable_count": len(reset_mode_distribution["remote_reset"]),
         }
 
     def generate_report(self, log_df, code_column: str) -> str:

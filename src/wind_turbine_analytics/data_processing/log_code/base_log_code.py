@@ -29,6 +29,16 @@ class FunctionalSystem(Enum):
     OTHER = "other"
 
 
+class ResetMode(Enum):
+    """Modes de réinitialisation des codes d'erreur"""
+
+    AUTOMATIC = "A"  # Réinitialisation automatique
+    MANUAL = "M"  # Intervention manuelle obligatoire sur site
+    SAFETY_LOCAL = "SL"  # Réinitialisation sécuritaire locale
+    SAFETY_REMOTE = "SR"  # Réinitialisation sécuritaire à distance
+    MANUAL_AUTO = "M(A)"  # Manuel recommandé, automatique possible sous conditions
+
+
 class ErrorCode:
     """Représente un code d'erreur avec ses métadonnées"""
 
@@ -221,9 +231,51 @@ class BaseLogCodeManager(ABC):
             if code.functional_system == system
         ]
 
+    def get_codes_by_reset_mode(self, reset_mode: str) -> list[ErrorCode]:
+        """
+        Récupère tous les codes nécessitant un mode de reset spécifique.
+
+        Args:
+            reset_mode: Mode de reset ("A", "M", "SL", "SR", "M(A)")
+
+        Returns:
+            Liste des codes correspondant au mode de reset
+        """
+        return [
+            code
+            for code in self.error_codes.values()
+            if code.reset_mode == reset_mode
+        ]
+
     def get_critical_stop_codes(self) -> list[ErrorCode]:
         """Récupère tous les codes générant un arrêt critique"""
         return [code for code in self.error_codes.values() if code.is_critical_stop()]
+
+    def get_manual_intervention_codes(self) -> list[ErrorCode]:
+        """
+        Récupère tous les codes nécessitant une intervention humaine.
+
+        Returns:
+            Codes avec reset_mode = "M", "SL", ou "M(A)"
+        """
+        return [
+            code
+            for code in self.error_codes.values()
+            if code.reset_mode in ["M", "SL", "M(A)"]
+        ]
+
+    def get_remote_resettable_codes(self) -> list[ErrorCode]:
+        """
+        Récupère les codes réinitialisables à distance (sans intervention sur site).
+
+        Returns:
+            Codes avec reset_mode = "A" ou "SR"
+        """
+        return [
+            code
+            for code in self.error_codes.values()
+            if code.reset_mode in ["A", "SR"]
+        ]
 
     def analyze_log_codes(
         self,
@@ -306,6 +358,7 @@ class BaseLogCodeManager(ABC):
         codes_to_filter: Optional[list[str]] = None,
         criticality_filter: Optional[list[CodeCriticality]] = None,
         system_filter: Optional[list[FunctionalSystem]] = None,
+        reset_mode_filter: Optional[list[str]] = None,
     ) -> pd.Series:
         """
         Crée un masque booléen pour filtrer un DataFrame cible basé sur les périodes d'erreur.
@@ -325,6 +378,7 @@ class BaseLogCodeManager(ABC):
             codes_to_filter: Liste spécifique de codes à filtrer (optionnel)
             criticality_filter: Filtrer par criticité (ex: [CodeCriticality.CRITICAL])
             system_filter: Filtrer par système (ex: [FunctionalSystem.SAFETY])
+            reset_mode_filter: Filtrer par mode de reset (ex: ["M", "SL"])
 
         Returns:
             Série booléenne de même longueur que target_df
@@ -357,7 +411,7 @@ class BaseLogCodeManager(ABC):
 
         # Filtrer les codes selon les critères
         codes_to_mask = self._get_filtered_codes(
-            codes_to_filter, criticality_filter, system_filter
+            codes_to_filter, criticality_filter, system_filter, reset_mode_filter
         )
 
         if not codes_to_mask:
@@ -426,6 +480,7 @@ class BaseLogCodeManager(ABC):
         codes_to_filter: Optional[list[str]],
         criticality_filter: Optional[list[CodeCriticality]],
         system_filter: Optional[list[FunctionalSystem]],
+        reset_mode_filter: Optional[list[str]],
     ) -> list[str]:
         """
         Récupère la liste des codes à filtrer selon les critères.
@@ -434,6 +489,7 @@ class BaseLogCodeManager(ABC):
             codes_to_filter: Liste explicite de codes
             criticality_filter: Filtrer par criticité
             system_filter: Filtrer par système
+            reset_mode_filter: Filtrer par mode de reset
 
         Returns:
             Liste des codes correspondant aux critères
@@ -457,8 +513,14 @@ class BaseLogCodeManager(ABC):
                 codes = self.get_codes_by_system(system)
                 filtered_codes.extend([c.code for c in codes])
 
+        # Filtrage par mode de reset
+        if reset_mode_filter:
+            for mode in reset_mode_filter:
+                codes = self.get_codes_by_reset_mode(mode)
+                filtered_codes.extend([c.code for c in codes])
+
         # Si aucun filtre spécifié, utiliser tous les codes
-        if not criticality_filter and not system_filter:
+        if not criticality_filter and not system_filter and not reset_mode_filter:
             filtered_codes = list(self.error_codes.keys())
 
         # Supprimer les doublons
@@ -476,6 +538,7 @@ class BaseLogCodeManager(ABC):
         codes_to_filter: Optional[list[str]] = None,
         criticality_filter: Optional[list[CodeCriticality]] = None,
         system_filter: Optional[list[FunctionalSystem]] = None,
+        reset_mode_filter: Optional[list[str]] = None,
         exclude_error_periods: bool = True,
     ) -> pd.DataFrame:
         """
@@ -492,6 +555,7 @@ class BaseLogCodeManager(ABC):
             codes_to_filter: Codes spécifiques à filtrer
             criticality_filter: Filtrer par criticité
             system_filter: Filtrer par système
+            reset_mode_filter: Filtrer par mode de reset
             exclude_error_periods: Si True, exclut les périodes d'erreur (par défaut).
                                   Si False, ne garde QUE les périodes d'erreur.
 
@@ -520,6 +584,17 @@ class BaseLogCodeManager(ABC):
                 system_filter=[FunctionalSystem.VIBRATION],
                 exclude_error_periods=False
             )
+
+            # Exclure les périodes nécessitant intervention manuelle
+            auto_data = manager.filter_by_codes(
+                target_df=operation_df,
+                log_df=log_df,
+                code_column='operator_code',
+                log_start_col='start_date',
+                log_end_col='end_date',
+                reset_mode_filter=["M", "SL"],
+                exclude_error_periods=True
+            )
         """
         mask = self.create_time_mask(
             log_df=log_df,
@@ -532,6 +607,7 @@ class BaseLogCodeManager(ABC):
             codes_to_filter=codes_to_filter,
             criticality_filter=criticality_filter,
             system_filter=system_filter,
+            reset_mode_filter=reset_mode_filter,
         )
 
         if exclude_error_periods:

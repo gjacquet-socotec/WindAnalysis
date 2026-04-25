@@ -3,6 +3,7 @@ from .base_log_code import (
     CodeCriticality,
     ErrorCode,
     FunctionalSystem,
+    ResetMode,
 )
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
     "CodeCriticality",
     "ErrorCode",
     "FunctionalSystem",
+    "ResetMode",
 ]
