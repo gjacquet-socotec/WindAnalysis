@@ -4,11 +4,16 @@
 
 # from pathlib import Path
 
-from src.wind_turbine_analytics.application.configuration.config_models import RunTestPipelineConfig
+from src.wind_turbine_analytics.application.configuration.config_models import (
+    RunTestPipelineConfig,
+)
 from typing import Any
 from src.wind_turbine_analytics.application.workflows.base_workflow import BaseWorkflow
 from src.wind_turbine_analytics.data_processing.analyzer.logics.consecutive_hours_analyzer import (
     ConsecutiveHoursAnalyzer,
+)
+from src.wind_turbine_analytics.data_processing.analyzer.logics.test_cut_in_cut_out_analyzer import (
+    TestCutInCutOutAnalyzer,
 )
 from src.wind_turbine_analytics.data_processing.chart_builders.consecutive_hours_visualizer import (
     ConseccutiveHoursVisualizer,
@@ -51,6 +56,10 @@ class RunTestWorkflow(BaseWorkflow):
         # 10-minute intervals with hub-height wind speed between 3 m/s and 25 m/s are counted from the SCADA file (each = 0.167 h).
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=72h) [True/False] |
+        DataProcessingStep(
+            analyzer=TestCutInCutOutAnalyzer(),
+            visualizer=None,  # [TODO] create visualizer for this analyzer
+        ).execute(self.turbine_sources, self.validation_criteria)
 
         # [TODO] Criteria 3 :  3 hours at or above 98% of nominal power
         # SCADA records with active power >= 3704.4 kW are counted and converted to hours (each 10-min record = 0.167 h).
