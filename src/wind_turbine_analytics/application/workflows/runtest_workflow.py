@@ -1,0 +1,73 @@
+# """RunTest application workflow."""
+
+# from __future__ import annotations
+
+# from pathlib import Path
+
+from src.wind_turbine_analytics.application.configuration.config_models import RunTestPipelineConfig
+from typing import Any
+from src.wind_turbine_analytics.application.workflows.base_workflow import BaseWorkflow
+from src.wind_turbine_analytics.data_processing.analyzer.logics.consecutive_hours_analyzer import (
+    ConsecutiveHoursAnalyzer,
+)
+from src.wind_turbine_analytics.data_processing.chart_builders.consecutive_hours_visualizer import (
+    ConseccutiveHoursVisualizer,
+)
+from src.wind_turbine_analytics.data_processing.data_processing import (
+    DataProcessingStep,
+)
+
+
+class RunTestWorkflow(BaseWorkflow):
+    """Coordinates data loading, criteria evaluation, charts, and report rendering."""
+
+    def __init__(self, config: RunTestPipelineConfig, presenter) -> None:
+        super().__init__(config, presenter)
+
+    def run(self) -> None:
+        self.validation_step()
+        # [TODO] comptue analysis per turbine
+        self.process_step()
+        # [TODO] gather those information per turbine
+        return
+
+    def process_step(self) -> None:
+        """Placeholder for data processing steps."""
+        # [TODO] Data availability
+        # [TODO] Data availability table,
+        # For each row :
+        # | WTG | RT Start [date] | RT End [date] | Duration [h]| Data Available (%) |
+
+        # [TODO] Criteria 1 :  Minimum of 120 consecutive hours :
+        # The WTG must be in continuous operation for a minimum of 120 consecutive hours.
+        # For each row :
+        # | WTG | Data hours[h] | Criterion (>=120h) [True/False] |
+        DataProcessingStep(
+            analyzer=ConsecutiveHoursAnalyzer(),
+            visualizer=ConseccutiveHoursVisualizer(),
+        ).execute(self.turbine_sources, self.validation_criteria)
+
+        # [TODO] Criteria 2 :  72 hours within cut-in to cut-out wind speed range (3-25 m/s)
+        # 10-minute intervals with hub-height wind speed between 3 m/s and 25 m/s are counted from the SCADA file (each = 0.167 h).
+        # For each row :
+        # | WTG | Data hours[h] | Criterion (>=72h) [True/False] |
+
+        # [TODO] Criteria 3 :  3 hours at or above 98% of nominal power
+        # SCADA records with active power >= 3704.4 kW are counted and converted to hours (each 10-min record = 0.167 h).
+        # For each row :
+        # | WTG | Data hours[h] | Criterion (>=3h) and P>= 98% of P_nominal [True/False] |
+
+        # [TODO] Criteria 4 :  Local acknowledgements / restarts (<=3)
+        # The number of local acknowledgements and restarts during the RT must be less than or equal to 3.
+        # Local acknowledgements are identified from unauthorised stop codes in the alarm log (FM3, FM300, FM615, FM954, FE1613, FE1208)
+        # For each row :
+        # | WTG | Local Acknowledgements / Restarts | Criterion (<=3) [True/False] |
+
+        # [TODO] Criteria 5 :  Availability (>=92%)
+        # Local acknowledgements are identified from unauthorised stop codes in the alarm log (FM3, FM300, FM615, FM954, FE1613, FE1208)
+        # For each row :
+        # | WTG | Availability (%) | WTG OK [h] | Warning [h] | Criterion (>=92%) [True/False] |
+
+
+def run_runtest_pipeline(config: RunTestPipelineConfig, presenter) -> Any:
+    return RunTestWorkflow(config=config, presenter=presenter).run()

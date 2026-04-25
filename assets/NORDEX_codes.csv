@@ -1,0 +1,1072 @@
+﻿Code,Description,Reset Level,Dead Level,Availability,Reset Mode,Brake Program,Yaw Program,StatCom
+FM0,WTG System ok — Is indicated when the turbine has NO fault.,0,600,no,A,0,0,yes
+FM1,PLC Flash CardReading — Controller is restarted. The WTG parameters are initialized,0,600,no,A,1,0,no
+FM2,PLC Flash Card Reading Error — Controller is restarted. A fault has occurred during initialization of the parameters.,0,600,yes,A,1,0,no
+FM3,HMI WTG Stop For Grid Disconnection — Is indicated if the turbine is stopped for a planned grid disconnection. This type of disconnection enables idling during the grid disconnection. Brake Prog.: 1,0,600,yes,A,,30,no
+FM5,HMI WTG ManualControl — Is indicated when the turbine is in manual control mode.,0,600,no,A,0,0,no
+FM6,HMI WTG Manual Stop — Is indicated if the WTG is stopped with an access level >= 270 or if the WTG is stopped via the stop button on the bottom cabinet Brake Prog.: 1,270,600,yes,M,,0,no
+FM7,HMI WTG Customer Stop — Is indicated if the WTG is stopped via the visualization with access level <270.,99,600,no,M,1,30,no
+FM8,WTG AutoRestart after GridError — Is indicated when the automatic restart is active following a grid fault.,0,600,no,A,0,0,no
+FM9,WTG AutoRestart aborted — Is generated if the automatic restart following a grid error or vector shift is not completed successfully.,0,600,no,A,0,0,no
+FM10,PLC MemoryReset — Is indicated when the turbine controller is started with the manufacturer parameter settings (e.g. after a software update or replacement of the turbine controller). Brake Prog.: 4,270,600,yes,M,,50,no
+FM11,PLC Reboot active — Is indicated when the turbine controller executes a restart (e.g. after grid outages),0,600,yes,A,4,50,no
+FM12,"Stat WTG FMC-Time After GridFault — Is indicated for a restricted period following a grid error in order to also count the time following a grid error as FMC time. (FMC = Force Majeure Correction, correction when unavailable due to external Brake Prog.: 0 influences) Yaw Prog.: 0",0,300,no,A,,,yes
+FM22,PLC Flash Card Bladedata missing — The alarm is generated when there is not a blade data file for the wind estimator on the PLC flash card. Brake Prog.: 5,0,600,yes,A,,0,yes
+FM23,PLC Flash Card Bladedata invalid — The alarm is generated when the data file required for the wind estimator on the PLC flash card is invalid. Brake Prog.: 5,0,600,yes,A,,0,yes
+FM40,PLC TaskCycleTimeViolation — Cycle time exceeded.,270,600,yes,M,1,0,no
+FM51,"SIS EmStop BotBox Activated — Safety chain triggered via emergency off switch on bottom-box control cabinet (power cabinet or communication cabinet for offshore turbines), in connection with FM50. Brake Prog.: 4",270,400,yes,SL,,50,no
+FM52,"SIS EmStop Nacelle Activated — Activation of the safety chain by actuating the emergency stop switch in the nacelle, in combination with FM50. Brake Prog.: 4",270,400,yes,SL,,50,no
+FM54,"MCV EmStop Activated — Signals, in combination with FM50, activation of the safety chain via the main converter.",270,400,yes,SL,4,50,no
+FM57,Vib Y-direction eff. Stop — Is indicated when turbine is stopped due to lateral vibration values being too high.,270,600,yes,M(A),1,0,yes
+FM58,Vib Z-direction eff. Stop — Is indicated when turbine is stopped due to main shaft direction vibration values being too high.,270,600,yes,M(A),1,50,yes
+FM59,Vib Y-direction filtered Stop — Is indicated when the turbine is stopped due to vibration values in the tower's natural frequency range being too high in the lateral direction. Brake Prog.: 1,270,600,yes,M(A),,0,yes
+FM60,Vib Z-direction filtered Stop — Is indicated when the turbine is stopped due to vibration values in the tower's natural frequency range being too high in the main shaft direction. Brake Prog.: 1,270,600,yes,M(A),,50,yes
+FM61,Vib Y-direction filtered Warn — Is indicated when high vibration values occur in the lateral direction in the tower's natural frequency range. Brake Prog.: 0,270,300,no,M(A),,0,yes
+FM62,Vib Z-direction filtered Warn — Is indicated when high vibration values occur in the main shaft direction in the tower's natural frequency range. Brake Prog.: 0,270,300,no,M(A),,0,yes
+FM63,Vib Restartdelay After Vibration — Is indicated when vibrations occur following a quick-stop or storm cut-out. Starting of the WTG will be delayed until this indication is canceled. Brake Prog.: 0,0,600,no,A,,0,yes
+FM64,Vib NacelleAccFilt 2nd tower eigenfreq H Warn — Warning that the tower vibrates with its 2nd natural frequency.,270,400,no,M,0,0,yes
+FM65,Vib NacelleAccFilt 2nd tower eigenfreq H Stop — The tower vibrates with its 2nd natural frequency and the WTG is stopped.,270,400,yes,M,1,0,yes
+FM96,SIS Met WindSpeed WTG Op Active — The alarm is generated if an anemometer fails. Continued operation with a permanently faulty anemometer is possible for max. 28 days. Brake Prog.: 0,0,600,no,A,,0,yes
+FM97,SIS Remote Safety-Reset Required — A safety alarm has occurred. Remote reset is possible.,0,600,no,SR,0,0,yes
+FM98,SIS Local Safety-Reset Required — A safety alarm has to be acknowledged on site.,0,600,no,SL,0,0,yes
+FM99,SIS ManStartReqAfterSISAlarm — The alarm is generated when a resettable stop alarm is triggered by the safety system (SIS). A manual restart is required. Brake Prog.: 1,270,600,yes,M,,0,no
+FM100,"SIS Sen Pepperl+Fuchs Collective Failure — If this error is active, the sensors of the overspeed/tower damper acceleration detection system/temperature limit switch are faulty or one of the detectors is faulty. Brake Prog.: 1",270,600,yes,M,,0,yes
+FM104,Gen RPM (OpCtrl) H Stop — FM104 is an overspeed detection system sensor stage 1 fault. It is generated directly in the operation control. Brake Prog.: 2,270,600,yes,M(A),,0,yes
+FM105,Rot RPM (OpCtrl) H Stop — FM105 is an overspeed detection system sensor stage 1 fault. It is generated directly in the operation control. Brake Prog.: 2,270,600,yes,M(A),,0,yes
+FM106,"DTR Gen RPM H StopFastIdling1 — The generator speed is too high in status ""Fast idling stage 1"" .",270,330,yes,M,1,0,yes
+FM109,DTR Gen MCV RPM Diff H Stop — The alarm is generated if the speed difference between the generator speed from the speed monitor and the generator speed from the main converter exceeds a parametrable limit value. Brake Prog.: 2,270,600,yes,M,,0,yes
+FM110,DTR GenRot RPM Diff (OpCtrl) H Stop — FM110 is an overspeed detection system sensor stage 1 fault. It is generated directly in the operation control. Brake Prog.: 2,270,600,yes,M,,0,yes
+FM111,DTR Gen Rpm MCV Unplaus Warning — The alarm is generated when the main converter speed monitoring measurement appears implausible for the 10 min mean (deviation from the other two speed measurements). Brake Prog.: 0,0,300,no,A,,0,yes
+FM112,DTR Gen Rpm Monitor Unplaus Warning — The alarm is generated when the generator speed monitoring measurement appears implausible for the 10 min mean (deviation from the other two speed measurements). Brake Prog.: 0,0,300,no,A,,0,yes
+FM113,DTR Rot Rpm Monitor Unplaus Warning — The alarm is generated when the rotor speed monitoring measurement appears implausible for the 10 min mean (deviation from the other two speed measurements). Brake Prog.: 0,0,300,no,A,,0,yes
+FM114,"DTR Gen Rpm MCV Unplaus Failure — The alarm is generated when a brief, distinct deviation of the generator speed is detected.",270,330,yes,M,1,0,yes
+FM120,Gen CWPress L Stop — Is indicated when the pressure in the generator coolant circuit is too low.,270,330,yes,M,5,0,yes
+FM121,Gen CWPmp FuseTrip — Is indicated when the generator coolant pump fuse triggers.,270,300,yes,M,5,0,yes
+FM124,GBX OilFilt Alarm(replace Fi) — Is indicated when the gearbox oil filter is to be replaced.,270,330,no,M,0,0,yes
+FM150,GBX BearTemp 1(Gen) H Warn Lim — The alarm is triggered when the specific generator side temperature threshold P81.00 is exceeded and the turbine is operated with power limiting. Brake Prog.: 0,0,300,no,A,,0,yes
+FM151,GBX BearTemp 2(Rot) H Warn Lim — The alarm is triggered when the specific temperature P81.02 for the rotor side gear bearing temperature threshold is exceeded and the turbine is operated with power limiting. Brake Prog.: 0,0,300,no,A,,0,yes
+FM152,GBX OilTemp Sump H Warn Lim — The alarm is triggered when the specific temperature P81.04 for the gearbox oil temperature threshold is exceeded and the turbine is operated with power limiting. Brake Prog.: 0,0,300,no,A,,0,yes
+FM161,GBX OilPmp Stage1 FuseTrip — Is indicated when the gearbox oil pump stage 1 fuse triggers.,270,330,yes,M,5,0,yes
+FM162,GBX OilPmp Stage2 FuseTrip — Is indicated when the gearbox oil pump stage 2 fuse triggers.,270,330,yes,M,5,0,yes
+FM164,GBX PostCoolingTimeout — Is indicated if after-cooling of the gearbox oil or gearbox bearing is not completed within a defined period when the turbine is at standstill. Brake Prog.: 0,270,300,no,M,,0,yes
+FM165,GBX OilLevel 1 L Stop — Is indicated when the gearbox oil level sensor triggers (false alarm possible during the preheating period when the oil is very cold). Brake Prog.: 5,270,330,yes,M,,0,yes
+FM166,GBX OilPress H Stop — Is indicated when the gearbox oil pressure exceeds the permissible value. Can be caused by blocked or frozen oil cooler. Brake Prog.: 5,0,330,yes,M,,0,yes
+FM167,GBX OilPress high multiple — Alarm no longer utilized.,270,330,yes,M,5,0,yes
+FM168,GBX OilFilt Warn(75% clogged) — Is indicated if the gearbox oil filter needs to be replaced soon.,270,300,no,M,0,0,yes
+FM171,GBX OilPress GearInlt L Stop — Is indicated when the gearbox oil pressure is below the permissible value at the gearbox inlet flange.,270,330,yes,M,5,0,yes
+FM172,GBX BypFilterPmp FuseTrip — Is indicated when the fuse for the gearbox oil bypass pump filter has triggered. Bypass filtering is an optional package. Brake Prog.: 0,0,300,no,M,,0,yes
+FM173,ALU RotBearContainer Level L Warn — Is indicated when the grease container for lubrication of the main bearing is empty.,270,300,no,M,0,0,yes
+FM174,ALU RotBearPmp Fault — Is indicated when the grease pump for lubrication of the main bearing does not signal its status correctly (ON/OFF). (ALU= automatic lubrication unit) Brake Prog.: 0,270,300,no,M,,0,yes
+FM179,GBX BypFilter replace Fi — Is indicated when the gearbox oil bypass filter is to be checked and replaced if necessary .,270,300,no,M,0,0,yes
+FM202,ROTB Not Open — Is indicated when the permissible residual rotor brake pressure is exceeded. The brake may be dragging. Brake Prog.: 3,270,400,yes,M(A),,0,yes
+FM204,ROTB Wear Warn — Is indicated when the rotor brake pads are to be replaced in the near future.,270,300,no,M,0,0,yes
+FM206,ROTB Wear Alarm — Is indicated when the rotor brake pads are to be replaced immediately. Starting of the turbine will not be allowed. Brake Prog.: 1,270,400,yes,M,,0,yes
+FM207,ROTB Temp H Warn — Is indicated when the temperature of the rotor brake pad exceeds the warning value.,270,300,no,M,0,0,yes
+FM208,ROTB Temp H Stop — Is indicated when the temperature of the rotor brake pad exceeds the cut-out value.,270,400,yes,M,1,0,yes
+FM211,OpC Gen RPM Reduction (SoftBrk)too low — Is indicated when the generator speed does not slow down quickly enough for soft-braking (BP1 or BP5). This triggers a change to fast-braking (BP2). Brake Prog.: 2,0,400,yes,A,,0,yes
+FM250,Hyd OilLevel L Stop — Is indicated when the oil level in the hydraulic oil tank is too low.,270,330,yes,M,1,50,yes
+FM251,"Hyd HydraulicTest cancel — The alarm is triggered if the rotor brake hydraulic test or the yaw system hydraulic brake test is canceled and this is due to a fault of the hydraulic system. Brake Prog.: 2 If another cause is present, FM1500 is triggered. Yaw Prog.: 0",270,600,yes,M(A),,,yes
+FM252,Hyd OilPmp FuseTrip — Is indicated when the hydraulic oil pump fuse triggers.,270,330,yes,M,1,50,yes
+FM253,ROTB AccuR Press L Stop — Is indicated when the pressure in the hydraulic accumulator for the rotor brake falls below the minimum permissible value. Brake Prog.: 3,270,400,yes,M(A),,50,yes
+FM254,Hyd OilPmpRuntime long — Is indicated when the hydraulic oil pump cannot increase the oil pressure to operating pressure within the required time. Brake Prog.: 1,270,330,yes,M,,50,yes
+FM255,Hyd OilPmpRuntime short — Is indicated when the hydraulic oil pump increases the oil pressure to operating pressure very quickly – this indicates a fault in the hydraulic accumulator. Brake Prog.: 1,270,330,yes,M,,50,yes
+FM256,Hyd OilPmpSwitchingFrequency high — Is indicated when the hydraulic oil pump has to be switched on in quick succession – i.e. the oil pressure increases and falls rapidly. This indicates a fault in the hydraulic accumulator. Brake Prog.: 1,270,330,yes,M,,50,yes
+FM257,Hyd OilPress H Stop — Is indicated when the maximum permissible hydraulic oil pressure is exceeded.,270,330,yes,M,1,50,yes
+FM258,Yaw HydAccuPress L Stop — Is indicated when the pressure in the yaw system hydraulic accumulator falls below the minimum permissible value. Brake Prog.: 1,270,330,yes,M(A),,50,yes
+FM260,HMI ROTB ManualControl — Is indicated when the rotor brake is set to manual control (Service).,0,600,yes,A,3,0,no
+FM261,ROTB BrakePressure Fault — Is indicated when the brake pressure is not reached on time or is exceeded during an automatic brake test. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM262,ROTB HoldPressure Fault — Is indicated if the holding pressure does not correspond to the setpoint value after a short period when the rotor brake is closed. Brake Prog.: 1,270,600,yes,M(A),,0,yes
+FM263,ROTB HoldPressure Early Warn — Is indicated when the hold pressure is reached too early during an automatic brake test (brake pressure stage II). Brake Prog.: 0,270,300,no,M(A),,0,yes
+FM264,ROTB HoldPressure Early Stop — Is indicated if the holding pressure (brake pressure stage II) is reached much too early during the automatic rotor brake test. Brake Prog.: 1,270,400,yes,M(A),,0,yes
+FM266,ROTB AccuR DiffPress — Is indicated when the signals of the pressure switch and the analog pressure measurement on the hydraulic accumulator do not match (plausibility monitoring of the pressure switch and the analog Brake Prog.: 5 pressure measurement). Yaw Prog.: 0,270,400,yes,M,,,yes
+FM267,ROTB AccuE PressSwitch Fault — Is indicated when pressure switch E on the accumulator is incorrectly set for the rotor brake stop pressure application delay or the accumulator priming pressure is incorrectly set. Brake Prog.: 2,270,400,yes,M,,0,yes
+FM268,ROTB AccuE Press L Stop — Is indicated when the pressure in the rotor brake hydraulic accumulator E unexpectedly falls. The control of an important brake valve is monitored for cable breaks by this. Brake Prog.: 3,270,400,yes,M,,0,yes
+FM269,ROTB HoldPressureSwitch DiffPress — Is indicated if the pressure switch and the analog pressure measurement at the holding pressure switch do not provide matching signals (plausibility monitoring of pressure switch and analog pressure Brake Prog.: 5 measurement). Yaw Prog.: 0,270,330,yes,M,,,yes
+FM270,ROTB Test Activ — The hydraulic rotor brake test is active.,0,600,no,A,0,50,yes
+FM300,MCV CirBreaker Open — Is indicated when the main grid switch (660V grid) is open (turbine class K08 only).,0,600,yes,A,6,0,no
+FM301,Met Labko Ice sensor CableBreak — The alarm is reported when a cable break or an invalid measured value is detected at the measuring input for the ice sensor. Brake Prog.: 0,270,300,no,M,,0,yes
+FM302,Met MoistureSensor CableBreak — Is activated when a cable break is indicated at the measurement input for the moisture or frost point sensor or an invalid measurement value is detected. Brake Prog.: 0,270,300,no,M,,0,yes
+FM304,AIS Operation fast idle active — Is reported if the anti-icing system (AIS) has placed the WTG into idling mode.,0,300,no,A,5,0,yes
+FM305,Met RotAirTemp CableBreak — This warning is generated when a cable break is detected on the temperature sensor TR287 MET Rot Air Temp. Brake Prog.: 0,0,300,no,M,,0,yes
+FM306,Gen brushWear Stop — Is indicated if the brush wear warning (FM307) has been active for a longer period of time.,270,330,yes,M,1,0,yes
+FM307,Gen brushWear Warn — Is indicated when the generator slip ring brushes are worn and have to be replaced.,0,300,no,A,0,0,yes
+FM310,LPR BotBox — Is indicated when the 400V or 660V power supply lightning protection module has triggered.,270,330,no,M,0,0,yes
+FM311,LPR Gen — A generator lightning protection module on the stator side has triggered.,270,330,no,M,0,0,yes
+FM312,Met Labko Ice sensor fault stop — The Labko ice sensor signals a fault. The WTG is stopped.,270,400,yes,M,1,0,yes
+FM313,Met Labko Ice sensor fault warn — The Labko ice sensor signals a fault. The WTG is not stopped.,0,300,no,A,0,0,yes
+FM314,LPR Gen Rot — A lightning protection element on the rotor-side of the generator has triggered.,270,330,no,M,0,0,yes
+FM316,AIS Enable manual stopp (Service) — Reported if the heating release (ST178) of the anti-icing system (AIS) has been locked manually via the Visu. Brake Prog.: 0,0,600,no,A,,0,yes
+FM330,Grid Griderror 660V multiple — The alarm is triggered if a grid fault occurs in the 660V grid several times a day. This alarm deactivates the automatic restart (ARS) function. Brake Prog.: 1,270,600,no,M,,0,no
+FM332,Grid Griderror 660V Alarm — The alarm is triggered if a grid fault occurs in the 660V grid. The turbine is disconnected from the grid immediately and the automatic restart function is activated. Brake Prog.: 2,0,400,no,A,,50,no
+FM340,Grid Phaseshift 660V Alarm — Is indicated when there is a phase shift between the three phases in the 660V grid. The turbine is disconnected from the grid immediately and the automatic restart function is activated. Brake Prog.: 2,0,400,no,A,,0,no
+FM342,LVL InsulatMonitor 660V Stop undelayed — The insulation monitor indicates an alarm (insulation resistance is < 20kOhm).,270,400,yes,ML,2,0,no
+FM343,MVL SF6 Gas Pressure NOK — Is reported if the SF6 gas pressure in the medium-voltage switchgear is NOK.,270,330,yes,ML,1,0,no
+FM344,MVL Switchgear Defect — Is indicated when the MV-switchgear detects a fault that requires a quick-stop (e.g. triggering of the transformer protection or overcurrent protection). Brake Prog.: 2,270,600,yes,M(A),,0,no
+FM345,MVL Switchgear Warning — Is indicated when the MV-switchgear or the MV- transformer detect a fault that requires soft braking.,0,300,yes,A,1,0,no
+FM346,LVL InsulatMonitor 660V Stop deferred — Is indicated when the insulation monitor generates a warning for a longer period (ST271).,270,400,yes,ML,5,0,no
+FM347,LVL InsulatMonitor 660V Warn — Is indicated when the insulation monitor detects that the insulation resistance from the 660 V grid to ground is too low. Brake Prog.: 0,0,300,no,A,,0,yes
+FM348,LVL DiffCurr 400V BotBox Warn — Is indicated when the differential current monitor detects a small fault in the 400V-grid.,0,300,no,A,0,0,yes
+FM349,LVL DiffCurr 400V BotBox Stop — Is indicated when the differential current monitor detects a serious fault in the 400V-grid.,270,400,yes,M,2,0,no
+FM350,OBL ObstacleLight Defect — The alarm is triggered if a fault in the aircraft warning lamps is indicated.,270,600,no,M(A),0,0,yes
+FM352,Gen Htr FuseTrip — Is indicated when the fuse for the generator heating triggers.,0,330,no,M,0,0,yes
+FM354,Hyd OilHtr FuseTrip — Is indicated when the fuse for the hydraulic oil heating triggers.,0,330,no,M,0,0,yes
+FM355,GBX OilHtr 1 FuseTrip — Is indicated when the fuse for the gearbox oil heating elements triggers.,0,330,no,M,0,0,yes
+FM356,"GBX OilHtr 2 FuseTrip — Is indicated if the fuse for the gearbox oil heating elements or, for K08 Gamma CCV, the gear oil and suction hose heating fuse has triggered. Brake Prog.: 0",0,330,no,M,,0,yes
+FM357,Air Fan Nacelle FuseTrip — Is indicated if the fuse for the nacelle fan has triggered.,0,330,no,M,0,0,yes
+FM358,"LVL UPS Fault — Collective error message of the USV: battery, temperature, fan or electronics not ok.",0,300,no,A,0,0,no
+FM359,LVL UPS BatteryLow — A report is emitted when the batteries of the 230V UPS have a low state of charge.,0,300,yes,A,5,20,yes
+FM360,OBL ObstacleLight Lamp defect — Is indicated when the obstacle lighting is defective.,270,600,no,M(A),0,0,yes
+FM361,OBL ObstacleLight Grid Failure — Indicates a power supply failure of the aircraft obstacle warning light system.,270,600,no,M(A),0,0,yes
+FM364,Pit error powervoltage supply pitch — The states of the control and feedback of the line contactor and unvervoltage relay are implausible.,270,600,yes,M,2,0,yes
+FM365,Pit PowerVolt SwitchOff manual — Pitch power supply has been switched off manually.,0,600,yes,A,2,0,yes
+FM366,AIS Enable manual active (Service) — Reported if the heating release (ST178) of the anti-icing system (AIS) has been issued manually via the Visu. Brake Prog.: 0,0,300,no,A,,0,yes
+FM376,ALU GenBearPmp Fault — Is indicated when the grease pump for lubrication of the generator bearing does not feedback its status (on/off) correctly. (ALU= automatic lubrication unit) Brake Prog.: 0,270,300,no,M,,0,yes
+FM377,CMS DTR Communication nok — The Modbus TCP communication between drive train CMS and the operation control has failed.,0,300,no,A,0,0,yes
+FM378,AIS Modbus Nok — Reported if the Modbus TCP communication between the anti-icing system (AIS) and the operation control is faulty. Brake Prog.: 0,0,400,no,A,,0,yes
+FM379,ALU GenBearContainerLevel L Warn — Is indicated when the grease container for lubrication of the main bearing is empty.,270,300,no,M,0,0,yes
+FM380,LPR Lightning detected — Lightning strike detected.,0,330,no,A,0,0,yes
+FM381,LPR LightnStrike Sensor Error — Communication fault detected between the lightning strike sensor (Prolec WindSystem) and the control. Brake Prog.: 0,0,330,no,A,,0,yes
+FM382,Air Temp Nacelle L Stop — Is indicated if the temperature in the nacelle is below the parameterable limit P10.16 for at least 5s.,0,330,no,A,5,50,yes
+FM383,"GCM GridFrequency Low too long — If the grid frequency is in the monitoring range below the rated grid frequency for too long, the WTG will be stopped with this fault. The alarm starts a recovery period during which the components that Brake Prog.: 1 may have been overloaded can cool down. Yaw Prog.: 0",0,330,no,A,,,yes
+FM384,"GCM GridFrequency high too long — If the grid frequency is in the monitoring range above the rated grid frequency for too long, the WTG will be stopped with this fault. The alarm starts a recovery period during which the components that Brake Prog.: 1 may have been overloaded can cool down. Yaw Prog.: 0",0,330,no,A,,,yes
+FM385,Ctrl RPM-number is bad warning — The speed signal for control of the WTG is shown to have inadequate signal quality.,0,300,no,A,0,0,yes
+FM386,Ctrl RPM-number is bad fault — The speed signal for control of the WTG is shown to have inadequate signal quality.,0,300,no,A,0,0,yes
+FM387,"Grid Frequency notValForStartup — This function prevents the WTG from being connected to the grid when the grid voltage (measured by the main converter, MFR or CWE) is not within the parameterized frequency range. Brake Prog.: 5",0,300,no,A,,0,yes
+FM388,Grid Voltage notValForStartup — This function prevents the WTG from being connected to the grid when the grid voltage (measured by the MFR) is not within the parameterized voltage range. Brake Prog.: 5,0,300,no,A,,0,yes
+FM390,ROTB Release Check — Is indicated when the rotor brake is closed when the gearbox is very cold. Service/Remote Control should then check whether the brake can be opened again so that the rotor can idle. Brake Prog.: 0,270,400,no,M,,0,yes
+FM391,Air Fan TowerBase FuseTrip — Is indicated when the fuse of the (optional) fan in the tower base triggers.,270,330,no,M,0,0,yes
+FM400,Wind DirSlanting Stop(due YP50) — It is generated if the nacelle has too great a differential angle to the wind direction and cannot be adjusted. Brake Prog.: 1,0,600,yes,A,,0,yes
+FM403,Yaw ALU ContainerLevel L Warn — Is indicated when the grease container for lubrication of the yaw gear ring is empty.,270,300,no,M,0,0,yes
+FM404,Yaw Direction <>Cmd — Is generated if the nacelle direction of movement does not correspond to the specified direction of movement. Brake Prog.: 0,270,330,no,M(A),,50,yes
+FM405,Yaw Master Speed Diff Set-Act — Is generated if the yaw master speed difference between target and actual value exceeds a limit value.,270,330,no,M(A),0,50,yes
+FM407,Yaw ALU Pmp Fault — Is indicated when the grease pump for lubrication of the yaw gear ring does not signal its status correctly (ON/OFF). (ALU= automatic lubrication unit) Brake Prog.: 0,270,300,no,M,,0,yes
+FM408,Yaw MotBrk FuseTrip — Is indicated when the motor protection switch for the yaw motor brake has triggered.,270,330,no,M(A),0,50,yes
+FM411,Wind DirSlanting Stop — Is reported if the angle between the nacelle and wind direction has exceeded a parameterable limit that is dependent on the wind speed and adjustment is possible and sector avoidance is not active. Brake Prog.: 5,0,600,yes,A,,0,yes
+FM412,Wind DirSlanting Stop(at Sectorav.) — Is reported if the angle between the nacelle and wind direction has exceeded a parameterable limit that is dependent on the wind strength and adjustment is possible and sector avoidance is active. Brake Prog.: 1,0,600,yes,A,,0,yes
+FM413,Yaw Manual Mode Target Position activ — This alarm is triggered when the yaw manual target specification has been activated via NC2.,0,300,no,A,0,33,yes
+FM415,Yaw MotBrk not closed — Is indicated when the yaw motor E-brakes have not closed within a specified time when the nacelle is braked. Brake Prog.: 5,270,330,yes,M(A),,50,yes
+FM418,Yaw BrkResistorTemp Fault — Is indicated when the temperature of the yaw motor brake resistor exceeds a limit.,270,330,no,M(A),0,50,yes
+FM419,Yaw HydBrk not closed — Is indicated when the hydraulic brake does not close upon completion of a yaw adjustment.,270,400,yes,M(A),5,50,yes
+FM420,Yaw HydBrk not open — Is indicated when the hydraulic brake does not open at the start of a yaw adjustment.,270,400,no,M(A),0,50,yes
+FM423,Yaw Sliding — Is indicated when the yaw motor speed exceeds a limit during nacelle movement.,0,330,no,A,0,50,yes
+FM424,Yaw CableTwist LimitSwitch CW Reached — Is indicated if the first nacelle rotation limit switch has been reached in CW direction.,270,400,no,M,0,25,yes
+FM425,Yaw CableTwist LimitSwitch CCW Reached — Is indicated if the first nacelle rotation limit switch has been reached in CCW direction.,270,400,no,M,0,25,yes
+FM426,Yaw Axis Test Stop — The yaw axle test was unsuccessful and has been canceled,270,330,no,M,0,50,yes
+FM430,Yaw ErectJumper Connected — Fault message if a jumper for erection has not been removed.,270,600,yes,M,1,50,yes
+FM431,Yaw HydBrk Test Active — The yaw hydraulic brake test is active.,0,600,no,A,0,50,yes
+FM432,Yaw MotBrkTest Active — The yaw motor brake test program is active,0,600,no,A,0,46,yes
+FM433,Yaw HydBrkTest AccuPressLoss — Reservoir pressure monitoring in the yaw hydraulic brake test.,270,600,yes,M,1,50,yes
+FM434,Yaw HydBrk Test AccuPress Low — Reservoir pressure monitoring in the yaw hydraulic brake test.,270,600,yes,M,1,50,yes
+FM435,Yaw HydBrk AccuDiffPress — The alarm monitors the switching point of the system pressure switch.,270,600,yes,M,1,50,yes
+FM436,Yaw Conv 1 Critical Error — The yaw converter 1 reports a critical fault.,0,330,no,A,0,50,yes
+FM437,Yaw Conv 2 Critical Error — The yaw converter 2 reports a critical fault.,0,330,no,A,0,50,yes
+FM438,Yaw Conv 3 Critical Error — The yaw converter 3 reports a critical fault.,0,330,no,A,0,50,yes
+FM439,Yaw Conv 4 Critical Error — The yaw converter 4 reports a critical fault.,0,330,no,A,0,50,yes
+FM440,Yaw Conv UserMacro Fault — In at least one yaw converter the correct parameter set is not active.,270,330,no,M,0,50,yes
+FM441,Yaw Conv Local Mode active — Local mode is active for at least one yaw converter.,0,330,no,A,0,50,yes
+FM442,Yaw MotBrk Test Stop — The yaw motor brake test was unsuccessful and has been canceled,270,330,no,M,0,50,yes
+FM443,Yaw Conv 1 Cont. CmdOff <> FbOff — The error is indicated if the activation and feedback signals for the contactor of the 400V voltage of YCV 1 is not plausible. Brake Prog.: 0,0,330,no,A,,50,yes
+FM444,Yaw Conv 2 Cont. CmdOff <> FbOff — The error is indicated if the activation and feedback signals for the contactor of the 400V voltage of YCV 2 is not plausible. Brake Prog.: 0,0,330,no,A,,50,yes
+FM445,Yaw Conv 3 Cont. CmdOff <> FbOff — The error is indicated if the activation and feedback signals for the contactor of the 400V voltage of YCV 3 is not plausible. Brake Prog.: 0,0,330,no,A,,50,yes
+FM446,Yaw Conv 4 Cont. CmdOff <> FbOff — The error is indicated if the activation and feedback signals for the contactor of the 400V voltage of YCV 4 is not plausible. Brake Prog.: 0,0,330,no,A,,50,yes
+FM449,Yaw Request Axis Test — An axle test of the yaw system is being performed.,0,400,no,A,2,48,yes
+FM450,Yaw N-1 activation allowed — If an axle of the yaw drive system has failed and N-1 operation can be activated.,0,400,no,A,0,50,yes
+FM451,Yaw N-1 deactivation — Message for terminating the yaw system N-1 operation,0,400,no,A,0,50,yes
+FM452,Yaw Multi fault (N-1 not available) — Several yaw axles report non-critical errors:,270,330,no,M(A),0,50,yes
+FM453,Yaw N-1 wind speed high — The error is issued if the wind speed is too high during N-1 operation.,0,330,yes,A,1,50,yes
+FM454,Yaw N-1 Time out — The maximum time period during N-1 operation has expired.,0,330,no,A,1,50,yes
+FM455,Yaw 1 Axis Test Failure — The alarm is triggered if the gearbox test at axle 1 did not complete without errors.,270,330,no,M(A),0,41,yes
+FM456,Yaw 2 Axis Test Failure — The alarm is triggered if the gearbox test at axle 2 did not complete without errors.,270,330,no,M(A),0,42,yes
+FM457,Yaw 3 Axis Test Failure — The alarm is triggered if the gearbox test at axle 3 did not complete without errors.,270,330,no,M(A),0,43,yes
+FM458,Yaw 4 Axis Test Failure — The alarm is triggered if the gearbox test at axle 4 did not complete without errors.,270,330,no,M(A),0,44,yes
+FM459,Yaw Parameterset manual command — The parameter sets of the YCV converter can be manually changed via parameters.,0,400,no,A,2,50,yes
+FM460,Yaw Conv1 DC Voltage Min — The limit value for the direct current link at yaw converter 1 has been fallen below.,0,330,no,A,0,41,yes
+FM461,Yaw Conv2 DC Voltage Min — The limit value for the direct current link at yaw converter 2 has been fallen below.,0,330,no,A,0,42,yes
+FM462,Yaw Conv3 DC Voltage Min — The limit value for the direct current link at yaw converter 3 has been fallen below.,0,330,no,A,0,43,yes
+FM463,Yaw Conv4 DC Voltage Min — The limit value for the direct current link at yaw converter 4 has been fallen below.,0,330,no,A,0,44,yes
+FM464,Yaw 1 MotBrkTest Failure — The alarm is triggered if the motor brake test at axle 1 did not complete without errors.,270,330,no,M(A),0,0,yes
+FM465,Yaw 2 MotBrkTest Failure — The alarm is triggered if the motor brake test at axle 2 did not complete without errors.,270,330,no,M(A),0,0,yes
+FM466,Yaw 3 MotBrkTest Failure — The alarm is triggered if the motor brake test at axle 3 did not complete without errors.,270,330,no,M(A),0,0,yes
+FM467,Yaw 4 MotBrkTest Failure — The alarm is triggered if the motor brake test at axle 4 did not complete without errors.,270,330,no,M(A),0,0,yes
+FM468,Yaw Conv not Operational — The yaw converter does not respond correctly to the commands of the operation control.,0,330,no,A,0,0,yes
+FM469,Yaw max number ext. Torque reduction drives — The maximum number of the extended torque reduction attempts of the yaw drives has been exceeded. Brake Prog.: 0,0,330,no,A,,50,yes
+FM470,Yaw ALU bear pause time H warn — During yawing the pause counter of the ALU lubrication has exceeded the maximum limit value.,0,330,no,A,0,0,yes
+FM475,Yaw Torque Implausible Alarm — Reported if the deviation of the torque values of the yaw drive axes in relation to each other have exceeded the limit value P77.17 several times or FM494 has already been triggered at least once. Brake Prog.: 0,0,330,no,A,,50,yes
+FM480,Yaw Adjustment 90° active — Is indicated when the nacelle is moved 90° out of the wind due to a pitch fault and is adjusted in this position. Brake Prog.: 0,270,600,no,M,,24,yes
+FM481,Yaw Conv 1 Error — The yaw converter 1 reports a non-critical drive fault.,0,330,no,A,0,41,yes
+FM482,Yaw Conv 2 Error — The yaw converter 2 reports a non-critical drive fault.,0,330,no,A,0,42,yes
+FM483,Yaw Conv 3 Error — The yaw converter 3 reports a non-critical drive fault.,0,330,no,A,0,43,yes
+FM484,Yaw Conv 4 Error — The yaw converter 4 reports a non-critical drive fault.,0,330,no,A,0,44,yes
+FM485,Yaw MotBrk 1 not open — Reported if the e-brake of yaw motor 1 has not been opened when the nacelle is moved.,270,330,no,M,0,50,yes
+FM486,Yaw MotBrk 2 not open — Reported if the e-brake of yaw motor 2 has not been opened when the nacelle is moved.,270,330,no,M,0,50,yes
+FM487,Yaw MotBrk 3 not open — Reported if the e-brake of yaw motor 3 has not been opened when the nacelle is moved.,270,330,no,M,0,50,yes
+FM488,Yaw MotBrk 4 not open — Reported if the e-brake of yaw motor 4 has not been opened when the nacelle is moved.,270,330,no,M,0,50,yes
+FM490,Yaw Speeds not plausibel — Is reported if the deviation of the yaw drive axles to each other exceeds a limit value.,270,330,no,M(A),0,50,yes
+FM491,Yaw 0°-RefPoint Diff > Max — Is reported if when a difference between the yaw reference position and the incremental encoder counter becomes too large. Brake Prog.: 0,270,300,no,M,,0,yes
+FM492,Yaw Sensorsignal implausible — Is reported if the expected encoder pattern is incorrect.,270,330,no,M(A),0,50,yes
+FM493,Yaw referencing — Is triggered if a deviation is detected between the calculated cable twist and the cable twist via incremental encoder. Brake Prog.: 1,0,330,yes,A,,22,yes
+FM494,Yaw Torque not plausibel — Is reported if the deviation of the torque values of the yaw drive axes to each other exceeds the limit value P77.17. Brake Prog.: 0,0,300,no,A,,50,yes
+FM495,Yaw Sliding at Stop — Is indicated when the nacelle slides when the brake is engaged.,270,330,no,M,0,0,yes
+FM496,Yaw Driven System — It is reported if the nacelle is additionally accelerated by the wind.,0,400,no,A,0,50,yes
+FM497,Yaw Restrained System — It is reported if the nacelle is braked by the wind.,0,400,no,A,0,50,yes
+FM498,Yaw failure N-1 switch over — During the change-over to N-1 operation a fault has occurred.,270,330,no,M(A),0,50,yes
+FM499,Yaw N-1 not permitted — N-1 operation of the yaw system is no longer possible.,0,330,no,A,0,50,yes
+FM500,Wind SpeedDiff multiple — Is indicated when the alarm FM501 Wind SpeedDiff Warn occurs four times within 100 hrs.,270,400,yes,M,5,0,yes
+FM501,Wind SpeedDiff Warn — Is indicated when the difference between the left and right hand wind measurement has exceeded a limit. Brake Prog.: 0,0,300,no,A,,0,yes
+FM502,Wind Speed (Anemometer) Failure — Is indicated when both wind measurements fail.,270,400,yes,M,1,0,yes
+FM503,Wind SpeedDiff H Warn — Is indicated when the difference between the wind speeds for the left and right hand wind sensors exceeds a limit for a specified time. Brake Prog.: 0,270,300,no,M,,0,yes
+FM504,OpC AnemometerTestRotorSpeedMin — The alarm is triggered if a minimum speed is not reached during the anemometer test.,0,400,yes,M,5,0,yes
+FM505,OpC AnemometerTestRotorSpeed Max — The alarm is triggered if the maximum speed is exceeded during the anemometer test.,0,400,yes,M,5,0,yes
+FM506,Wind Speed (backup) constant — Is indicated when the right hand wind measurement is constant.,0,400,no,A,0,0,yes
+FM507,Wind Speed (primary) constant — Is indicated when the left hand wind measurement is constant.,0,400,no,A,0,0,yes
+FM508,Wind Speed constant — Is indicated when the value of the left or right hand wind measurement is constant for more than 10 mins. Brake Prog.: 0,0,400,no,A,,0,yes
+FM509,"Wind Speed Anemometer Ice — Is indicated when there is a deviation between the two wind speed measurements at cold outside temperatures (ice condition deviations). This alarm can be set project specifically via parameter Brake Prog.: 1 P92.03, making a remote reset permissible - or requiring a local reset. Yaw Prog.: 0",99,400,no,M,,,yes
+FM510,"Vib Y-Direction Ice — The alarm is triggered when oscillation alarms occur in the Y-direction at cold temperatures (ice condition imbalance). This alarm can be set project specifically via parameter P89.14, making a Brake Prog.: 1 remote reset permissible - or requiring a local reset. Yaw Prog.: 0",99,400,no,M,,,yes
+FM540,Wind DirDiff multiple — Is indicated when the alarm FM541 occurs four times within 100 hrs.,0,400,yes,M,1,25,yes
+FM541,Wind DirDiff H Warn — Is indicated when a difference between the left and right hand wind direction measurements is detected. Brake Prog.: 0,0,300,no,A,,25,yes
+FM542,Wind DirDiff H Stop — Is indicated when the turbine stops due to the difference between the two wind direction measurements being too big. Brake Prog.: 1,270,400,yes,M,,25,yes
+FM545,Wind Dir (Vane) Failure — Is indicated dependent of the wind direction measurement settings when the measurement values for one or both wind measurements is constant or when there is a cable break. The turbine is then Brake Prog.: 1 stopped. Yaw Prog.: 25,0,400,yes,A,,,yes
+FM546,Wind Dir (backup) constant — Is indicated when the right hand wind direction measurement transmits constant measurement values.,0,400,no,A,0,0,yes
+FM547,Wind Dir (primary) constant — Is indicated when the left hand wind direction measurement transmits constant measurement values.,0,400,no,A,0,0,yes
+FM548,Wind Dir constant — Is indicated when the value of the left and/or right hand wind direction measurements is constant for more than 10 mins . Brake Prog.: 0,0,400,no,A,,0,yes
+FM600,Grid ActivePower H Stop — The WTG active power output has exceeded a limit for too long.,0,330,yes,M,5,0,yes
+FM601,Grid ActivePower Peak Stop — The WTG active power output (peak) has exceeded a limit for too long.,0,330,yes,M,1,0,yes
+FM602,Vib AutoTowerFreqMeasure active — Reported if the conditions for the tower natural frequency measurement are met.,0,300,no,A,0,0,yes
+FM603,Vib TowerFreqMeas implausible — Reported if the measurement of the tower frequency is reported as implausible.,0,300,no,A,0,0,yes
+FM604,PDiag WindEstimatorTest Error — The alarm is triggered if the anemometer test has not been performed correctly with the wind estimator. Brake Prog.: 5,270,400,yes,M,,0,yes
+FM605,ALU Gen bear pause time H warn — The pause counter of the ALU generator bearing lubrication pump has exceeded the maximum limit value. Brake Prog.: 0,0,330,no,A,,0,yes
+FM607,PDiag activePower<PowerInWind warn — Power output too low at measured wind.,0,300,no,A,0,0,yes
+FM608,PDiag activePower>PowerInWind Stop — Power output too high at measured wind.,270,330,yes,M,1,0,yes
+FM609,PDiag activePower<PowerInWind Stop — Power output too low at measured wind.,270,330,yes,M,1,0,yes
+FM610,WTG CutIn failed repeatedly — Multiple failure of WTG cut-in.,270,300,yes,M,5,0,yes
+FM611,ALU Rot bear pause time H warn — The pause counter of the ALU rotor bearing lubrication pump has exceeded the maximum limit value.,0,330,no,A,0,0,yes
+FM612,OpC Operatingstate undefined — Is indicated when a change is made in the program to an undefined status by the turbine control.,270,600,yes,M,2,0,no
+FM613,Ext WTG ExternalCutOut (DI) — Is indicated when the turbine is stopped due to external conditions.,0,300,no,A,5,0,yes
+FM614,PLC TimeSynchronisation failed (P26.04) — The WTG control cannot synchronize its time with the Timeserver.,0,300,no,A,0,0,yes
+FM615,CWE WTG ExternalCutOut — Is indicated when the higher-level farm-controller (CWE) generates the signal to switch off.,0,300,no,A,5,0,yes
+FM616,CWE WTG FastBraking (CWE) — Is indicated when the CWE/WFM commands a quick-stop (BP6) of the WTG in order to fulfill grid code guidelines Brake Prog.: 6,0,300,no,A,,0,no
+FM617,CWE WTG FastBraking + — This fault occurs when a WTG quick-stop has been carried out in order to fulfill CWE/WFM guidelines.,0,300,no,A,6,0,no
+FM618,"CWE CommunicationFault Warn — The alarm is generated if there is no Ethernet communication to the higher level farm-RFC (WFM or CWE) and ""Warning"" is selected as reaction to a communication failure. Brake Prog.: 0",0,300,no,A,,0,yes
+FM619,"CWE CommunicationFault Stop — The alarm is generated if there is no Ethernet communication to the higher level farm-RFC (WFM or CWE) and ""Stop"" is selected as reaction to a communication failure. Brake Prog.: 5",0,300,yes,A,,0,no
+FM620,Grid too many FRT per day — Is indicated when the FRT day-counter value exceeds the value defined in P13.15.,270,330,no,M,0,0,yes
+FM621,"PDiag rotor ice accretion stop — Reported if in icing conditions an aerodynamic impairment of the rotor blades is present and no anti- icing system (AIS) is installed or it is not operational. This alarm can be set project specifically via Brake Prog.: 1 parameter P54.01, making a remote reset permissible - or requiring a local reset. Yaw Prog.: 0",99,400,no,M,,,yes
+FM622,PDiag rotor ice accretion melt process — Reported if in icing conditions an aerodynamic impairment of the rotor blades is present and a functional anti-icing system (AIS) is installed. Brake Prog.: 1,99,400,no,M,,0,yes
+FM623,PDiag EffPower Set-Act Diff > Max Warn — Alarm for monitoring of the difference between the setpoint- and actual active power,270,300,no,M,0,0,yes
+FM624,"CWE Communication Fault Stop Delay — Is set if there is no communication between (WFM or CWE) and WTG for P12.00s and ""Stop"" is selected in response to communication failure. Brake Prog.: 5",0,300,yes,A,,0,no
+FM680,BAO IDD RB Subsystem fault without BP — The rotor blade ice detection (IDD RB) / Blade Additional Option (BAO) reports a subsystem fault without WTG stop. The functionality continues to be available. Brake Prog.: 0,0,300,no,A,,0,yes
+FM681,BAO IDD RB WTG State invalid without BP — The rotor blade ice detection (IDD RB) / Blade Additional Option (BAO) reports that the WTG operating conditions for the determination of a state indicator have not been met. The WTG will not be Brake Prog.: 0 stopped. Yaw Prog.: 0,0,300,no,A,,,yes
+FM682,BAO IDD RB WTG State invalid with BP — The rotor blade ice detection (IDD RB) / Blade Additional Option (BAO) reports that the WTG operating conditions for the determination of a state indicator have not been met. The WTG is Brake Prog.: 1 stopped. Yaw Prog.: 0,0,300,no,A,,,yes
+FM689,HMI TestAlarm — Reported if a test alarm is triggered manually via the user interface.,0,600,no,A,0,0,yes
+FM690,BAO IDD RB Main system fault without BP — The rotor blade ice detection (IDD RB) / Blade Additional Option (BAO) reports an entire system fault without WTG stop. Brake Prog.: 0,0,300,no,A,,0,yes
+FM691,BAO IDD RB Ice Warning without BP — The IDD RB indicates minor ice formation on the rotor blade. The WTG will not be stopped.,0,300,no,A,0,0,yes
+FM692,BAO IDD RB Ice Alarm without BP — The IDD RB reports severe ice accretion on the rotor blade. The WTG will not be stopped.,0,300,no,A,0,0,yes
+FM693,BAO IDD RB Ice Alarm with BP — The IDD RB reports severe ice accretion on the rotor blade. The WTG is stopped.,0,300,no,-,1,0,yes
+FM694,BAO IDD RB Alarm terminated — The IDD RB ice alarm has been canceled and can be acknowledged.,0,300,no,A,0,0,yes
+FM695,BAO Warning without BP — The BAO (Blade Additional Option) reports a warning. The WTG will not be stopped.,0,300,no,A,0,0,yes
+FM696,BAO Alarm without BP — The BAO (Blade Additional Option) reports an alarm. The WTG will not be stopped.,270,300,no,M,0,0,yes
+FM697,BAO Alarm with BP — The BAO (Blade Additional Option) reports an alarm. The WTG is stopped.,270,300,yes,M,1,0,yes
+FM698,BAO IDD RB Main system fault with BP — The rotor blade ice detection (IDD RB) / Blade Additional Option (BAO) reports an entire system fault with WTG stop. Brake Prog.: 1,0,300,yes,A,,0,yes
+FM699,SSF WTG Time Disconnect — Is indicated when the turbine is stopped by a time disconnect due to local time.,0,300,no,A,1,0,yes
+FM701,Gen WindingTemp 1 CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the temperature of generator winding 1 in the measurement input. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM702,Gen WindingTemp 2 CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the temperature of generator winding 2 in the measurement input. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM703,Gen BearTemp (D-end) CableBreak — Is indicated when a cable break has been detected for the temperature of generator bearing (D-end) in the measurement input. Brake Prog.: 1 The analog input for the generator D-end winding temperature is TR40. Yaw Prog.: 0,270,330,yes,M,,,yes
+FM704,Gen BearTemp (N-end) CableBreak — Is indicated when a cable break has been detected for the temperature of generator bearing (N-end) in the measurement input. Brake Prog.: 1,270,330,yes,M,,0,yes
+FM705,ROTB Temp CableBreak — Is indicated when a cable break or an invalid measurement value has been detected for the rotor brake-pad temperature at the measurement input. Brake Prog.: 1,270,400,yes,M,,0,yes
+FM706,Gen CWTemp GenOutlt CableBreak — Is indicated when in the measurement input a cable break or an invalid measurement value has been detected for the generator coolant temperature in the generator outlet. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM707,GBX BearTemp 1(Gen) CableBreak — Is indicated when a cable break or an invalid measurement value at the measurement input for the gearbox bearing temperature 1 (generator side). Brake Prog.: 5,270,330,yes,M,,0,yes
+FM708,GBX OilTemp Sump CableBreak — Is indicated when in the measurement input a cable break or an invalid measurement value is detected for the gearbox oil sump temperature. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM709,Air Temp Nacelle CableBreak — Is indicated when a cable break or an invalid measurement value is been detected for the nacelle temperature at the measurement input. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM710,Gen CWTemp GenInlt CableBreak — Is indicated when a cable break or an invalid measurement value is detected at the measurement input for the generator coolant temperature inlet. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM711,Air Temp Topbox CableBreak — Is indicated when in the measurement input a cable break has been detected for the control cabinet (in the nacelle) temperature. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM713,GBX OilTemp GearInlt CableBreak — Is indicated when a cable break or an invalid measurement value is detected at the measurement input for the gearbox oil temperature at the gearbox inlet. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM714,DTR RotBearTemp 1 CableBreak — Is indicated when in the measurement input a cable break or an invalid measurement value is detected for the main bearing temperature. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM716,Hyd OilTemp CableBreak — The alarm is triggered if a cable break or an invalid measurement value for the hydraulic oil temperature is detected. Brake Prog.: 5,270,330,yes,M,,50,yes
+FM717,Met AirTemp Outside CableBreak — Is indicated when a cable break or an invalid measurement is detected for the outside temperature.,270,330,yes,M,1,0,yes
+FM718,ROTB AccuR Press CableBreak — The alarm is triggered if a cable break or an invalid measurement value is detected at the measurement input for the rotor brake hydraulic accumulator pressure measurement. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM719,GBX OilPress Pmp CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the gearbox oil pressure measurement. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM720,ROTB BrakePressure CableBreak — Is indicated when a cable break or an invalid measurement value is detected in the rotor brake pressure measurement. Brake Prog.: 5,270,600,yes,M,,0,yes
+FM721,GBX OilPress GearInlt CableBreak — Is indicated when a cable break or an invalid measurement value is detected in the gearbox oil pressure measurement at the gearbox inlet. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM722,Vib Y-direction CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the vibration in lateral direction measurement. Brake Prog.: 1,270,330,yes,M,,0,yes
+FM723,Vib Z-direction CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the vibration in the main shaft direction measurement. Brake Prog.: 1,270,330,yes,M,,0,yes
+FM724,GBX BearTemp 2(Rot) CableBreak — Is indicated when in the measurement input a cable break or an invalid measurement value is detected for gearbox bearing temperature 2. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM725,Air Temp Topbox PwrFld CableBreak — Is indicated when in the measurement input a cable break or an invalid measurement value is detected for the power cabinet (in the nacelle) temperature. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM726,Air Temp TransfBox CableBreak — Is indicated when in the measurement input a cable break or an invalid measurement value is detected for the transformer (in the nacelle) temperature. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM727,Wind Speed (primary) CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the wind speed left measurement. Brake Prog.: 0,270,330,no,M,,0,yes
+FM728,Wind Dir (primary) CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the wind direction left measurement. Brake Prog.: 0,270,330,no,M,,0,yes
+FM729,Wind Speed (backup) CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the wind speed right measurement. Brake Prog.: 0,270,330,no,M,,0,yes
+FM730,PN CMS Bus Error — The RFC (NFC470 only) has detected a bus fault in the Profinet module for the Condition Monitoring.,0,600,no,A,0,0,yes
+FM731,PN Measuringbus ComError — The RFC has detected a bus fault in the Profinet module for the measuring bus.,0,300,no,A,0,0,yes
+FM732,IBS Interbus in Stop (Fast Braking) — Is indicated when a bus fault in the interbus occurs in a delta WTG.,270,330,yes,M,2,0,no
+FM733,SSF WTG Noise Disconnect — Is indicated when the turbine is stopped by a time-controlled noise disconnect.,0,300,no,A,1,0,yes
+FM735,Wind Dir (backup) CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the wind direction right measurement. Brake Prog.: 0,270,330,no,M,,0,yes
+FM736,Air Temp BotBox CtrlFld CableBreak — Is indicated when in the temperature measurement input a cable break or an invalid measurement value is detected for the control field power cabinet. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM737,Gen WindingTemp 3 CableBreak — Is indicated when a cable break or an invalid measurement value is detected for the temperature of generator winding 3 in the measurement input. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM738,Rot RPM CableBreak — The alarm is activated when a cable break. or an invalid measurement value is detected at the measurement input for the rotor speed. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM740,PLC SystemFault (SPG02) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,2,50,no
+FM741,IBS peripherals Fault — Is indicated when a periphery error in an interbus node occurs.,0,600,yes,A,2,50,yes
+FM744,IBS BusQuality Warning — Is indicated when numerous defective bus cycles occur in the turbine control field bus.,0,300,no,A,0,0,yes
+FM745,Met AirPress CabBreak — The alarm is triggered when a cable break or an invalid measurement value is detected at the measurement input for the air pressure. Brake Prog.: 0,270,400,no,M,,0,yes
+FM746,Met AirDensity limited — Air density value not plausible. Check air pressure- and temperature sensors.,270,330,no,M,0,0,yes
+FM748,Air Temp MCV PwrFld CableBreak — Is indicated when there is a cable break in the temperature measurement of the power field in the power cabinet Brake Prog.: 5,270,330,yes,M,,0,yes
+FM752,Ctrl PwrSetChangeOften — Implausible power specification.,270,600,yes,M,1,0,yes
+FM753,Air Temp YawBox/Fld L Stop — Limit for yaw box switch cabinet temperature fallen below.,0,330,yes,A,1,0,yes
+FM754,Air Temp YawBox/Fld CableBreak — Cable break in the yaw box temperature measurement,270,330,yes,M,5,0,yes
+FM755,Air Temp YawBox/Fld H Stop — Limit of yaw box switch cabinet temperature exceeded.,0,330,yes,A,1,0,yes
+FM756,Shadow Monitoring System Nok — The wind turbine reports a communication error to the shadow flicker and bat protection module (SFM). Brake Prog.: 0,0,600,no,A,,0,yes
+FM757,Shadow summary alert — The shadow flicker and bat protection module (SFM) reports a collective alarm.,0,600,no,A,1,0,yes
+FM758,Air Temp TowerBase CableBreak — Is indicated when a cable break or an invalid measurement value is detected in the measurement input for the temperature in the tower base. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM759,MVL TransfTemp Area CableBreak — Is indicated when a cable break or an invalid measurement value is detected in the measurement input for the temperature measurement in the transformer room or in the transformer winding. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM760,Yaw HydBrkPress CableBreak — Is indicated when a cable break or an invalid measurement value at the measurement input for the yaw brake pressure is detected. Brake Prog.: 0,270,330,no,M,,50,yes
+FM761,Yaw HydAccuPress CableBreak — Is indicated when a cable break or range violation is detected in the pressure measurement input for the yaw system hydraulic oil accumulator. Brake Prog.: 1,270,400,yes,M,,50,yes
+FM762,Gen RPM Monitor CableBreak — Alarm is generated when a cable break or exceeding of a limit is indicated at the measurement input for the generator speed (by the speed monitor). Brake Prog.: 1,270,600,yes,M,,0,yes
+FM766,Shadow System Nok — The shadow flicker and bat protection module (SFM) reports a communication fault without WTG stop.,0,600,no,A,0,0,yes
+FM767,Shadow alert — The shadow flicker module (SFM) reports a shadow flicker alarm.,0,600,no,A,1,0,yes
+FM768,Shadow bat alert — The bat protection module (SFM) reports a bat alarm.,0,600,no,A,1,0,yes
+FM769,Shadow calender alert — The shadow flicker and bat protection module (SFM) reports a shutdown calendar alarm.,0,600,no,A,1,0,yes
+FM770,Shadow Alarm Substitute Reaction — A shadow replacement reaction is triggered due to a communication disruption to the SWM,0,9,no,A,1,0,yes
+FM771,Shadow Bat Protection Substitute Reaction — A bat replacement reaction is triggered due to a communication fault with the SWM,0,9,no,A,1,0,yes
+FM772,Shadow Bird Protection Substitute Reaction — A bird protection replacement reaction is triggered due to a communication disruption to the SWM,0,9,no,A,1,0,yes
+FM800,Gen CWTemp Diff H Stop — Coolant temperature difference between the supply and return is too high (alarm).,270,330,yes,M,5,0,yes
+FM801,Gen CWTemp Diff H Warn — Coolant temperature difference between the supply and return is too high (warning).,0,300,no,A,0,0,yes
+FM802,Gen Temp Slip Ring Sensor Error — Alarm for monitoring the generator temperature.,270,330,yes,M,5,0,yes
+FM803,Gen Temp Slip Ring Nacelle Diff H Stop — Alarm for monitoring the generator temperature.,270,330,yes,M,5,0,yes
+FM804,Gen Temp Slip Ring Nacelle Diff H Warning — Alarm for monitoring the generator temperature.,0,330,no,A,0,0,yes
+FM805,Gen Winding(PTC) OvrTemp — Is indicated when the temperature switch (PTC) in the generator winding detects overtemperature.,270,330,yes,M,5,0,yes
+FM806,Gen WindingTemp 3 H Stop — Is indicated when the temperature in generator winding 3 has exceeded the maximum permissible value. Brake Prog.: 5,0,330,yes,A,,0,yes
+FM807,Gen WindingTemp 3 H Warn — Is indicated when the temperature in generator winding 3 has exceeded the warning value.,0,300,no,A,0,0,yes
+FM808,Gen WindingTemp 3 L Stop — Is indicated when the temperature in generator winding 3 has fallen below the minimum permissible value. Brake Prog.: 5,0,330,yes,A,,0,yes
+FM809,Gen WindingTemp 3 L Warn — Is indicated when the temperature in generator winding 3 has fallen below the warning value.,0,300,no,A,0,0,yes
+FM810,Gen WindingTemp 1 H Stop — Is indicated when the temperature in generator winding 1 has exceeded the maximum permissible value. Brake Prog.: 5,0,330,yes,A,,0,yes
+FM811,Gen WindingTemp 1 H Warn — Is indicated when the temperature in generator winding 1 has exceeded the warning value.,0,300,no,A,0,0,yes
+FM812,Gen WindingTemp 1 L Stop — Is indicated when the temperature in generator winding 1 has fallen below the minimum permissible value. Brake Prog.: 5,0,330,yes,A,,0,yes
+FM813,Gen WindingTemp 1 L Warn — Is indicated when the temperature in generator winding 1 has fallen below the warning value.,0,300,no,A,0,0,yes
+FM814,Gen WindingTemp 2 H Stop — Is indicated when the temperature in generator winding 2 has exceeded the maximum permissible value. Brake Prog.: 5,0,330,yes,A,,0,yes
+FM815,Gen WindingTemp 2 H Warn — Is indicated when the temperature in generator winding 2 has exceeded the warning value.,0,300,no,A,0,0,yes
+FM816,Gen WindingTemp 2 L Stop — Is indicated when the temperature in generator winding 2 has fallen below the minimum permissible value. Brake Prog.: 5,0,330,yes,A,,0,yes
+FM817,Gen WindingTemp 2 L Warn — Is indicated when the temperature in generator winding 2 has fallen below the warning value.,0,300,no,A,0,0,yes
+FM818,Air Temp Topbox PwrFld H Stop — Is indicated when the temperature in the power cabinet (in the nacelle) has fallen below a given limit.,0,330,yes,A,1,0,yes
+FM819,Air Temp TransfBox H Stop — Is indicated when the temperature in the transformer cabinet (in the nacelle) has fallen below a limit.,0,330,yes,A,1,0,yes
+FM820,Gen CWTemp GenOutlt H Stop — Is indicated when the generator coolant temperature at the generator outlet has exceeded the cut-out value. Brake Prog.: 5,0,330,yes,A,,0,yes
+FM821,Gen CWTemp GenOutlt H Warn — Is indicated when the generator coolant temperature at the generator outlet has exceeded the warning value. Brake Prog.: 0,0,300,no,A,,0,yes
+FM824,Gen BearTemp (D-end) H Stop — Is indicated when the temperature of the generator bearing (D-end) has exceeded the switch-off value.,0,330,yes,A,1,0,yes
+FM825,Gen BearTemp (D-end) H Warn — Is indicated when the temperature of the generator bearing (D-end) has exceeded the warning value.,0,300,no,A,0,0,yes
+FM826,Gen BearTemp (N-end) H Stop — Is indicated when the temperature of the generator bearing (N-end) has exceeded the switch-off value.,0,330,yes,A,1,0,yes
+FM827,Gen BearTemp (N-end) H Warn — Is indicated when the temperature of the generator bearing (N-end) has exceeded the warning value.,0,300,no,A,0,0,yes
+FM828,GBX OilTemp GearInlt H Stop — Is indicated when the gearbox oil temperature at the gearbox inlet has exceeded the cut-out value.,270,330,yes,M,5,0,yes
+FM829,GBX OilTemp GearInlt H Warn — Is indicated when the gearbox oil temperature at the gearbox inlet has exceeded the warning value.,0,300,no,A,0,0,yes
+FM830,GBX OilTemp Sump H Stop — Is indicated when the gearbox oil temperature in the gearbox sump has exceeded the cut-out value.,270,330,yes,M,5,0,yes
+FM831,GBX OilTemp Sump H Warn — Is indicated when the gearbox oil temperature in the gearbox sump has exceeded the warning value.,0,300,no,A,0,0,yes
+FM832,GBX OilTemp Sump L Stop — Is indicated when the gearbox oil temperature in the gearbox sump has fallen below the cut-out value.,0,330,yes,A,5,0,yes
+FM833,GBX OilTemp Sump L Warn — Is indicated when the gearbox oil temperature in the gearbox sump has fallen below the warning value.,0,300,no,A,0,0,yes
+FM834,"GBX BearTemp 1(Gen) H Stop — Is indicated when the temperature of generator bearing 1 has fallen below the cut-out value. Both drive shaft bearings are monitored, the bearing nearest to the generator is designated bearing 1. Brake Prog.: 1",270,330,yes,M,,0,yes
+FM835,GBX BearTemp 1(Gen) H Warn — Is indicated when the temperature of gearbox bearing 1 has exceeded the warning value.,0,300,no,A,0,0,yes
+FM836,Air Temp TowerBase H Warn — Is indicated when the temperature in the tower base has exceeded the warning value,0,300,no,A,0,0,yes
+FM837,Air Temp TowerBase H Stop — Is indicated when the temperature in the tower base has exceeded the cut-out value.,270,330,yes,M,1,0,yes
+FM840,DTR RotBearTemp 1 H Stop — Is indicated when the temperature in the main bearing has exceeded the cut-out value.,270,330,yes,M,1,0,yes
+FM841,DTR RotBearTemp 1 H Warn — Is indicated when the temperature in the main bearing has exceeded the warning value.,0,300,no,A,0,0,yes
+FM844,"GBX BearTemp 2(Rot) H Stop — Is indicated when the temperature of generator bearing 2 has fallen below the cut-out value. Both drive shaft bearings are monitored, the bearing which is further in the gearbox is designated bearing 2 Brake Prog.: 1 (in the direction of the rotor). Yaw Prog.: 0",270,330,yes,M,,,yes
+FM845,GBX BearTemp 2(Rot) H Warn — Is indicated when the temperature of gearbox bearing 2 has exceeded the warning value.,0,300,no,A,0,0,yes
+FM846,GBX BearTemp L Stop — At least one of the two gear bearing temperatures has fallen below the shut-down value.,0,330,yes,A,5,0,yes
+FM850,Hyd OilTemp H Stop — Is indicated when the temperature of the hydraulic oil has exceeded the cut-out value.,270,330,yes,M,1,50,yes
+FM851,Hyd OilTemp H Warn — Is indicated when the temperature of the hydraulic oil has exceeded the warning value.,0,300,no,A,0,0,yes
+FM852,Hyd OilTemp L Stop — Is indicated when the temperature of the hydraulic oil is too low for turbine operation.,0,330,yes,A,1,50,yes
+FM853,Hyd OilTemp L Warn — Is indicated when the temperature of the hydraulic oil has fallen below the warning value.,0,300,no,A,0,0,yes
+FM854,MVL TransfTemp Area H Stop — Is indicated when the temperature in the transformer room or transformer winding has exceeded the cut-out value. Brake Prog.: 1,270,330,yes,M,,0,no
+FM855,MVL TransfTemp Area H Warn — Is indicated when the temperature in the transformer room or transformer winding has exceeded the warning value. Brake Prog.: 0,0,300,no,A,,0,yes
+FM856,MVL TransfTemp Coil L1-L3 H Warn — Is reported if the transformer winding temperature has exceeded a specific value. The turbine output is limited to P99.11. Brake Prog.: 0,0,330,no,A,,0,no
+FM857,MVL TransfTemp Coil L1-L3 H Stop — Is reported if the transformer winding temperature has exceeded a specific value. The WTG is soft braked. Brake Prog.: 1,270,330,yes,M,,0,no
+FM858,MVL TransfTemp Coil L1-L3 HH Stop — Is reported if the transformer winding temperature has exceeded a specific value. The WTG is fast braked. Brake Prog.: 2,270,330,yes,M,,0,no
+FM860,Met AirTemp Outside H Stop — Is indicated when the outside temperature (air temperature outside the nacelle) is above the permissible operating value. Brake Prog.: 1,0,330,no,A,,0,yes
+FM861,Met AirTemp Outside L Stop — Is indicated when the outside temperature (air temperature outside the nacelle) is below the permissible operating value. Brake Prog.: 5,0,330,no,A,,50,yes
+FM862,Air Temp Nacelle H Stop — Is indicated when the temperature in the nacelle exceeds the cut-out value.,270,330,yes,M,1,50,yes
+FM863,Air Temp Nacelle H Warn — Is indicated when the temperature in the nacelle exceeds the warning value.,0,300,no,A,0,0,yes
+FM865,Air Temp BotBox CtrlFld L Stop — Is indicated when the temperature in the power cabinet has fallen below the cut-out value.,0,330,yes,A,1,0,yes
+FM866,Air Temp Topbox H Stop — Is indicated when the temperature in the control cabinet (in the nacelle) has exceeded the cut-out value. Brake Prog.: 1,0,330,yes,A,,0,yes
+FM867,Air Temp Topbox L Stop — Is indicated when the temperature in the control cabinet (in the nacelle) has fallen below the cut-out value. Brake Prog.: 1,0,330,yes,A,,0,yes
+FM868,Air Temp MCV PwrFld H Warn — Is indicated when the temperature in the power cabinet power field has exceeded the warning value.,0,300,no,A,0,0,yes
+FM869,Air Temp MCV PwrFld H Stop — Is indicated when the temperature in the power cabinet power field has exceeded the cut-out value.,270,330,yes,M,1,0,yes
+FM870,Air Temp BotBox CtrlFld H Warn — Is indicated when the temperature in the power cabinet controller field has exceeded the warning value. Brake Prog.: 0,0,300,no,A,,0,yes
+FM871,Air Temp BotBox CtrlFld H Stop — Is indicated when the temperature in the power cabinet controller field has exceeded the cut-out value.,0,330,yes,A,1,0,yes
+FM872,Air Temp BotBox CtrlFld2 CableBreak — Alarm is generated when a cable break or inadmissible measurement value is detected for the second temperature measurement in the Bottombox. Brake Prog.: 5,270,330,yes,M,,0,yes
+FM873,MVL TransfTemp Coil L1 CableBreak — Is reported if a cable break or an invalid measured value is detected at the measurement input of the MV transformer winding temperature phase L1. Brake Prog.: 5,270,330,yes,M(A),,0,no
+FM874,MVL TransfTemp Coil L2 CableBreak — Is reported if a cable break or an invalid measured value is detected at the measurement input of the MV transformer winding temperature phase L2. Brake Prog.: 5,270,330,yes,M(A),,0,no
+FM875,MVL TransfTemp Coil L3 CableBreak — Is reported if a cable break or an invalid measured value is detected at the measurement input of the MV transformer winding temperature phase L3. Brake Prog.: 5,270,330,yes,M(A),,0,no
+FM876,MVL Transformator Fan Fuse Trip — Is reported if the overcurrent release of the transformer fan has triggered.,270,330,no,M,0,0,yes
+FM877,MVL PTC TransfCoil Monitoring — Is reported if the PTC transformer core monitor has triggered.,270,330,yes,M,2,0,no
+FM900,Met Ice alarm local reset req. — An ice alarm is ended and can only be reset locally.,0,400,no,A,0,0,yes
+FM901,Met Ice alarm remote reset req. — An ice alarm has terminated and can be reset remotely and locally.,0,400,no,A,0,0,yes
+FM918,Met Labko Ice alarm without BP — Labko ice sensor indicates ice formation. The WTG is not stopped (Warning).,0,400,no,A,0,0,yes
+FM919,Met Ice alarm park position active — Is indicated when the nacelle moved to a fixed parking position due to an ice alarm.,0,600,yes,A,1,29,yes
+FM920,Met Labko Ice alarm with BP — Labko ice sensor indicates severe ice formation. The WTG is stopped (Alarm).,270,400,no,M,1,0,yes
+FM921,Met Labko Ice alarm finished — The Labko ice sensor indicates no ice detection and the ice alarm FM920 can be reset.,0,600,no,M,0,0,yes
+FM922,Fpr BotBox Fire PreAlarm — Fire detection system by Minimax (K08 delta & K08 gamma from the middle of 2016): The alarm is generated if at least one fire detector of the optional fire detection system has triggered in one of the Brake Prog.: 2 monitoring ranges. Yaw Prog.: 29,269,600,yes,ML,,,no
+FM923,Fpr BotBox Fire MainAlarm — Fire detection system by Minimax (K08 delta & K08 gamma from the middle of 2016): The alarm is generated if at least two fire detectors of the smoke intake system for monitoring the Brake Prog.: 2 main converter and Bottombox have triggered. Yaw Prog.: 29,269,600,yes,ML,,,no
+FM924,"Fpr BotBox FailWarn — The alarm is generated when the optional fire alarm system (sensors, control center, extinguishing system if installed) in the tower indicates a fault. Brake Prog.: 0",0,600,no,A,,0,yes
+FM925,"Fpr BotBox FailAlarm — The alarm is generated when the fire alarm system (sensors, control center, extinguishing system if installed) in the tower indicates a fault for a period of P97.01 s. Brake Prog.: 1",270,600,yes,M,,0,no
+FM926,"Fpr BotBox SysDisabled WTG Auto BP1 — The alarm is generated if the optional central alarm system in the tower is in maintenance mode and the turbine is in the ""automatic"" operating mode for Delta or no Service or NoRemoteAccess switch Brake Prog.: 1 has been inserted for Gamma. The fire detection and extinguishing system is blocked in this status. Yaw Prog.: 0 The WTG is not to start.",0,330,yes,A,,,no
+FM928,"Fpr BotBox SysDisabled WTG Local BP0 — The alarm is generated if the optional central alarm system in the tower is in maintenance mode and the turbine is in the ""local"" WTG operating mode or ""Stopped and locked"" for Delta or the Service or Brake Prog.: 0 NoRemoteAccess switch has been inserted for Gamma. The fire detection and extinguishing system Yaw Prog.: 0 is blocked in this status.",0,330,no,A,,,no
+FM929,Fpr BotBox BatLow Warning — Only for optional fire detection/extinguishing system in generation K08delta; The alarm is generated if the batteries for the emergency power supply of the central fire alarm Brake Prog.: 0 system in the tower falls below a defined minimum value. Yaw Prog.: 0,0,600,no,A,,,yes
+FM932,Fpr TopBox Fire PreAlarm — Fire detection system by Minimax (K08 delta & K08 gamma from the middle of 2016): The alarm is generated if at least one fire detector of the optional fire detection system has triggered Brake Prog.: 2 in one of the monitoring ranges. Yaw Prog.: 29,270,600,yes,ML,,,no
+FM933,Fpr TopBox Fire MainAlarm — Fire detection system by Minimax (K08 delta & K08 gamma from the middle of 2016): The alarm is generated when a minimum of two fire alarms in a monitoring area of the fire alarm- / fire Brake Prog.: 2 extinguishing system have triggered. Yaw Prog.: 29,270,600,yes,ML,,,no
+FM934,"Fpr Topbox FailWarn — The alarm is generated when the optional fire alarm system (sensors, control center, extinguishing system if installed) indicates a fault in the machine house. Brake Prog.: 0",0,600,no,A,,0,yes
+FM935,"Fpr Topbox FailAlarm — The alarm is generated when the fire alarm system (sensors, control center, extinguishing system if installed) indicates a fire in the machine house for P97.01 s. Brake Prog.: 1",270,600,yes,M,,0,yes
+FM936,"Fpr Topbox SysDisabled WTG Auto BP1 — The alarm is generated if the optional central alarm system in the nacelle is in maintenance mode and the turbine is in the ""automatic"" operating mode for Delta or no Service or NoRemoteAccess switch Brake Prog.: 1 has been inserted for Gamma. The fire detection and extinguishing system is blocked in this status. Yaw Prog.: 0 The WTG is not to start.",0,330,yes,A,,,no
+FM938,"Fpr TopBox SysDisabled WTG Local BP0 — The alarm is generated if the optional central alarm system in the nacelle is in maintenance mode and the turbine is in the ""local"" WTG operating mode or ""Stopped and locked"" for Delta or the Service or Brake Prog.: 0 NoRemoteAccess switch has been inserted for Gamma. The fire detection and extinguishing system Yaw Prog.: 0 is blocked in this status.",0,330,no,A,,,no
+FM939,Fpr TopBox BatLow Warning — Only for optional fire detection/extinguishing system in generation K08delta; The alarm is generated if the batteries for the emergency power supply of the central fire alarm Brake Prog.: 0 system in the nacelle falls below a defined minimum value. Yaw Prog.: 0,0,600,no,A,,,yes
+FM950,Ext Tower CustomerError 1 — This warning is indicated due to an external customer specific signal. A unit is situated before the digital input ST275 (e.g. shadow flicker module). The warning is triggered if the input level is LOW. Brake Prog.: 0,0,270,no,A,,0,yes
+FM951,Ext Tower CustomerError 2 — This warning is indicated due to an external customer specific signal. A unit is situated before the digital input ST276 (e.g. shadow flicker module). The warning is triggered if the input level is LOW. Brake Prog.: 0,0,270,no,A,,0,yes
+FM952,SSF WTG SectorCutOut — Is indicated when the wind direction is within a parametered sector and sector cut out is activated.,0,300,no,A,1,0,yes
+FM953,Ext Tower CustomerError 3 — This alarm is indicated due to an external customer specific signal. A unit is situated before the digital input ST235 (e.g. shadow flicker module). The alarm is triggered and the turbine will be stopped if the Brake Prog.: 1 input level is LOW. Yaw Prog.: 0,0,270,no,A,,,yes
+FM954,Ext Tower CustomerError 4 — This alarm is indicated due to an external customer specific signal. A unit is situated before the digital input ST236 (e.g. shadow flicker module). The alarm is triggered and the turbine will be stopped if the Brake Prog.: 1 input level is LOW. Yaw Prog.: 0,0,270,no,A,,,yes
+FM955,Ctrl StallWindSpdAnemEstDiffOften — ST1135 often.,270,600,no,M,1,0,yes
+FM956,SSF Sector Avoidance — Is indicated if the sector avoidance function has been triggered.,0,300,no,A,0,10,yes
+FM960,Ext Nacelle Customer Error 1 — This warning is indicated due to an external customer specific signal. A unit is situated before the digital input ST1390 (e.g. shadow flicker module). The warning is triggered if the input level is LOW. Brake Prog.: 0,0,270,no,A,,0,yes
+FM961,Ext Nacelle CustomerError 2 — This warning is indicated due to an external customer specific signal. A unit is situated before the digital input ST1391 (e.g. shadow flicker module). The warning is triggered if the input level is LOW. Brake Prog.: 0,0,270,no,A,,0,yes
+FM962,Ext Nacelle CustomerError 3 — This alarm is indicated due to an external customer specific signal. A unit is situated before the digital input ST1392 (e.g. shadow flicker module). The alarm is triggered and the turbine will be stopped if Brake Prog.: 1 the input level is LOW. Yaw Prog.: 0,0,270,no,A,,,yes
+FM963,Ext Nacelle CustomerError 4 — This alarm is indicated due to an external customer specific signal. A unit is situated before the digital input ST1393 (e.g. shadow flicker module). The alarm is triggered and the turbine will be stopped if Brake Prog.: 1 the input level is LOW. Yaw Prog.: 0,0,270,no,A,,,yes
+FM970,Ext Hub Customer Error 1 — This warning is indicated due to an external customer specific signal. A unit is situated before the digital input ST1394 (e.g. shadow flicker module). The warning is triggered if the input level is LOW. Brake Prog.: 0,0,270,no,A,,0,yes
+FM971,Ext Hub CustomerError 2 — This warning is indicated due to an external customer specific signal. A unit is situated before the digital input ST1395 (e.g. shadow flicker module). The warning is triggered if the input level is LOW. Brake Prog.: 1,0,270,no,A,,0,yes
+FM972,Ext Hub CustomerError 3 — This alarm is indicated due to an external customer specific signal. A unit is situated before the digital input ST1396 (e.g. shadow flicker module). The alarm is triggered and the turbine will be stopped if Brake Prog.: 2 the input level is LOW. Yaw Prog.: 0,0,270,no,M,,,yes
+FM999,Pit ALU race pause time H warn — The pause counter of the ALU pitch lubrication pump for the raceways has exceeded the maximum limit value. Brake Prog.: 0,0,330,no,A,,0,yes
+FM1000,Wind SpeedH/StormDisconnect — Is indicated when the wind speed has exceeded a limit. The turbine is then stopped.,0,600,no,A,1,0,yes
+FM1001,Wind SpeedH/StormDisconnect Peak — Is indicated when the wind speed has exceeded the upper limit. The turbine is then stopped.,0,600,no,A,1,0,yes
+FM1002,Wind Speed LowStartCondition — Is indicated when the turbine cannot start or produce due to lack of wind,0,600,no,A,5,0,yes
+FM1003,Yaw CableRewind — Is indicated if the tower cable must be automatically untwisted after exceeding the limit value for nacelle rotations. Brake Prog.: 1,0,600,no,A,,28,yes
+FM1004,"CWE WTG SwitchRight canceled — Is indicated when the WFM/CWE generates the command ""switching rights canceled"".",0,600,no,A,5,0,yes
+FM1005,Yaw Wind Speed LowYawEnable — Is reported if the lower limit value of the wind speed for yaw operation has been fallen below.,0,600,no,A,0,20,yes
+FM1006,HMI Yaw ManualControl — Is indicated when the yaw system is in manual control mode.,0,600,no,A,0,30,yes
+FM1007,"OpC WTG SwitchRight blocked(visu) — The turbine is in ""Waiting for start conditions"" mode and the switch rights are blocked on the visualization. This prevents the turbine from starting. Brake Prog.: 0",0,600,yes,A,,0,no
+FM1008,Pit SafetyTest — The turbine carries out a safety test.,0,600,no,A,1,0,yes
+FM1009,Pit Manual mode — The pitch manual mode is active.,0,600,no,A,0,0,no
+FM1010,Pit 1 Firmware invalid — Reported if the firmware of the pitch converter falls below a parametrable value.,0,600,yes,A,2,0,yes
+FM1011,Pit 2 Firmware invalid — Refer to FM1010,0,600,yes,A,2,0,yes
+FM1012,Pit 3 Firmware invalid — Refer to FM1010,0,600,yes,A,2,0,yes
+FM1013,"Ext WTG SwitchRight blocked(DI) — WTG is in ""Waiting for start conditions"" status and digital input ST267 ""WTG SwitchRight Enabl(DI)"" is low. This prevents the turbine from starting. Brake Prog.: 0",0,600,no,A,,0,no
+FM1014,"CWE WTG waits for SwitchRight from CWE — The turbine is in ""Waiting for start conditions"" mode and the WFM/CWE does not yet generate the ""switching rights enabled"" command. The turbine is prevented from starting due to a staggered start Brake Prog.: 0 being required in order to fulfill the grid code requirements. Yaw Prog.: 0",0,600,no,A,,,no
+FM1018,Pit 1 DC Link impl. Main voltage — DC link voltage is implausibly too high,270,600,yes,M,1,0,yes
+FM1019,Pit 2 DC Link impl. Main voltage — Refer to FM1018,270,600,yes,M,1,0,yes
+FM1020,Pit 3 DC Link impl. Main voltage — Refer to FM1018,270,600,yes,M,1,0,yes
+FM1021,Pit PwrSupply Voltage H Stop — The grid voltage is implausibly too high,0,600,no,A,1,0,yes
+FM1022,Pit 1 Accu voltage H Stop — The battery voltage in the battery box is too high.,270,600,yes,M,1,0,yes
+FM1023,Pit 2 Accu voltage H Stop — Refer to FM1022,270,600,yes,M,1,0,yes
+FM1024,Pit 3 Accu voltage H Stop — Refer to FM1022,270,600,yes,M,1,0,yes
+FM1025,Pit 1 Accu voltage L Stop — The battery voltage in the battery box is too low.,270,600,yes,M,1,0,yes
+FM1026,Pit 2 Accu voltage L Stop — Refer to FM1025,270,600,yes,M,1,0,yes
+FM1027,Pit 3 Accu voltage L Stop — Refer to FM1025,270,600,yes,M,1,0,yes
+FM1028,Pit 1 Pos Dev after closed Brake — Is indicated when the pitch angle of axis 1 changes by more than 0.8° following the message that the brake is closed. Brake Prog.: 0,270,400,no,M,,0,yes
+FM1029,Pit 2 Pos Dev after closed Brake — Is indicated when the pitch angle of axis 2 changes by more than 0.8° following the message that the brake is closed. Brake Prog.: 0,270,400,no,M,,0,yes
+FM1030,Pit 3 Pos Dev after closed Brake — Is indicated when the pitch angle of axis 3 changes by more than 0.8° following the message that the brake is closed. Brake Prog.: 0,270,400,no,M,,0,yes
+FM1031,"Pit 1 firmware checksum target-actual variation — Reported if the read checksum of the PVR firmware version does not match the specification (target checksum, encrypted). Brake Prog.: 1",0,600,no,A,,0,yes
+FM1032,Pit 2 firmware checksum target-actual variation — refer to FM1031,0,600,no,A,1,0,yes
+FM1033,Pit 3 firmware checksum target-actual variation — refer to FM1031,0,600,no,A,1,0,yes
+FM1034,"Pit Pos Dev after closed Brake Multiple — Is indicated when the number of alarms ""Position deviation with closed brake"" reaches 3 within 24h (for any axis). Brake Prog.: 1",270,400,no,ML,,0,yes
+FM1035,Pit 1 Max Count Reboot PUR — Reported if the number of reboot procedures incl. offset exceeds a parameterizable value.,0,600,no,A,0,0,yes
+FM1036,Pit 2 Max Count Reboot PUR — Reported if the number of reboot procedures incl. offset exceeds a parameterizable value.,0,600,no,A,0,0,yes
+FM1037,Pit 3 Max Count Reboot PUR — Reported if the number of reboot procedures incl. offset exceeds a parameterizable value.,0,600,no,A,0,0,yes
+FM1038,Pit 1 accu overvoltage — Reported if an overvoltage of the battery at axis 1 is detected.,270,600,no,M,2,0,yes
+FM1039,Pit 2 accu overvoltage — Reported if an overvoltage of the battery at axis 2 is detected.,270,600,no,M,2,0,yes
+FM1040,Pit 3 accu overvoltage — Reported if an overvoltage of the battery at axis 3 is detected.,270,600,no,M,2,0,yes
+FM1050,Pit Operator mode — Pitch local mode is activated.,0,600,yes,A,1,0,yes
+FM1051,Pit Operator mode Override — Override is activated during pitch local mode.,0,600,no,A,0,0,yes
+FM1060,Pit 1 Local mode — Pitch service mode is activated.,0,600,yes,A,2,0,yes
+FM1061,Pit 2 Local mode — Refer to FM1060,0,600,yes,A,2,0,yes
+FM1062,Pit 3 Local mode — Refer to FM1060,0,600,yes,A,2,0,yes
+FM1063,Pit Local mode implausible — Set-up mode is activated at more than one pitch converter.,270,600,yes,M,2,0,yes
+FM1082,Pit 1 Conv HW Fault — The pitch converter indicates an internal HW fault und is a fault status.,270,600,yes,M,2,0,yes
+FM1083,Pit 2 Conv HW Fault — Refer to FM1082,270,600,yes,M,2,0,yes
+FM1084,Pit 3 Conv HW Fault — Refer to FM1082,270,600,yes,M,2,0,yes
+FM1085,Pit 1 Conv SW Fault — The pitch converter indicates an internal SW fault und is a fault status.,270,600,yes,M,2,0,yes
+FM1086,Pit 2 Conv SW Fault — Refer to FM1085,270,600,yes,M,2,0,yes
+FM1087,Pit 3 Conv SW Fault — Refer to FM1085,270,600,yes,M,2,0,yes
+FM1088,Pit 1 MotBrk Fault — The pitch motor brake has a fault.,270,600,yes,M,2,0,yes
+FM1089,Pit 2 MotBrk Fault — Refer to FM1088,270,600,yes,M,2,0,yes
+FM1090,Pit 3 MotBrk Fault — Refer to FM1088,270,600,yes,M,2,0,yes
+FM1091,Pit 1 MotBrk Chopper Fault — The chopper of the pitch motor brake has a fault.,270,600,yes,M,2,0,yes
+FM1092,Pit 2 MotBrk Chopper Fault — Refer to FM1091,270,600,yes,M,2,0,yes
+FM1093,Pit 3 MotBrk Chopper Fault — Refer to FM1091,270,600,yes,M,2,0,yes
+FM1094,Pit 1 Charger internal fault — The charger has an internal fault.,270,600,yes,M,2,0,yes
+FM1095,Pit 2 Charger internal fault — Refer to FM1094,270,600,yes,M,2,0,yes
+FM1096,Pit 3 Charger internal fault — Refer to FM1094,270,600,yes,M,2,0,yes
+FM1097,Pit 1 Motor Temp L Stop — Pitch motor monitoring for undertemperature,0,400,no,A,1,0,yes
+FM1098,Pit 2 Motor Temp L Stop — Pitch motor monitoring for undertemperature,0,400,no,A,1,0,yes
+FM1099,Pit 3 Motor Temp L Stop — Refer to FM1097,0,400,no,A,1,0,yes
+FM1100,Pit 1 SafetyRunProf <-> WTG-Type — The emergency run profile does not match the WTG type,270,600,yes,M,1,0,yes
+FM1101,Pit 2 SafetyRunProf <-> WTG-Type — Refer to FM1100,270,600,yes,M,1,0,yes
+FM1102,Pit 3 SafetyRunProf <-> WTG-Type — Refer to FM1100,270,600,yes,M,1,0,yes
+FM1103,"Pit 1 parameter checksum target-actual variation — Reported if the read checksum of the PCV parameter version does not match the specification (target checksum, encrypted). Brake Prog.: 1",0,600,no,A,,0,yes
+FM1104,"Pit 2 parameter checksum target-actual variation — Reported if the read checksum of the PCV parameter version does not match the specification (target checksum, encrypted). Brake Prog.: 1",0,600,no,A,,0,yes
+FM1105,"Pit 3 parameter checksum target-actual variation — Reported if the read checksum of the PCV parameter version does not match the specification (target checksum, encrypted). Brake Prog.: 1",0,600,no,A,,0,yes
+FM1106,Pit Grid disconnect due motionrun — Movement has been triggered.,0,600,no,A,0,0,yes
+FM1107,Pit 1 DC link Overcurrent — The pitch converter intermediate circuit current is too high.,270,600,yes,M,2,0,yes
+FM1108,Pit 2 DC Link Overcurrent — Refer to FM1107,270,600,yes,M,2,0,yes
+FM1109,Pit 3 DC link Overcurrent — Refer to FM1107,270,600,yes,M,2,0,yes
+FM1110,Pit 1 DC link voltage fault — The pitch converter intermediate circuit voltage is too high or too low.,270,600,yes,M(A),2,0,yes
+FM1111,Pit 2 DC link voltage fault — Refer to FM1110,270,600,yes,M(A),2,0,yes
+FM1112,Pit 3 DC link Voltage fault — Refer to FM1110,270,600,yes,M(A),2,0,yes
+FM1113,Pit 1 PwrSupply L Stop — The power supply for pitch converter is faulty.,270,600,yes,M(A),2,0,yes
+FM1114,Pit 2 PwrSupply L Stop — Refer to FM1113,270,600,yes,M(A),2,0,yes
+FM1115,Pit 3 PwrSupply L Stop — Refer to FM1113,270,600,yes,M(A),2,0,yes
+FM1116,Pit 1 Motor Encoder fault — Pitch angle motor sensor has a fault.,270,600,yes,M,2,0,yes
+FM1117,Pit 2 Motor Encoder fault — Refer to FM1116,270,600,yes,M,2,0,yes
+FM1118,Pit 3 Motor Encoder fault — Refer to FM1116,270,600,yes,M,2,0,yes
+FM1120,Pit 1 Conv Temp Stop — Pitch converter output stage temperature is too high or too low.,0,600,yes,A,2,0,yes
+FM1121,Pit 2 Conv Temp Stop — Refer to FM1120,0,600,yes,A,2,0,yes
+FM1122,Pit 3 Conv Temp Stop — Refer to FM1120,0,600,yes,A,2,0,yes
+FM1123,Pit 1 Motor Temp H Stop — Pitch motor temperature too high.,270,600,yes,M,2,0,yes
+FM1124,Pit 2 Motor Temp H Stop (PTC) — Refer to FM1123,270,600,yes,M,2,0,yes
+FM1125,Pit 3 Motor Temp H Stop (PTC) — Refer to FM1123,270,600,yes,M,2,0,yes
+FM1126,Pit 1 DC link voltage L Stop — The direct current link voltage in the pitch converter is too low.,270,600,yes,M(A),2,0,yes
+FM1127,Pit 2 DC link voltage L Stop — Refer to FM1126,270,600,yes,M(A),2,0,yes
+FM1128,Pit 3 DC link voltage L Stop — Refer to FM1126,270,600,yes,M(A),2,0,yes
+FM1129,Pit 1 EndSwitch low at 90° — No 90° limit-switch feedback in pitch test 1.,270,600,yes,M,1,0,yes
+FM1130,Pit 2 EndSwitch low at 90° — Refer to FM1129,270,600,yes,M,1,0,yes
+FM1131,Pit 3 EndSwitch low at 90° — Refer to FM1129,270,600,yes,M,1,0,yes
+FM1132,Pit 1 EndSwitch high at 87° — 90° limit-switch return signal in pitch test 2.,270,600,yes,M,1,0,yes
+FM1133,Pit 2 EndSwitch high at 87° — Refer to FM1132,270,600,yes,M,1,0,yes
+FM1134,Pit 3 EndSwitch high at 87° — Refer to FM1132,270,600,yes,M,1,0,yes
+FM1135,Pit 1 SafetyRunTest too long — No 90° limit-switch return signal in emergency run test.,270,600,yes,M,1,0,yes
+FM1136,Pit 2 SafetyRunTest too long — Refer to FM1135,270,600,yes,M,1,0,yes
+FM1137,Pit 3 SafetyRunTest too long — Refer to FM1135,270,600,yes,M,1,0,yes
+FM1138,Pit 1 Conv Offset error — Referencing of the zero point offset was unsuccessful in the pitch converter.,270,600,no,M,0,0,yes
+FM1139,Pit 2 Conv Offset error — Refer to FM1138,270,600,no,M,0,0,yes
+FM1140,Pit 3 Conv Offset error — Refer to FM1138,270,600,no,M,0,0,yes
+FM1141,Pit 1 Pitchangle Diff Set-RedAct — Monitoring of pitch angle setpoint against blade encoder actual value,270,600,yes,M,2,0,yes
+FM1142,Pit 2 Pitchangle Diff Set-RedAct — Refer to FM1141,270,600,yes,M,2,0,yes
+FM1143,Pit 3 Pitchangle Diff Set-RedAct — Refer to FM1141,270,600,yes,M,2,0,yes
+FM1147,Pit ALU ContainerLevel L Warn — Is reported if the reservoir of the lubrication system for the lubrication of the gearing or the tracks of the pitch ring connections only has a low filling level left. Brake Prog.: 0,270,300,no,M,,0,yes
+FM1148,Pit ALU Pmp Fault — Is reported if the lubrication system for lubricating the gearing and tracks of the pitch ring connections does provide correct feedback for the operating state (on/off). Brake Prog.: 0,270,300,no,M,,0,yes
+FM1149,Pit ALU pause time H warn — The pause counter of the ALU pitch lubrication pump has exceeded the maximum limit value.,0,330,no,A,0,0,yes
+FM1150,Pit 1 Accu Temp Error — The battery temperature is outside the permitted range.,0,600,yes,A,1,0,yes
+FM1151,Pit 2 Accu Temp Error — Refer to FM1150,0,600,yes,A,1,0,yes
+FM1152,Pit 3 Accu Temp Error — Refer to FM1150,0,600,yes,A,1,0,yes
+FM1153,Pit 1 Pitchangle Diff Set-Act — Monitoring of pitch angle setpoint against motor encoder actual value,270,600,yes,M,2,0,yes
+FM1154,Pit 2 Pitchangle Diff Set-Act — Refer to FM1153,270,600,yes,M,2,0,yes
+FM1155,Pit 3 Pitchangle Diff Set-Act — Refer to FM1153,270,600,yes,M,2,0,yes
+FM1156,Pit 1 Pitchangle Diff Act-RedAct — Monitoring of motor encoder actual value against blade encoder actual value,270,600,yes,M,2,0,yes
+FM1157,Pit 2 Pitchangle Diff Act-RedAct — Refer to FM1156,270,600,yes,M,2,0,yes
+FM1158,Pit 3 Pitchangle Diff Act-RedAct — Refer to FM1156,270,600,yes,M,2,0,yes
+FM1160,Pit 1 Charger fault — Battery charger is defective.,270,600,yes,M(A),1,0,yes
+FM1161,Pit 2 Charger fault — Refer to FM1160,270,600,yes,M(A),1,0,yes
+FM1162,Pit 3 Charger fault — Refer to FM1160,270,600,yes,M(A),1,0,yes
+FM1163,Pit 1 DC link voltage H Stop — The pitch converter intermediate circuit voltage is too high.,270,600,yes,M,1,0,yes
+FM1164,Pit 2 DC link voltage H Stop — Refer to FM1163,270,600,yes,M,1,0,yes
+FM1165,Pit 3 DC link voltage H Stop — Refer to FM1163,270,600,yes,M,1,0,yes
+FM1166,Pit 1 Accu fault — The battery is faulty,270,600,yes,M(A),1,0,yes
+FM1167,Pit 2 Accu fault — Refer to FM1166,270,600,yes,M(A),1,0,yes
+FM1168,Pit 3 Accu fault — Refer to FM1166,270,600,yes,M(A),1,0,yes
+FM1169,Pit 1 PwrSupply 24V Fault — 24V power supply in the hub indicates fault.,270,600,yes,M,1,0,yes
+FM1170,Pit 2 PwrSupply 24V Fault — Refer to FM1169,270,600,yes,M,1,0,yes
+FM1171,Pit 3 PwrSupply 24V Fault — Refer to FM1169,270,600,yes,M,1,0,yes
+FM1172,Pit PwrSupply Voltage Warn — 400V Undervoltage detected in the hub.,0,300,no,A,0,0,yes
+FM1173,Pit 1 Accu Contactor Error — The battery contactor cut-out is defective,270,600,yes,M(A),1,0,yes
+FM1174,Pit 2 Accu Contactor Error — Refer to FM1173,270,600,yes,M(A),1,0,yes
+FM1175,Pit 3 Accu Contactor Error — Refer to FM1173,270,600,yes,M(A),1,0,yes
+FM1182,Pit 1 Accu not connected — Batteries are not connected.,270,600,yes,M,1,0,yes
+FM1183,Pit 2 Accu not connected — Refer to FM1182,270,600,yes,M,1,0,yes
+FM1184,Pit 3 Accu not connected — Refer to FM1182,270,600,yes,M,1,0,yes
+FM1185,Pit 1 Box Temp H Stop — Temperature in pitch box too high,0,600,yes,A,1,0,yes
+FM1186,Pit 2 Box Temp H Stop — Refer to FM1185,0,600,yes,A,1,0,yes
+FM1187,Pit 3 Box Temp H Stop — Refer to FM1185,0,600,yes,A,1,0,yes
+FM1188,Pit 1 Box Temp L Stop — Temperature in pitch box too low,0,600,yes,A,1,0,yes
+FM1189,Pit 2 Box Temp L Stop — Refer to FM1188,0,600,yes,A,1,0,yes
+FM1190,Pit 3 Box Temp L Stop — Refer to FM1188,0,600,yes,A,1,0,yes
+FM1191,Pit 1 SafetyRun feedback fail — The emergency run command doesn't match to the pitch converter feedback.,270,600,yes,M(A),2,0,yes
+FM1192,Pit 2 SafetyRun feedback fail — Refer to FM1191,270,600,yes,M(A),2,0,yes
+FM1193,Pit 3 SafetyRun feedback fail — Refer to FM1191,270,600,yes,M(A),2,0,yes
+FM1195,LPR Pitch — The lighting protection element in the hub has triggered.,270,400,yes,M,1,0,yes
+FM1200,MCV Fatal Fault — Is generated when the main converter indicates a major fault.,270,330,yes,M(A),6,0,no
+FM1201,"MCV Class A Fault — Is generated when the main converter indicates a category-A fault (simple MC fault, autoreset).",0,330,yes,A,6,0,no
+FM1202,MCV Temp H Warn — Is generated when the main converter indicates temperature too high in its power components (heatsinks). Brake Prog.: 0,0,300,no,A,,0,yes
+FM1203,MCV Temp H Stop — Is generated when the main converter indicates maximum permissible temperature exceeded in its power components (heatsinks). Brake Prog.: 5,270,330,yes,M(A),,0,no
+FM1204,MCV Reactive power diff. To setpoint max — The difference between the reactive power setpoint value and the actual reactive power value exceeds the parameterized limit value for more than one hour. Brake Prog.: 0,0,300,no,A,,0,yes
+FM1205,MCV Griderror — Is generated if the main converter indicates a grid error.,0,330,yes,A,6,0,no
+FM1206,MCV Gen RPM H Stop — Is generated if the main converter indicates that the maximum permissible generator speed has been exceeded during operation. Brake Prog.: 2,270,600,yes,M(A),,0,yes
+FM1207,MCV Initialization Fault — Is generated if the main converter indicates an initialization error during the booting phase.,270,330,yes,M(A),6,0,no
+FM1208,"MCV Class B Fault — Is generated when the main converter indicates a category-B fault (moderate MC fault, manual reset mandatory). Brake Prog.: 6",270,330,yes,M(A),,0,no
+FM1209,"MCV Class C (Service!) Fault — Is generated when the main converter indicates a category-C fault (severe MC fault, manual reset mandatory). Brake Prog.: 6",270,330,yes,M(A),,0,no
+FM1210,"MCV Synchronization TimeOut — Is indicated if the main converter has been enabled for cut-in, but has not cut-in within a defined period (timeout monitoring). Brake Prog.: 5",270,330,yes,M,,0,no
+FM1211,"MCV GridDiscon DespiteReleaseForOp. — Is indicated if the main converter disconnects itself from the grid independently within the normal working range, without a fault indication. Only occurs due to unfavorable grid conditions when the Brake Prog.: 5 main converter is operated in a critical range. Yaw Prog.: 0",0,300,yes,A,,,no
+FM1212,MCV CWTemp L Warn — Is indicated when the main converter indicates that its coolant temperature is too low.,0,300,no,A,0,0,yes
+FM1213,MCV Ext. Hardware Error — Is indicated there is a hardware fault in the main converter (e.g. the coolant pump fuse or recooling fan fuse has triggered). Brake Prog.: 5,270,600,yes,M(A),,0,no
+FM1214,MCV MainSw/Contactor not open — Is indicated when the main switch or a main converter circuit breaker does not open following a switch- off command. Note: In this case the main converter opens the MV-switch in order to protect itself. Brake Prog.: 2,270,330,yes,M(A),,0,no
+FM1215,LVL DiffCurr 400V TB Warn — Is reported if the differential current monitor in the top box detects an intermittent ground fault in the 400 VAC grid. Brake Prog.: 0,0,300,no,A,,0,yes
+FM1216,LVL DiffCurr 400V TB Stop — Is reported if the differential current monitor in the top box detects a permanent ground fault in the 400 VAC grid. Brake Prog.: 2,270,400,yes,M,,50,yes
+FM1217,Pit 1 EndSwitch pos beyond tol — Check of the limit-switch position,270,300,no,M,0,0,yes
+FM1218,Pit 2 EndSwitch pos beyond tol — refer to FM1217,270,300,no,M,0,0,yes
+FM1219,Pit 3 EndSwitch pos beyond tol — refer to FM1217,270,300,no,M,0,0,yes
+FM1220,Pit 1 Motor Temp H Stop — Temperature monitoring of the pitch motor,0,600,yes,A,1,0,yes
+FM1221,Pit 2 Motor Temp H Stop — Refer to FM1220,0,600,yes,A,1,0,yes
+FM1222,Pit 3 Motor Temp H Stop — Refer to FM1220,0,600,yes,A,1,0,yes
+FM1223,Pit 1 Motor Temp Sens CableBreak — The winding temperature sensor has a cable break.,270,600,yes,M,1,0,yes
+FM1224,Pit 2 Motor Temp Sens CableBreak — Refer to FM1223,270,600,yes,M,1,0,yes
+FM1225,Pit 3 Motor Temp sens CableBreak — Refer to FM1223,270,600,yes,M,1,0,yes
+FM1226,Pit 1 Conv FbOverload — Pitch motor is overloaded (I²t),270,600,no,M,0,0,yes
+FM1227,Pit 2 Conv FbOverload — Refer to FM1226,270,600,no,M,0,0,yes
+FM1228,Pit 3 Conv FbOverload — Refer to FM1226,270,600,no,M,0,0,yes
+FM1229,Pit 1 GearboxHeating Nok — The pitch gearbox heating is out of the permissible temperature range.,0,300,no,A,0,0,yes
+FM1230,Pit 2 GearboxHeating Nok — The pitch gearbox heating is out of the permitted temperature range.,0,300,no,A,0,0,yes
+FM1231,Pit 3 gearboxHeating Nok — The pitch gearbox heating is out of the permitted temperature range.,0,300,no,A,0,0,yes
+FM1232,GCM ActivePower limit L Stop(freq) — The active power has fallen below the minimum due to high grid frequency. The WTG is stopped with soft braking. Brake Prog.: 1,0,330,no,A,,0,yes
+FM1233,PLC Fan failure — PLC indicates the failure of at least one fan.,0,300,no,A,0,0,yes
+FM1234,PLC Temp H Warn — The alarm is set if the CPU temperature of the PLC has exceeded the limit value P12.15. It will be automatically reset if the temperature has fallen below the limit-hysteresis (5k). Brake Prog.: 0,0,300,no,A,,0,yes
+FM1235,PLC Temp H Stop — The alarm is set if the CPU temperature of the PLC has exceeded the limit value P12.16. It will be automatically reset if the temperature has fallen below the limit-hysteresis (5k). Brake Prog.: 1,0,330,yes,A,,0,yes
+FM1240,MCV RotorPos Manual Setpoint — Rotor positioning mode is selected.,0,330,yes,A,2,0,no
+FM1241,"MCV RotorPos Invalid — Rotor positioning mode is selected, but the conditions necessary for this are NOT fulfilled",0,330,no,A,0,0,no
+FM1242,MCV Profinet-Data invalid — The Profinet data from the main converter is invalid or not available due to interrupted communication.,270,330,yes,M,6,0,no
+FM1243,"MCV Drive Train Damping (DTD) OpC-WT not avail. — Main converter: the function ""active"" drive train damper through the WTG operating control"" is not available. Brake Prog.: 5",0,600,yes,A,,0,yes
+FM1244,MCV WorkingRange Exceeded — Permissible MC operating range has been exceeded,0,400,yes,A,6,0,yes
+FM1253,Pit Slipring Temp H Warn — Temperature in slip ring too high,0,330,no,A,0,0,yes
+FM1254,Pit Slipring Temp L Warn — Temperature in slip ring too low,0,330,no,A,0,0,yes
+FM1255,Pit Hub Temp H Stop — Temperature in hub too high,270,400,yes,M,1,0,yes
+FM1256,Pit Hub Temp L Warn — Temperature in hub low,0,300,no,A,0,0,yes
+FM1257,Pit Hub Temp L Stop — Temperature in hub too low,0,400,yes,A,1,0,yes
+FM1258,Pit CenterBox Temp H Stop — Temperature in center box too high,0,330,yes,A,1,0,yes
+FM1259,Pit CenterBox Temp L Stop — Temperature in center box too low,0,600,yes,A,1,0,yes
+FM1260,Pit Accu type not equal — The battery versions on the pitch converters differ.,0,600,yes,A,1,0,yes
+FM1261,Pit 1 Cyclic Com Err (PDW) — Failure of the cyclic communication.,0,600,yes,A,2,0,yes
+FM1262,Pit 2 Cyclic Com Err (PDW) — Refer to FM1261,0,600,yes,A,2,0,yes
+FM1263,Pit 3 Cyclic Com Err (PDW) — Refer to FM1261,0,600,yes,A,2,0,yes
+FM1264,Pit 1 Param Com Err — Failure of the acyclic communication.,0,400,no,A,0,0,yes
+FM1265,Pit 2 Param Com Err — Refer to FM1264,0,400,no,A,0,0,yes
+FM1266,Pit 3 Param Com Err — Refer to FM1264,0,400,no,A,0,0,yes
+FM1267,Pit 1 Conv Fault — The pitch converter has a fault.,270,600,yes,M(A),2,0,yes
+FM1268,Pit 2 Conv Fault — Refer to FM1267,270,600,yes,M(A),2,0,yes
+FM1269,Pit 3 Conv Fault — Refer to FM1267,270,600,yes,M(A),2,0,yes
+FM1273,Pit Blade Encoder Diff 1-2 Warn — Monitoring of blade encoder 1 against blade encoder 2 actual value (warning).,0,300,no,A,0,0,yes
+FM1274,Pit Blade Encoder Diff 2-3 Warn — Monitoring of blade encoder 2 against blade encoder 3 actual value (warning).,0,300,no,A,0,0,yes
+FM1275,Pit Blade Encoder Diff 3-1 Warn — Monitoring of blade encoder 3 against blade encoder 1 actual value (warning).,0,300,no,A,0,0,yes
+FM1276,Pit Blade Encoder Diff 1-2 Alarm — Monitoring of blade encoder 1 against blade encoder 2 actual value (alarm).,270,600,yes,M,2,0,yes
+FM1277,Pit Blade Encoder Diff 2-3 Alarm — Monitoring of blade encoder 2 against blade encoder 3 actual value (alarm).,270,600,yes,M,2,0,yes
+FM1278,Pit Blade Encoder Diff 3-1 Alarm — Monitoring of blade encoder 3 against blade encoder 1 actual value (alarm).,270,600,yes,M,2,0,yes
+FM1279,Pit ALU Pmp Start Fault — The alarm is generated when a fault occurs in the automatic lubrication unit for pitch.,270,300,no,M,0,0,yes
+FM1280,Pit ALU PmpRuntime long — The alarm is generated when a fault occurs in the automatic lubrication unit for pitch.,270,300,no,M,0,0,yes
+FM1281,Pit ALU PmpPressure Drop Fault — The alarm is generated when a fault occurs in the automatic lubrication unit for the pitch during pressure relief. Brake Prog.: 0,270,300,no,M,,0,yes
+FM1283,Pit ALU Pmp CollFault — The alarm is reported if a fault occurs in the SKF automatic lubrication unit for the pitch slewing bearing. Brake Prog.: 0,270,300,no,M,,0,yes
+FM1294,Pit 1 Box Temp CableBreak — Pitchbox temperature sensor has a cable break.,270,330,yes,M,5,0,yes
+FM1295,Pit 2 Box Temp CableBreak — Refer to FM1294,270,330,yes,M,5,0,yes
+FM1296,Pit 3 Box Temp CableBreak — Refer to FM1294,270,330,yes,M,5,0,yes
+FM1297,Pit CenterBox Temp CableBreak — Centerbox temperature sensor has a cable break.,270,330,yes,M,5,0,yes
+FM1298,Pit Hub Temp CableBreak — Hub temperature sensor has a cable break.,270,330,yes,M,5,0,yes
+FM1299,Pit Slipring Temp CableBreak — Slipring temperature sensor has a cable break.,0,330,no,A,0,0,yes
+FM1300,Vib Nacelacc const — Machine house acceleration measurements in Y-(cross) or Z- (Wind-) direction is constant.,270,400,yes,M,1,0,yes
+FM1301,Vib SensorTest active — The alarm is generated when on vibration sensor PCH 1026Mk2 a sensor self-test is performed.,0,300,no,A,0,0,yes
+FM1302,Vib Tower Mass Damp Contact Cnt H Warn — The alarm is reported if the tower damper has exceeded the number of contacts parametrized in P89.09. Brake Prog.: 0,0,300,no,A,,0,yes
+FM1303,Vib Tower Mass Damp Contact Cnt H Stop — The alarm is reported if the tower damper has exceeded the number of contacts parametrized in P89.10. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM1304,Vib Tower Mass Damp AI1 Constant — The alarm is reported if an analog sensor of the tower damper has assumed a constant value.,0,330,yes,A,1,0,yes
+FM1305,Vib Tower Mass Damp AI2 Constant — The alarm is reported if an analog sensor of the tower damper has assumed a constant value.,0,330,yes,A,1,0,yes
+FM1306,Vib Tower Mass Damper AI1 Sensor Failure — The alarm is reported if a sensor fault is detected at an analog sensor of the tower damper.,0,330,yes,A,1,0,yes
+FM1307,Vib Tower Mass Damper AI2 Sensor Failure — The alarm is reported if a sensor fault is detected at an analog sensor of the tower damper.,0,330,yes,A,1,0,yes
+FM1309,Vib TowerVib H for Stopped WTG — The alarm is reported if at WTG standstill and cross-wind the nacelle acceleration exceeds a defined limit. Brake Prog.: 1,0,300,no,A,,0,yes
+FM1310,"Vib SensorTest SSDTest Warning — Reported if no signal change takes place during the sensor test at the ""Shock"" input.",0,300,no,A,0,0,yes
+FM1311,"Vib SensorTest Self test Digital Warning — Reported if no signal change takes place during the sensor test at the ""Fault"" and ""Alarm"" inputs.",0,300,no,A,0,0,yes
+FM1312,Vib SensorTest Self test Analog Warning — Reported if during the sensor test the analog values for the y and z direction are not within the range of the test level. Brake Prog.: 0,0,300,no,A,,0,yes
+FM1313,Vib Mass Damper AutoLock Error — Is reported if a requested auto-lock cannot be implemented due to various conditions.,0,600,yes,A,1,0,yes
+FM1314,"Vib Mass Damper Service Active — An alarm FM1314 ""damper service"" is reported if the damper service switch is not set to automatic, (=""Service""). Brake Prog.: 1",0,600,yes,A,,0,yes
+FM1315,Vib Mass Damper AutoLock Relaesed — Is reported if the auto-lock is canceled and the damper has been released.,0,600,no,A,1,0,yes
+FM1316,Vib Rotor Imbalance Measurement Active — The rotor imbalance measurement is active. The WTG is operated with reduced speed P89.03.,0,300,no,A,0,0,yes
+FM1350,Met AirPress DiffMeasCalcH Stop — The WTG is stopped when the difference between the measured air pressure and altitude dependent air pressure P23.19 is greater than P90.00. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM1351,LPR RotBlade warn — Reported if the monitoring of the lightning protection system of the rotor blades reports a fault (only for AIS with SPD boxes). Brake Prog.: 0,0,400,no,A,,0,yes
+FM1352,"LPR RotBlade stop — Reported if the warning FM1351 ""LgtnProt RotBlade Warn"" was present for the period P64.01.",270,400,no,M,2,0,yes
+FM1354,LPR Nacelle 400V Warn — The warning is generated when the lightning protection module in the transformer box has triggered.,0,330,no,A,0,0,yes
+FM1359,Pit ALU Race ContLevel L Warn — Is reported if the reservoir of the lubrication system for the lubrication of the raceways of the pitch bearings only has a low filling level left. Brake Prog.: 0,0,330,no,A,,0,yes
+FM1397,ALU IntervalTime high Stop — Stop of the turbine due to too long pause in one of the lubrication systems.,0,400,yes,A,1,0,yes
+FM1420,ALU PitRace GreaseFlow Fail — Monitoring of the automatic lubrication of the pitch raceway with separate lubrication of raceway and gearing. Brake Prog.: 0,270,300,no,M,,0,yes
+FM1421,Pit 1 Accu test FT fault — The alarm is reported if during the pitch battery functional test the unfiltered DC link voltage or the battery current of the PCV is below the respective limit value. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM1422,Pit 2 Accu test FT fault — refer to FM1421,270,600,yes,M,1,0,yes
+FM1423,Pit 3 Accu test FT fault — refer to FM1421,270,600,yes,M,1,0,yes
+FM1424,Pit 1 Accu test HT fault — The alarm is reported if during the pitch battery high-voltage current test the unfiltered DC link voltage or the battery current is below the respective limit value. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM1425,Pit 2 Accu test HT fault — refer to FM1424,270,600,yes,M,1,0,yes
+FM1426,Pit 3 Accu test HT fault — refer to FM1424,270,600,yes,M,1,0,yes
+FM1427,Pit 1 Accu test FT/HT warning — The alarm is reported if during the pitch battery functional test the unfiltered DC link voltage of the axis is below the respective limit value. Brake Prog.: 0,270,600,yes,M,,0,yes
+FM1428,Pit 2 Accu test FT/HT warning — refer to FM1427,270,600,yes,M,0,0,yes
+FM1429,Pit 3 Accu test FT/HT warning — refer to FM1427,270,600,yes,M,0,0,yes
+FM1430,Pit 1 Accu test HT abort — The alarm is reported if during the battery high-voltage current test no current flow greater than P73.16 is detected by the brake chopper P73.19 s after starting the PCV energization or the value of Brake Prog.: 1 the PCV brake chopper has not dropped to the value P73.00 within the time P73.01 when waiting for Yaw Prog.: 0 the integrator value to drop.,270,400,yes,M,,,yes
+FM1431,Pit 2 Accu test HT abort — refer to FM1430,270,400,yes,M,1,0,yes
+FM1432,Pit 3 Accu test HT abort — refer to FM1430,270,400,yes,M,1,0,yes
+FM1433,Pit 1 Accu test FT abort — The alarm is reported if during the battery functional test P73.19 s after the start of the PCV energization no current flow greater than P73.13 is detected. The functional test is not executed Brake Prog.: 1 correctly. Yaw Prog.: 0,270,400,yes,M,,,yes
+FM1434,Pit 2 Accu test FT abort — refer to FM1433,270,400,yes,M,1,0,yes
+FM1435,Pit 3 Accu test FT abort — refer to FM1433,270,400,yes,M,1,0,yes
+FM1436,"Pit Accu test lock for charge delay active — The alarm is reported after an unsuccessful battery test, it blocks a new test for the time P72.19 = 300s. Brake Prog.: 1",0,330,yes,A,,0,yes
+FM1440,MCV Remote Control Warning — The main converter can not be functionally controlled via the WTG operation control.,0,400,no,A,0,0,yes
+FM1443,MCV BrushLubrication Active — Is reported if the function brush lubrication by main converter is active.,0,330,no,A,0,0,yes
+FM1448,MCV RotorPos Preparation — Operating mode rotor positioning is selected and is being prepared.,0,300,no,A,0,0,yes
+FM1451,Pit 1 SafetyRun command fail — The emergency run command doesn't match to the pitch converter feedback.,270,600,yes,M(A),2,0,yes
+FM1452,Pit 2 SafetyRun command fail — Refer to FM1451,270,600,yes,M(A),2,0,yes
+FM1453,Pit 3 SafetyRun command fail — Refer to FM1451,270,600,yes,M(A),2,0,yes
+FM1454,Pit 1 SafetyRun not correct stopped — The emergency run command doesn't match to the pitch converter feedback.,270,600,yes,M(A),2,0,yes
+FM1455,Pit 2 SafetyRun not correct stopped — Refer to FM1454,270,600,yes,M(A),2,0,yes
+FM1456,Pit 3 SafetyRun not correct stopped — Refer to FM1454,270,600,yes,M(A),2,0,yes
+FM1457,Pit 1 Restart lock not reset — The emergency run command doesn't match to the pitch converter feedback.,270,600,yes,M(A),2,0,yes
+FM1458,Pit 2 Restart lock not reset — Refer to FM1457,270,600,yes,M(A),2,0,yes
+FM1459,Pit 3 Restart lock not reset — Refer to FM1457,270,600,yes,M(A),2,0,yes
+FM1490,LVL TowerCable TempMonitoring Stop — The optional tower cable temperature monitoring system reports an alarm.,270,600,yes,ML,1,0,yes
+FM1491,LVL OvervoltProtect Internal Power MainSw Off — Indicates that the 660 V low voltage main switches in the auxiliary network have been switched off due to overvoltage protection (Umax > P19.02) and active grid fault (FM1492). Brake Prog.: 1,270,330,yes,ML,,50,no
+FM1492,Grid Error Overvoltage — The grid protection unit reports an overvoltage grid fault via the interface.,0,400,no,A,2,50,no
+FM1493,Grid Error Undervoltage — The grid protection unit reports an undervoltage grid fault via the interface.,0,400,no,A,2,50,no
+FM1494,Grid Error Overfrequency — The grid protection unit reports an overfrequency grid fault via the interface.,0,400,no,A,2,50,no
+FM1495,Grid Error Underfrequency — The grid protection unit reports an underfrequency grid fault via the interface.,0,400,no,A,2,50,no
+FM1496,"Grid Frequency InvalidForStartup aGE — This function prevents the WTG from being connected to the grid when the grid voltage (measured by the main converter, MFR or CWE) is not within the parameterized frequency range and the WTG was Brake Prog.: 5 stopped prior to this by a grid fault. Yaw Prog.: 0",0,330,no,A,,,yes
+FM1497,Grid Voltage InvalidForStartup aGE — This function prevents the WTG from being connected to the grid when the grid voltage (measured by the MFR) is not within the parameterized voltage range and the WTG was stopped prior to this by a Brake Prog.: 5 grid fault. Yaw Prog.: 0,0,330,no,A,,,yes
+FM1498,MVL FluidTransf Pressure NOK — Pressure monitoring device at the transformer has tripped,270,330,yes,M,2,0,yes
+FM1499,MVL FluidLevel NOK — The filling level monitoring unit at the transformer has tripped,270,330,yes,M,2,0,yes
+FM1500,"Hyd HydraulicTest cancel (Not caused by testfailur — The alarm is triggered if the rotor brake hydraulic test or the yaw system hydraulic brake test is canceled but this is not due to a fault of the hydraulic system. Brake Prog.: 2 If a hydraulic fault is present, FM251 is reported. Yaw Prog.: 0",0,400,yes,A,,,yes
+FM1501,Hyd HydraulicTest to many times in a row — The alarm occurs if the hydraulic test is performed too frequently.,270,400,yes,M,1,0,yes
+FM1517,GCM E-DLL deactivation due to multiple runtime fai — The E-DLL was disabled due to multiple execution errors.,270,600,yes,M,0,0,yes
+FM1530,Grid MFR Collective-Error — Is reported if an internal error occurred in the MFR.,0,400,yes,A,6,0,no
+FM1531,"Grid Profinet Version Error — Reported if the read checksum of the MFR parameter file does not match the specification (target checksum, encrypted) or the protocol version. Brake Prog.: 5",270,400,yes,M,,0,no
+FM1532,Grid MFR Config Error — Reported if a configuration error (configuration of the protection parametrization in the MFR) has occurred. Brake Prog.: 5,0,400,yes,A,,0,no
+FM1540,LVL EmergLighting Tower UPS BattFault — The alarm is generated if there is no emergency lighting possible in the tower during a grid failure.,0,330,no,A,0,0,yes
+FM1541,LVL EmergLighting Nacelle UPS BattFault — The alarm is generated if there is no emergency lighting possible in the nacelle during a grid failure.,0,300,no,A,0,0,yes
+FM1542,LVL EmergLighting Hub UPS BattFault — The alarm is generated if there is no emergency lighting possible in the hub during a grid failure.,0,300,no,A,0,0,yes
+FM1553,OBL Max TransmissTime from CWE Exceeded — The maximum transmission time between CWE and WTG for the ODL function has been exceeded (see P112.01) Brake Prog.: 0,0,600,no,A,,0,yes
+FM1554,OBL Max TransmissTime from Radar Exceeded — The maximum transmission time between radar and WTG for the ODL function has been exceeded (see P112.02) Brake Prog.: 0,0,600,no,A,,0,yes
+FM1555,OBL Max Time Between Telegrams from CWE Exc — No new telegram has been received by the CWE for the ODL function for an extended time (see P112.03) Brake Prog.: 0,0,600,no,A,,0,yes
+FM1556,OBL CWE CommunProtocol Incompatible — The communication protocol between CWE and WTG does not support the function night lights by requirement (ODL) Brake Prog.: 0,0,600,no,A,,0,yes
+FM1557,OBL Max AntivalenceTime ShutdownCmd EnabFb — The feedback of the obstacle light of the WTG differs too long from the control by the WTG (see P112.04) Brake Prog.: 0,270,600,no,M,,0,yes
+FM1558,OBL Compulsory Lamp Off — The obstacle lights of all WTG of a WF have been forcibly deactivated,0,600,no,A,0,0,yes
+FM1581,PLC TimeStep — Indicates that the internal clock of the PLC has jumped.,0,600,no,A,0,0,yes
+FM1582,PLC Firmware update required — An update of the PLC firmware is required.,0,400,yes,A,1,0,yes
+FM1584,PLC SystemFault (SPG10) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1585,PLC SystemFault (SPG11) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1586,PLC SystemFault (SPG12) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1587,PLC SystemFault (SPG13) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1588,PLC SystemFault (SPG16) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1589,PLC SystemFault (SPG17) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1590,PLC SystemFault (SPG19) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1591,PLC SystemFault (SPG20) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1592,PLC SystemFault (SPG21) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1593,PLC SystemFault (SPG24) — The internal system monitoring of the operation control has detected a fault.,270,600,yes,M,4,50,no
+FM1594,PLC RestartCycle TimeViolation — A non-critical cycle time violation occurred during the start-up phase.,0,300,no,A,0,0,yes
+FM1595,PLC RestartCycle TimeViolationExcess — Too many cycle time violations occur during the start-up phase.,0,600,yes,A,1,0,yes
+FM1596,PLC parameter update failed — An error occurred during a parameter update.,0,600,no,A,0,0,yes
+FM1597,PLC parameter update successful — The message indicates that the parameter update has been performed successfully.,0,600,no,A,0,0,yes
+FM1598,PLC parameter update active — A parameter update has been requested and is currently being performed.,0,600,no,A,0,0,yes
+FM1600,"MPIO ExtController Stop — The turbine has been stopped due to a fault message of the optional external controller (""control demonstrator”). Brake Prog.: 2",450,450,yes,M,,0,yes
+FM1601,"MPIO ExtController Stop (SoftBrk) — The turbine has been stopped due to request by the optional external controller (""control demonstrator”). Brake Prog.: 1",0,450,yes,A,,0,yes
+FM1602,"MPIO ExtController Warning — The optional external controller (""control demonstrator"") has detected a non-critical error.",0,450,no,A,0,0,yes
+FM1608,MET Farm Ice Alarm (Auto Reset) — The ice sensor in the park reports strong ice accretion via the CWE.,0,600,no,A,1,0,yes
+FM1609,MET Farm Ice Alarm (Remote Reset) — refer to FM1608,270,600,no,M,1,0,yes
+FM1610,MET Farm Ice alarm (Local Reset) — refer to FM1608,270,600,no,ML,1,0,yes
+FM1611,MET Farm Ice Alarm finished (Auto Reset) — The ice sensor in the park no longer reports ice accretion via the CWE and the ice alarm FM1609/FM1610 can be reset. Brake Prog.: 0,0,600,no,A,,0,yes
+FM1614,MET Farm Ice Alarm FallbackReaction — The CWE reports that there is a communication error with the parameterized park ice sensor.,0,600,no,A,1,0,yes
+FM1630,WTG Turbine blocked by User — The alarm is triggered as soon as the turbine is locked by a user via the visualization.,0,600,yes,A,1,0,yes
+FM1645,Shadow bird protection alarm — The bird protection module (SWM) reports a bird protection alarm.,0,600,no,A,1,0,yes
+FM1646,Pit 1 Mot I2t H Stop — The pitch motor has an excessive current load,0,600,yes,A,1,0,yes
+FM1647,Pit 2 Mot I2t H Stop — Refer to FM1646,0,600,yes,A,1,0,yes
+FM1648,Pit 3 Mot I2t H Stop — Refer to FM1646,0,600,yes,A,1,0,yes
+FM1667,Pit I2t Sum H Stop — The upper limit value for monitoring the PVR I2t totals value has been exceeded or the lower limit value has not yet been fallen below again after triggering. Brake Prog.: 1,0,600,yes,A,,0,yes
+FM1668,Pit ALU Race Pmp Fault — Pitch raceway lubricant pump monitoring.,270,300,no,M,0,0,yes
+FM1690,Pit 1 Safety acknowledge fail — The alarm reports when the pitch converter unexpectedly reports an end of the emergency run - although the emergency run is no longer commanded. Brake Prog.: 2,270,330,yes,M(A),,0,yes
+FM1691,Pit 2 Safety acknowledge fail — Refer to FM1690,270,330,yes,M(A),2,0,yes
+FM1692,Pit 3 Safety acknowledge fail — Refer to FM1690,270,330,yes,M(A),2,0,yes
+FM1700,NCHW FibreOptic SlipringPath not Active — The primary path of the slip ring is not active.,0,300,no,A,0,0,yes
+FM1701,NCHW LPC shutdown active — The turbine LPC shuts down when this alarm is generated.,0,330,no,A,0,0,yes
+FM1702,NCHW slipring monitoring malfunctioning — The monitoring of the redundant slip ring track is faulty.,0,300,no,A,0,0,yes
+FM1703,NCHW Switch Firmware Update required — Reports if a switch in the WTG uses an invalid firmware version.,0,600,no,A,0,0,yes
+FM1710,WTG ActPwrSetpoint to low — The alarm is reported if the active power setpoint is less than the limit value defined in P02.12 for P02.13s and the setpoint does not arrive from the CWE but from an internal WTG limitation. Brake Prog.: 1,270,330,no,M,,0,yes
+FM1711,WTG CWE ActPwrSetpoint to low — The active power setpoint from the CWE is less than the minimum active power setpoint requirement in P02.12 for P02.13s. Brake Prog.: 1,270,330,no,M,,0,yes
+FM1719,WTG Minimum power undershot at high windspeed — The alarm is reported if the active power setpoint value at high wind speeds (Soft-Cut-Out) is limited below the minimum power required at high wind speeds due to CWE limitations or WTG protection Brake Prog.: 1 functions. Yaw Prog.: 0,0,330,yes,A,,,yes
+FM1723,"Cli Temp Box High Alarm - multiple — In one or more control cabinets (Topbox, Bottombox, Centerbox) a ""temperature high"" alarm was reported at least P10.13 times on the current day. Brake Prog.: 1",270,330,yes,M,,0,yes
+FM1739,OpC Prepare Safe State — The wind turbine is preparing to be brought into a safe state.,0,600,no,A,1,50,yes
+FM1740,OpC Apply Safe State — The WTG will change to a safe state.,0,600,no,A,2,50,yes
+FM1750,PN Profinet Fault — The alarm is generated when a Profinet fault occurs on a module which is not a connection fault.,0,300,no,A,0,0,yes
+FM1751,PN Centerbox CommFlt — Profinet bus fault of the pitch Centerbox.,0,600,yes,A,2,0,yes
+FM1752,PN Pit 1 Encoder CommFlt — Profinet bus fault of the blade angle sensor.,0,400,yes,A,2,0,yes
+FM1753,PN Pit 2 Encoder CommFlt — Refer to FM1752,0,400,yes,A,2,0,yes
+FM1754,PN Pit 3 Encoder CommFlt — Refer to FM1752,0,400,yes,A,2,0,yes
+FM1755,PN Pit 1 Conv CommFlt — Profinet bus fault of the pitch converter.,0,600,yes,A,2,0,yes
+FM1756,PN Pit 2 Conv CommFlt — Refer to FM1755,0,600,yes,A,2,0,yes
+FM1757,PN Pit 3 Conv CommFlt — Refer to FM1755,0,600,yes,A,2,0,yes
+FM1758,PN BotBox CommFlt — The RFC has detected a Profinet bus fault of the Bottombox bus coupler.,0,400,yes,A,2,0,yes
+FM1759,PN Topbox CommFlt — A bus fault has been detected in the connection between the Topbox and the yaw converter.,0,600,yes,A,2,50,yes
+FM1760,PN MCV CommFlt — The RFC has detected a Profinet bus fault of the main converter.,0,400,yes,A,2,0,yes
+FM1761,PN MFR CommFlt — The RFC has detected a Profinet bus fault of the MFR.,0,400,yes,A,2,0,yes
+FM1762,PN Yaw Conv 1 CommFlt — A bus fault has been detected in the connection between the controller and the yaw converter.,0,300,no,A,0,50,yes
+FM1763,PN Yaw Conv 2 CommFlt — refer to FM1762,0,300,no,A,0,50,yes
+FM1764,PN Yaw Conv 3 CommFlt — Refer to FM1762,0,300,no,A,0,50,yes
+FM1765,PN Yaw Conv 4 CommFlt — Refer to FM1762,0,300,no,A,0,50,yes
+FM1766,PN YawBox/Fld CommFlt — A bus fault has been detected in the connection between the control and the yaw IO devices.,0,300,no,A,0,50,yes
+FM1767,PN Rotor Encoder CommFlt — The RFC has detected a Profinet bus fault of the optional rotor speed- and position sensor in the slip ring. Brake Prog.: 0,0,300,no,A,,0,yes
+FM1768,"PN MPIO ExtController CommFlt — The RFC has detected a Profinet bus fault of the optional external controller (""control demonstrator"").",270,450,yes,M,2,0,yes
+FM1769,PN TB K11 Configuration failed — Dynamic configuration of the Axioline RTD8 module K11 in the Topbox has failed.,0,300,no,A,0,0,yes
+FM1770,PN TB K12 Configuration failed — refer to FM1769,0,300,no,A,0,0,yes
+FM1771,PN TB K13 Configuration failed — refer to FM1769,0,300,no,A,0,0,yes
+FM1772,PN TB K15 Configuration failed — refer to FM1769,0,300,no,A,0,0,yes
+FM1773,PN BB K8 Configuration failed — refer to FM1769,0,300,no,A,0,0,yes
+FM1774,PN CB K5 Configuration failed — refer to FM1769,0,300,no,A,0,0,yes
+FM1775,"PN MPIO Extern Ctrl CommWarn — The RFC has detected a Profinet bus fault of the optional external controller (""control demonstrator"").",0,450,no,A,0,0,yes
+FM1776,PN MVL CommFlt — The RFC has detected a Profinet bus fault in the bus coupler in the medium-voltage switchgear.,0,600,yes,A,2,0,yes
+FM1778,PN Safety Topbox AXL-AI8 Warning — Reported if an outdated analog input module AXL AI8 is used but the use of these modules is still permitted. Brake Prog.: 0,0,600,no,A,,0,yes
+FM1779,PN Safety Topbox AXL-AI8 Stop — Reported if an outdated analog input module AXL AI8 is used the use of which is no longer permitted.,270,600,yes,M,5,0,yes
+FM1780,PN Blade Sensor Box Communication Warning — Profinet bus fault in the rotor blade load sensor system in the pitch Centerbox.,0,450,no,A,0,0,yes
+FM1810,"Stat WTG stopped and functional — The alarm is reported if the turbine is considered as ""allegedly technically ok"" but still prevented from starting by alarms for an implausibly long period of time. This is to determine incorrectly configured Brake Prog.: 0 alarms. Yaw Prog.: 0",0,330,no,A,,,yes
+FM1820,Wind dir too slanting for BP 1 — The alarm is generated to protect turbines of type K08 delta 8.3+ at high wind speeds and high cross- wind. Brake Prog.: 2,0,600,no,A,,0,yes
+FM1821,Wind dir too slanting for BP5 — The alarm is generated to protect turbines of type K08 delta 8.3+ at high wind speeds and high cross- wind. Brake Prog.: 6,0,600,no,A,,0,yes
+FM1822,Wind Speed too high for turbine start — The alarm is generated to prevent a turbine start in strong winds.,0,600,no,A,1,0,yes
+FM1829,Vib RotorImbalanceDetected Warn — An increased rotor imbalance has been detected.,0,600,no,A,0,0,yes
+FM1830,Vib Rotor Imbalance Measurement Failed — During the measurement of the rotor imbalance no valid value could be calculated.,270,300,no,M,0,0,yes
+FM1831,SSF Stop due to crane flight — If crane flight is notified near the WTG the WTG might need to be stopped in accordance with approvals. This alarm is triggered manually by a user command from a WTG operator or a CWE Brake Prog.: 1 operator and must also be canceled using the corresponding command. Yaw Prog.: 29,0,600,no,A,,,yes
+FM1832,"SSF VPC SafeMode Warnung — The alarm indicates that after a time that is less than the value parameterized in P79.06, the WTG is automatically limited to the VPC SafeMode defined by P138.19. Brake Prog.: 0 Until the current VPC parameterization expires, a new valid VPC parameter set for the next VPC",0,600,no,A,,0,yes
+FM1833,SSF VPC SafeMode Active — The alarm indicates that the WTG is currently limited to the VPC SafeMode defined by P138.19. A new valid VPC parameter set for the next VPC period should be requested from Nordex Yaw Prog.: 0 immediately.,0,600,no,A,0,,yes
+FM1859,Ctrl StallIceDetectStop — Permanent stall detected.,300,600,no,M,1,0,yes
+FM1860,Ctrl StallIceDetectPitOffset — Stall detected.,0,600,no,A,0,0,yes
+FM1944,LVL Pit 1 InsulatMonitor 24V Warning — The warning is set if the insulation monitor in the 24 VDC network in pitch box 1 has detected an insulation fault. Brake Prog.: 0,270,300,no,M,,0,yes
+FM1945,LVL Pit 2 InsulatMonitor 24V Warning — The warning is set if the insulation monitor in the 24 VDC network in pitch box 2 has detected an insulation fault. Brake Prog.: 0,270,300,no,M,,0,yes
+FM1946,LVL Pit 3 InsulatMonitor 24V Warning — The warning is set if the insulation monitor in the 24 VDC network in pitch box 3 has detected an insulation fault. Brake Prog.: 0,270,300,no,M,,0,yes
+FM1947,LVL Pit 1 InsulatMonitor 24V Stop — The alarm is generated when the pitch box insulation monitor in pitch box 1 has detected an insulation fault for the time P19.04. Brake Prog.: 5,270,400,yes,M,,0,yes
+FM1948,LVL Pit 2 InsulatMonitor 24V Stop — The alarm is generated when the pitch box insulation monitor in pitch box 2 has detected an insulation fault for the time P19.04. Brake Prog.: 5,270,400,yes,M,,0,yes
+FM1949,LVL Pit 3 InsulatMonitor 24V Stop — The alarm is generated when the pitch box insulation monitor in pitch box 3 has detected an insulation fault for the time P19.04. Brake Prog.: 5,270,400,yes,M,,0,yes
+FM1950,LVL Slip Ring Transm I>/t Trigger — The alarm is reported if an overcurrent is present in the slip ring for a specific period of time.,0,600,no,A,0,0,yes
+FM2006,Pit Tower damp active — The alarm indicates that the pitch tower vibration damping is activated.,0,600,no,A,2,0,yes
+FM2007,Pit Tower damp failure — The alarm is triggered if with activated pitch tower oscillation damping a fault has occurred.,270,600,no,M(A),2,0,yes
+FM2008,Pit Tower damp accu contactor error — The alarm is activated if with activated pitch tower oscillation damping a fault has occurred in the battery contactor control. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2013,Rot RPMMonitor Test Error — During operation of the turbine a verification test is performed to ensure that the correct speed measuring device parameter IDs have been installed. Brake Prog.: 1,270,400,yes,M,,0,yes
+FM2014,Gen RPMMonitor Test Error — During operation of the turbine a verification test is performed to ensure that the correct speed measuring device parameter IDs have been installed. Brake Prog.: 1,270,400,yes,M,,0,yes
+FM2100,WTG Burglaralarm — The burglar alarm system indicates a break-in.,0,300,no,A,0,0,no
+FM2101,Pit SafetyRunTest BP1 — Triggering of a safety run with BP1.,0,400,yes,A,1,0,no
+FM2102,Pit SafetyRunTest BP2 — Triggering of a safety run with BP2.,0,400,yes,A,2,0,no
+FM2103,Pit SafetyRunTest BP3 — Triggering of a safety run with BP3.,0,400,yes,A,3,0,no
+FM2104,Pit SafetyRunTest BP4 — Triggering of a safety run with BP4.,0,400,yes,A,4,0,no
+FM2105,Pit SafetyRunTest BP5 — Triggering of a safety run with BP5.,0,400,yes,A,5,0,no
+FM2106,Pit SafetyRunTest BP6 — Triggering of a safety run with BP6.,0,400,yes,A,6,0,no
+FM2107,WTG Deactivated FM — Indicates that at least one alarm (FM) is deactivated.,0,600,no,A,0,0,yes
+FM2200,"Ctrl DLL Initialisation Phase — Information: the software component (DLL) ""speed and active power control"" is currently being initialized. Brake Prog.: 2",0,450,yes,A,,0,yes
+FM2201,"Ctrl DLL Not Loadable — The initialization of the software component (DLL) ""speed and active power control"" failed.",0,450,yes,A,2,0,yes
+FM2202,"Ctrl DLL Interface Version Error — The interface version of the software component (DLL) ""speed and active power control"" differs from the interface version of the WTG operating control software. Brake Prog.: 2",0,450,yes,A,,0,yes
+FM2203,"Ctrl DLL Timeout — Warning: The required processing time of the software component (DLL) ""speed and active power control"" is greater than expected. Brake Prog.: 0",0,300,no,A,,0,yes
+FM2204,"Ctrl DLL Collective Fault — In the software component (DLL) ""speed and active power control"" an internal error has occurred.",270,450,yes,M,2,0,yes
+FM2210,Ctrl Variant Change requested — A change of the controller variant requested via P33.09 can only be executed during the next turbine stop. Brake Prog.: 0,0,300,no,A,,0,yes
+FM2211,"Ctrl GenSpd (MCV) invalid Stop — The WTG is stopped, because the measured generator speed from the main converter is invalid.",270,600,yes,M,5,0,yes
+FM2212,Ctrl GenSpd (MCV) invalid Warn — Information: the actual speed for the WTG speed and active power control was changed to the backup sensor Brake Prog.: 0,0,300,no,A,,0,yes
+FM2213,"Ctrl Internal Error — An internal error has occurred in the software module ""speed and active power control"".",270,450,yes,M,2,0,yes
+FM2215,Ctrl GridFaultTrans during EGLM — Grid failure during EGLM,0,600,no,A,6,0,yes
+FM2250,RBL Blade Sensor Box Warning — The measuring unit of the rotor blade load sensor system reports an internal warning.,0,300,no,A,0,0,yes
+FM2251,RBL Blade Sensor Box Error — The measuring unit of the rotor blade load sensor system reports an internal warning.,0,300,no,A,0,0,yes
+FM2252,RBL Blade Sensor Warning — A sensor of the rotor blade load sensor system is temporarily faulty.,0,300,no,A,0,0,yes
+FM2253,RBL Blade Sensor Error — A sensor of the rotor blade load sensor system is permanently faulty.,0,300,no,A,0,0,yes
+FM2254,RBL Blade Sensor Low Reflectivity — A sensor of the rotor blade load sensor system has a low reflection capability.,0,300,no,A,0,0,yes
+FM2255,RBL Calibration Test Internal Error — During the rotor blade load sensor calibration test an internal fault has occurred,270,600,no,M,0,0,yes
+FM2256,RBL Blade1 Bending Moment (Flapwise) PlausErro — The difference between the measured and the calculated bending moment of blade 1 in the flapwise direction is higher than the permissible difference. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2257,RBL Blade2 Bending Moment (Flapwise) PlausErro — The difference between the measured and the calculated bending moment of blade 2 in the flapwise direction is higher than the permissible difference. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2258,RBL Blade3 Bending Moment (Flapwise) PlausErro — The difference between the measured and the calculated bending moment of blade 3 in the flapwise direction is higher than the permissible difference. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2259,RBL Blade1 Bending Moment (Edgewise) PlausErr — The difference between the measured and the calculated bending moment of blade 1 in the edgewise direction is higher than the permissible difference. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2260,RBL Blade2 Bending Moment (Edgewise) PlausErr — The difference between the measured and the calculated bending moment of blade 2 in the edgewise direction is higher than the permissible difference. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2261,RBL Blade3 Bending Moment (Edgewise) PlausErr — The difference between the measured and the calculated bending moment of blade 3 in the edgewise direction is higher than the permissible difference. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2262,RBL Calibration Necessary — Calibration of the rotor blade load sensors required,0,600,no,A,0,0,yes
+FM2263,RBL Calibration in Progress — The calibration of the rotor blade load sensor system is active,0,600,no,A,0,0,yes
+FM2264,RBL Bending Moment Blade 1 <> 2&3 — The bending moment measured value of blade 1 differs from the measured values of blades 2 and 3.,270,600,no,M,0,0,yes
+FM2265,RBL Bending Moment Blade 2 <> 1&3 — The bending moment measured value of blade 2 differs from the measured values of blades 1 and 3.,270,600,no,M,0,0,yes
+FM2266,RBL Bending Moment Blade 3 <> 1&2 — The bending moment measured value of blade 3 differs from the measured values of blades 1 and 2.,270,600,no,M,0,0,yes
+FM2267,RBL Calibration Failure — The calibration of the rotor blade load sensor system has failed,0,600,no,A,0,0,yes
+FM2268,RBL Calibration out of Tolerance Too Long — The calibration of the rotor blade load sensor system is outside the permissible tolerance for a long time. Brake Prog.: 0,0,600,no,A,,0,yes
+FM2269,RBL Calibration Interrupted — Calibration of the rotor blade load sensors canceled by operator,0,600,no,A,0,0,yes
+FM2270,Rot Rotor position is unplausible — The alarm is triggered if the position value of the rotor encoder is implausible.,270,300,no,M,0,0,yes
+FM2400,GCM-NX11 StatCom-Operation Active — This messages indicates that the WTG is in the StatCom mode.,0,300,no,A,0,0,yes
+FM2401,GCM-NX11 MCV StatCom Timeout — The main converter does not switch to the StatCom mode in the time x (alarm set delay) following the request for static reactive power. Brake Prog.: 1,270,600,yes,M,,0,no
+FM3000,CWE Freq out of Limit Warning — This warning is only generated if the frequency is outside the frequency limits parameterable in the CWE and the WTG is in production mode. Brake Prog.: 0,0,300,no,A,,0,yes
+FM3001,CWE Voltage out of Limit Warning — This warning is only generated if the voltage is outside the voltage limits parameterable in the CWE and the WTG is in production mode. Brake Prog.: 0,0,300,no,A,,0,yes
+FM3002,CWE Freq out of Limit Stop — This error message is generated if the frequency was outside the frequency limits parameterable in the CWE or if the WTG was stopped in production mode and warning FM3000 was active at that time. Brake Prog.: 5,0,300,no,A,,0,no
+FM3003,CWE Voltage out of Limit Stop — This error message is generated if the voltage is outside the voltage limits that are parameterable in the CWE or if the WTG is stopped in production mode and warning FM3001 was active at that time. Brake Prog.: 5,0,300,no,A,,0,no
+FM4000,Vis Restore Mode active — Restore mode for writing back parameter values is active.,0,600,no,A,0,0,yes
+FM4001,Vis CIF Stop — The WTG was stopped by a stop request of the CIF via the machine user interface.,0,300,no,A,1,0,yes
+FM4002,Vis CIF Command — The CIF has requested a machine user command whilst another user had the key.,0,600,no,A,0,0,yes
+FM4100,HMI parameter value invalid — Parameter values are not plausible.,0,600,yes,A,1,0,no
+FM4101,HMI Manipulated State DI DO — Is indicated if at least one digital input is inverted or forced to HIGH or LOW.,0,600,no,A,0,0,yes
+FM4102,"SIS HMI WTG local mode active — Alarm is generated if the mode selection switch on the Bottombox is set to ""Local mode"".",0,600,no,A,0,0,yes
+FM4103,"SIS HMI WTG stopped and blocked — Only applies for K08delta turbines. Alarm is generated if the mode selection switch on the Bottombox is set to ""WTG stopped and Yaw Prog.: 30 blocked"". In this case the WTG is stopped. Remote access is blocked. Automatic yaw adjustment is",0,600,yes,A,1,,no
+FM4105,HMI OpTerm ManOper — Operating functions of the manual control unit in the nacelle are activated.,0,600,yes,A,1,30,no
+FM4106,HMI Yaw LocalCtrl — On-site control of the yaw system via the manual control unit has been selected.,0,400,no,A,0,35,yes
+FM5000,SIS Safety PLC Not IN Run Mode — The alarm is generated when the safety control is not in operation due to a fault.,0,600,yes,A,4,50,no
+FM5001,SIS SF01 EmStop activated — The alarm is generated if an emergency stop button has been actuated and the turbine emergency stop safety function has been triggered. Brake Prog.: 4 The alarm requires a local Safety reset. Yaw Prog.: 50,0,600,yes,SL,,,no
+FM5003,SIS SF15 Monitoring Pitchangle Depending GenRot — The alarm is generated when the ratio of pitch angle to generator/rotor speed falls short of a limit curve. Brake Prog.: 2,270,600,yes,SR,,0,yes
+FM5004,"SIS SF02 Yaw Stop — During work at the yaw, the yaw must be prevented from moving unexpectedly in order to prevent mechanical hazards. The alarm is generated if a yaw stop switch has been actuated and the safety Brake Prog.: 2 function for safe stopping of the yaw has been triggered. Yaw Prog.: 50",0,600,yes,A,,,yes
+FM5005,SIS SF03 Yaw LimitSwitch Stop — The alarm is generated if one of the two yaw limit switches has tripped and the safety function for safe stopping of the yaw has been activated. Brake Prog.: 2,0,600,yes,SL,,50,yes
+FM5006,"SIS SF04 DTR Stop — During work at the drive train, the drive train must be prevented from starting to move unexpectedly in order to prevent mechanical hazards. Brake Prog.: 4 The alarm is generated if the mode selection switch for the drive train brake is set to ""Local"" and the Yaw Prog.: 0 safety function for safe locking of the drive train has been activated.",0,600,yes,A,,,yes
+FM5007,SIS SF05 DTR Service Wind H Warn — This safety function serves to ensure that work in the danger zone is stopped if the permissible wind speed is exceeded. The alarm is automatically reset when the wind speed has returned to the Brake Prog.: 0 permissible range. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5008,SIS SF07 Pitch Speed Nok — This alarm serves to prevent overspeed. The alarm is generated at pitch angles < 69° if the pitch speeds fall below a limit curve defined Brake Prog.: 2 dependent on the rotor speed. This alarm can be reset by remote reset or a local safety reset. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5009,SIS SF08a GenRot RPM H Stop — This alarm is triggered by high rotor speeds due to extreme gusts of wind or speed control faults in production mode. This alarm is reset automatically. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5010,SIS SF08b GenRot Overspeed — This alarm is triggered by high rotor speeds due to extreme gusts of wind or speed control faults in production mode. This safety function serves to prevent overspeed. This alarm is to be reset by a Brake Prog.: 4 local safety reset. Yaw Prog.: 0,0,600,yes,SL,,,yes
+FM5011,SIS SF09 TowerVibration H Stop — The alarm is indicated if the oscillation sensor detects an impermissible oscillation level based on the defined parameters and the rotor speed is > 3 rpm. This alarm can only be reset on site. Brake Prog.: 2,0,600,yes,SL,,0,yes
+FM5012,SIS SF10 Pitchangle Diff H Stop — The alarm is generated if the safety function for monitoring the pitch angle difference between the rotor blades has triggered to prevent high mechanical loads due to an aerodynamic rotor asymmetry. Brake Prog.: 2 This alarm can be reset by remote reset or a local safety reset. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5013,"SIS SF11 Air Temp L Stop — As the turbine is only designed for a specific temperature range, it has to be brought to the safe state (turbine stop) if the minimum permissible temperature is fallen below. Brake Prog.: 2",0,600,yes,SR,,0,yes
+FM5014,"SIS Met WindSpeed(backup) Invalid — The alarm is activated if a failure (e.g. cable break, sensor fault) at one of the anemometers is detected. The alarm is to be reset by remote reset. Brake Prog.: 0",0,600,no,SR,,0,yes
+FM5015,SIS Met WindSpeed3MinDiffH — The alarm is activated if the difference between the two wind speed measurements is too big over a defined period. Brake Prog.: 0,0,600,no,A,,0,yes
+FM5016,SIS SF12 WindSpeed H Stop — The alarm is generated if the 3 minute mean value of the wind speed exceeds the defined limit. The alarm is automatically reset when the wind speed drops below the limit again. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5017,SIS SF13 Rot Service WindH Warn — The alarm is generated if the safety function for monitoring the permissible wind speed for maintenance work with the rotor locked has triggered. The safety function serves to ensure that work Brake Prog.: 0 in the danger zone is stopped if the permissible wind speed is exceeded. The alarm is reset when the Yaw Prog.: 0 wind speed has returned to the permissible range.,0,600,no,A,,,yes
+FM5018,SIS Pit SafetyRunFailure Stop — The alarm is generated if a safety run has been requested but not completed successfully. The alarm is to be reset by remote reset. Brake Prog.: 2,0,600,yes,SR,,0,no
+FM5019,SIS SF16A Pitchangle Diff RPM H Stop — The alarm is generated if the safety function for monitoring the rotor blade angles dependent on the speed has triggered. The safety function is triggered by high speeds due to strong gusts of wind or Brake Prog.: 4 grid faults combined with pitch faults. Yaw Prog.: 0,0,600,yes,SL,,,yes
+FM5020,"SIS ROTB SwitchLocalRPMH Stop — The alarm is generated if the ""Rotor brake local"" operating mode has been preselected and the drive train speed exceeds a defined limit. The alarm is to be reset by remote reset. Brake Prog.: 2",0,600,yes,SR,,0,yes
+FM5021,SIS DTR GenRPM Invalid OpC PreAlarm — The alarm is generated if the generator speed detection signal is outside the valid range. The alarm can be reset remotely. Brake Prog.: 6,0,600,yes,SR,,0,yes
+FM5022,SIS HMI ModeSwitchMultipleActive — The alarm is generated if a fault (cross-circuit monitoring - more than one channel is closed at the same time for a defined period) in the mode selection switch (automatic / local operation / stopped Brake Prog.: 2 and blocked) is detected. Yaw Prog.: 50 The alarm requires a local safety reset.,0,600,yes,SL,,,no
+FM5023,SIS PLC SafeAISystem Failure — The alarm is generated when occurs in the Safe-AI-Monitoring. The alarm is automatically reset when the fault is no longer active. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5024,SIS Pit AngleDiffH1-2 — The alarm is generated when an impermissible pitch angle difference between the two pitch axles is detected. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5025,SIS Pit AngleDiffH2-3 — Refer to FM5024,0,600,yes,SR,2,0,yes
+FM5026,SIS Pit AngleDiffH3-1 — Refer to FM5024,0,600,yes,SR,2,0,yes
+FM5027,SIS Pit Angle1Range Failure — The alarm is generated when the permissible angle range for the pitch-axle is left. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5028,SIS Pit Angle2Range Failure — Refer to FM5027,0,600,yes,SR,2,0,yes
+FM5029,SIS Pit Angle3Range Failure — Refer to FM5027,0,600,yes,SR,2,0,yes
+FM5030,SIS DTR GenRotDiff H Stop OpC PreAlarm — The alarm is generated when the plausibility check of the generator speed with the rotor speed indicates exceeding of the maximum permissible difference over a defined period of time. Brake Prog.: 6 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5031,SIS DTR RotRPM Invalid Stop OpC PreAlarm — The alarm is generated when a fault is detected in the rotor speed detection. The alarm can be reset remotely. Brake Prog.: 6,0,600,yes,SR,,0,yes
+FM5032,SIS DTR RotRPM Invalid Stop — The alarm is generated when a fault is detected in the rotor speed detection and the turbine is stopped by a safety run. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5033,SIS Vib SenTest Required OpC PreAlarm — The alarm is generated when a vibration sensor test is required or when a fault occurs during the vibration sensor test. Brake Prog.: 1,0,600,yes,A,,0,yes
+FM5034,"SIS Vib Sen Failure — The alarm is generated when a fault occurs in the vibration sensor monitoring or at the input of the safety control for the vibration sensor monitoring, and the turbine is stopped by a safety run. Brake Prog.: 2 The alarm is reset with an Auto-Reset. Yaw Prog.: 0",0,600,yes,A,,,yes
+FM5035,SIS Vib Sen Failure OpC PreAlarm — The alarm is generated when an internal fault is detected in the vibration sensor. The alarm can be reset remotely. Brake Prog.: 1,0,600,yes,SR,,0,yes
+FM5036,SIS SF20 Pit IPC Angle Diff H Stop (BP2) — This alarm is reported if in turbines with individual pitch control activated a pitch angle deviation is detected by the safety control. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5037,SIS HMI EmStopNacelleAequiv Failure OpC PreAlar — The alarm is generated when both channels are not opened when an emergency-stop button is operated in the machine house. Brake Prog.: 0 The alarm is reset automatically when both channels indicate equivalent signals in operated and non- Yaw Prog.: 0 operated status of the switch.,0,600,no,A,,,no
+FM5038,SIS Met WindSpeed(backup) Const — The alarm is generated when a constant wind speed is measured. The alarm can be reset remotely. Brake Prog.: 0,0,600,no,SR,,0,yes
+FM5039,"SIS Met WindSpeed(primary) Invalid — The alarm is activated if a failure (e.g. cable break, sensor fault) at one of the anemometers is detected. The alarm is to be reset by remote reset. Brake Prog.: 0",0,600,no,SR,,0,yes
+FM5040,SIS Met WindSpeed(primary) Const — Refer to FM5038,0,600,no,SR,0,0,yes
+FM5041,SIS Met WindSpeed (prim/back) Invalid OpC PreAla — The alarm is generated when both wind speed sensors have a fault. The alarm can be reset remotely. Brake Prog.: 1,0,600,yes,SR,,0,yes
+FM5042,SIS SF05 YawNacHub Service Wind H Warn — This safety function serves to ensure that work in the drive train and yaw danger zone is stopped if the permissible wind speed is exceeded. The alarm is automatically reset when the wind speed has Brake Prog.: 0 returned to the permissible range. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5043,SIS Yaw HydBrPr Failure — The alarm is generated when the brake pressure for the hydraulic yaw brake is detected and a safety run is performed. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 50,0,600,yes,SR,,,yes
+FM5044,SIS Yaw SysPr Failure — The alarm is generated when the system pressure for the hydraulic yaw brake falls below the minimum required pressure and a safety run is performed. Brake Prog.: 2 The alarm is reset when the system pressure return to that required. Yaw Prog.: 50,0,600,yes,A,,,yes
+FM5045,SIS Yaw HydBrRelSV5 Failure — The alarm is generated when the feedback from the coupling relay which controls valve MV5 does not correspond with the inverted coupling relay control signal. Brake Prog.: 0 The alarm can be reset remotely. Yaw Prog.: 50,0,600,no,SR,,,yes
+FM5046,SIS Yaw MotBrAntivRel Failure — The alarm is generated when the plausibility monitoring of the coupling relay for control of the yaw electrical motor brake has triggered. Brake Prog.: 0 The alarm can be reset remotely. Yaw Prog.: 50,0,600,no,SR,,,yes
+FM5047,SIS Yaw STOAntivRel Failure — The alarm is generated when the plausibility monitoring of the coupling relay for control of the yaw converter STO-inputs has triggered. Brake Prog.: 0 The alarm can be reset remotely. Yaw Prog.: 50,0,600,no,SR,,,yes
+FM5048,"SIS HMI RotBrSwitchLocalEquiv Failure OpC PreAl — The alarm is generated when the equivalence monitoring for the ""Rotor brake local/auto"" mode selector switch signals have triggered. Brake Prog.: 2 The alarm is automatically reset when the signals are equivalent. Yaw Prog.: 0",0,600,yes,A,,,no
+FM5049,SIS ROTB SysPr Failure OpC PreAlarm — The alarm is generated when the system pressure for the rotor brake hold falls below the minimum required pressure. Brake Prog.: 6 The alarm is automatically reset when the pressure has returned to that required for the system. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5050,"SIS ROTB AutoHoldPr Failure OpC PreAlarm — The alarm is generated when the rotor brake hold pressure is not indicated for a specified period of time in operating mode ""Local rotor brake"". Brake Prog.: 6 The alarm can be reset remotely. Yaw Prog.: 0",0,600,yes,SR,,,yes
+FM5051,"SIS ROTB SwitchLocalHoldPr Failure — The alarm is generated when the rotor brake hold pressure is not indicated for a specified period of time in operating mode ""Local rotor brake"". Brake Prog.: 4 The alarm can be reset remotely. Yaw Prog.: 0",0,600,yes,SR,,,yes
+FM5052,SIS ROTB SV1Fb Failure — The alarm is generated when a fault of the hydraulic rotor brake coupling relay MV1 feedback signal is detected. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5053,SIS ROTB SV2Fb Failure — refer to FM5052,0,600,yes,SR,2,0,yes
+FM5054,SIS ROTB SV3Fb Failure — refer to FM5052,0,600,yes,SR,3,0,yes
+FM5055,"SIS Pit Test required OpC PreAlarm — The alarm is generated when the status of the Pitch-Test ""Not successful”. The alarm is automatically reset when the status is ""Test successful"". Brake Prog.: 5",0,600,yes,A,,0,yes
+FM5056,SIS Pit LocalOp1 — The alarm is generated if the setup mode has been activated on the pitch axle. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5057,SIS Pit Charger1 Failure — The alarm is generated when a fault of the pitch axle charger is indicated. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5058,SIS Pit AccuIsoContactor1 Failure — The alarm is generated when the pitch axle battery disconnector opens or a pitch axle battery pack fuse has triggered. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5059,SIS Pit PresetTimeOut1 Failure — The alarm is generated when a fault occurs during calibration of the pitch axis Profisafe blade angle encoder. Brake Prog.: 0 When calibration has been successfully completed the alarm will be automatically reset. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5060,"SIS Pit Test required — The alarm is generated when the status of the Pitch-Test is ""not successful” and a safety run is triggered. Brake Prog.: 2 The alarm is reset automatically. Yaw Prog.: 0",0,600,yes,A,,,yes
+FM5061,SIS Pit LocalOp2 — Refer to FM5056,0,600,yes,SR,2,0,yes
+FM5062,SIS Pit Charger2 Failure — refer to FM5057,0,600,yes,SR,2,0,yes
+FM5063,SIS Pit AccuIsoContactor2 Failure — refer to FM5058,0,600,yes,SR,2,0,yes
+FM5064,SIS Pit PresetTimeOut2 Failure — refer to FM5059,0,600,no,A,0,0,yes
+FM5065,SIS Pit LocalOpCnvSelect Failure — The alarm is generated when more than one pitch converter indicates set-up mode. An on-site reset of the alarm is required. Brake Prog.: 2,0,600,yes,SL,,0,yes
+FM5066,SIS Pit LocalOp3 — Refer to FM5056,0,600,yes,SR,2,0,yes
+FM5067,SIS Pit Charger3 Failure — refer to FM5057,0,600,yes,SR,2,0,yes
+FM5068,SIS Pit AccuIsoContactor3 Failure — Refer to FM5058,0,600,yes,SR,2,0,yes
+FM5069,SIS Pit PresetTimeOut3 Failure — Refer to FM5059,0,600,no,A,0,0,yes
+FM5070,SIS Pit MainContactorAequiv Failure — Pitch main contactor has a fault. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5071,SIS Pit Inputs Passivated — The alarm indicates that a fault has occurred during generation of the warning signals (horn/lights),0,600,yes,A,2,0,yes
+FM5072,SIS Pit SpeedSensorSelect1 Failure — Blade angle encoder detection failed. The alarm is automatically reset when the fault is no longer active. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5073,SIS Pit SpeedSensorSelect2 Failure — refer to FM5072,0,600,yes,A,2,0,yes
+FM5074,SIS Pit SpeedSensorSelect3 Failure — refer to FM5072,0,600,yes,A,2,0,yes
+FM5075,SIS Yaw Inputs Passivated — The alarm is generated if the safety PLC detects passivation of an input. The alarm is automatically acknowledged when all inputs are activated. Brake Prog.: 0,0,600,no,A,,50,yes
+FM5076,SIS Yaw Outputs Passivated — The alarm is generated if the safety PLC detects passivation of an output for activating the coupling relays. Brake Prog.: 0 The alarm can be reset remotely. Yaw Prog.: 50,0,600,no,SR,,,yes
+FM5077,"SIS HMI LimitSwOverride Failure — The alarm is triggered if the ""Release yaw end position"" button for moving the yaw out of the end position was actuated for too long. Brake Prog.: 0 The alarm can be reset remotely. Yaw Prog.: 0",0,600,no,SR,,,yes
+FM5078,SIS Pit Cnv1 Failure — Pitch converter has an internal fault. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5079,SIS Pit Cnv2 Failure — refer to FM5078,0,600,yes,SR,2,0,yes
+FM5080,SIS Pit Cnv3 Failure — refer to FM5078,0,600,yes,SR,2,0,yes
+FM5081,SIS Pit SpeedSensor2 Passivated — Refer to FM5091,0,600,yes,A,2,0,yes
+FM5082,SIS Pit SpeedSensor3 Passivated — Refer to FM5091,0,600,yes,A,2,0,yes
+FM5083,SIS Pit SafetyRunOutput1 Passivated — The alarm is generated when Safety PLC output for the safety run command is passivated. The alarm is automatically reset when the fault is no longer active. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5084,SIS Pit SafetyRunOutput2 Passivated — Refer to FM5083,0,600,yes,A,2,0,yes
+FM5085,SIS Pit SafetyRunOutput3 Passivated — Refer to FM5083,0,600,yes,A,2,0,yes
+FM5086,SIS Pit MinVoltageRel Failure — The alarm is generated if the pitch undervoltage relay has detected a grid fault. The alarm is automatically reset when the fault is no longer active. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5087,SIS Vib Sen Failure — The alarm is generated when a fault is detected in the vibration sensor and the turbine is stopped by a safety run. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,SR,,,yes
+FM5088,SIS Pit 24VPwrSupply1 Failure — The alarm is generated when pitch axle 24V power supply indicates a fault. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5089,SIS Pit 24VPwrSupply2 Failure — Refer to FM5088,0,600,yes,SR,2,0,yes
+FM5090,"SIS OpC ≠ SIS Yaw HydBrk CmdOpen — The alarm is generated when the operation control triggers opening of the hydraulic yaw brake, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5091,SIS Pit SpeedSensor1 Passivated — The alarm is generated when a fault is detected in the pitch angle detection system. The alarm is automatically reset when the fault is no longer active. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5092,"SIS OpC ≠ SIS Pit 1 SafetyRun CmdOff — The alarm is generated when the operation control reset the emergency run command axle 1, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5093,"SIS OpC ≠ SIS Pit 2 SafetyRun CmdOff — The alarm is generated when the operation control reset the emergency run command axle 2, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5094,"SIS OpC ≠ SIS Pit 3 SafetyRun CmdOff — The alarm is generated when the operation control reset the emergency run command axle 3, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5095,"SIS OpC ≠ SIS Pit GridProt Hub CmdOff — The alarm is generated when the operation control command switching off the main contactor, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5096,"SIS OpC ≠ SIS RotBrk SV3 BrakePressure — The alarm is generated when the operation control command SV3 BrakePressure, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5097,"SIS OpC ≠ SIS RotBrk SV2 HoldPressure — The alarm is generated when the operation control command SV2 HoldPressure, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5098,"SIS OpC ≠ SIS RotBrk SV1 HoldOpen — The alarm is generated when the operation control command SV1 HoldOpen, but this is not permissible in accordance with the safety control. Brake Prog.: 0",0,600,no,M,,0,yes
+FM5099,SIS InvalidSafetyCRC — The safety program check sum is invalid.,0,600,yes,A,4,0,no
+FM5100,SIS WTTypeChanged SR-Reset req. — The alarm is reported if via the visualization the WTG type was set correctly after a software update or during commissioning and this needs to be confirmed by safety remote reset (SR) via the visualization. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5101,SIS WTTypeUnplausible Failure — The alarm is reported if the Safety-WTG type set during commissioning is implausible for the expected WTG type. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5103,SIS IO-Module IN CB Passivated — This alarm is indicated if a fault in the safety bus structure has occurred.,0,600,no,A,0,0,yes
+FM5104,SIS IO-Module IN TB Passivated — This alarm is indicated if a fault in the safety bus structure has occurred.,0,600,no,A,0,0,yes
+FM5105,SIS IO-Module IN YawBox Passivated — This alarm is indicated if a fault in the safety bus structure has occurred.,0,600,no,A,0,0,yes
+FM5106,SIS IO-Module IN BB Passivated — This alarm is indicated if a fault in the safety bus structure has occurred.,0,600,no,A,0,0,no
+FM5107,SIS AIS Outputs Passivated — The alarm is generated when the passivation of an output for controlling the AIS heating release is detected. Brake Prog.: 0,0,600,no,A,,0,yes
+FM5108,SIS AIS Inputs Passivated — The alarm is generated when the passivation of an input for controlling the AIS heating release is detected. Brake Prog.: 0,0,600,no,A,,0,yes
+FM5110,SIS Pit1 SpeedSensorCRC Failure — This alarm is indicated if a fault in the safety bus structure has occurred.,0,600,no,SR,0,0,yes
+FM5111,SIS Pit2 SpeedSensorCRC Failure — refer to FM5110,0,600,no,SR,0,0,yes
+FM5112,SIS Pit3 SpeedSensorCRC Failure — refer to FM5110,0,600,no,SR,0,0,yes
+FM5113,SIS IO-Modul IN CB CRC Failure — This alarm is indicated if a fault in the safety bus structure has occurred.,0,600,no,SR,0,0,yes
+FM5114,SIS IO-Modul IN AZB CRC Failure — refer to FM5113,0,600,no,SR,0,0,yes
+FM5115,SIS IO-Modul IN BB CRC Failure — refer to FM5113,0,600,no,SR,0,0,no
+FM5116,SIS IO-Modul IN TB CRC Failure — refer to FM5113,0,600,no,SR,0,0,yes
+FM5118,"SIS Yaw HydBrTest required OpC PreAlarm — The alarm is generated when the status for the hydraulic yaw brake test is ""Not successful"". The alarm is automatically reset when the status is ""Test successful"". Brake Prog.: 1",0,600,yes,A,,50,yes
+FM5119,SIS SF16B Pitchangle Diff RPM M Stop — The alarm is generated if the safety function for monitoring the rotor blade angles dependent on the speed has triggered. The alarm is generated if the safety function for monitoring the rotor blade Brake Prog.: 4 angles dependent on the speed has triggered. Yaw Prog.: 0,270,600,yes,SR,,,yes
+FM5120,"SIS Yaw HydBrTest required — The alarm is generated when the status for the hydraulic yaw brake test is ""Not successful"" and a safety alarm is triggered. Brake Prog.: 2 The alarm is automatically reset when the status is ""Test successful"". Yaw Prog.: 50",0,600,yes,A,,,yes
+FM5121,SIS DTR Rpm Test Mode SF08b active — This alarm is reported if the test mode for checking the trigger behavior of the speed sensors at low speed is activated. Brake Prog.: 0,0,400,no,A,,0,yes
+FM5122,"SIS HMI MCV MC Breaker Switch OFF Aequiv Failur — The alarm is generated when the equivalence monitoring for the ""MC power circuit breaker OPEN / CLOSED"" selection switch signals has triggered. Brake Prog.: 0 The alarm is automatically reset when the signals are equivalent. Yaw Prog.: 0",0,600,no,A,,,yes
+FM5123,SIS HMI ModeSwitch inactive — The alarm is generated when a fault of the WTG operating mode selector switch is detected. The alarm requires a local safety reset. Brake Prog.: 2,0,600,yes,SL,,50,no
+FM5124,SIS HMI SignalerOutput Passivated — The alarm is generated if the outputs for control of optical and acoustic signal sensor are passivated on the safety PLC. Brake Prog.: 0 The alarm is automatically acknowledged when the outputs are activated. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5125,SIS HMI EmStopInput Passivated — The alarm is generated if an input for activation of the emergency stop function is passivated on the safety PLC. Brake Prog.: 4 The alarm can be reset remotely. Yaw Prog.: 50,0,600,yes,SR,,,no
+FM5126,"SIS HMI YawStopSwitchInput Passivated — The alarm is generated if an input is passivated on the ""Yaw open/stop"" selector switch on the safety PLC. Brake Prog.: 2 The alarm is automatically acknowledged when the input is activated. Yaw Prog.: 50",0,600,yes,A,,,yes
+FM5127,"SIS HMI RotBrSwitchInput Passivated — The alarm is generated if an input is passivated on the ""Rotor brake Auto/Local"" selector switch on the safety PLC. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0",0,600,yes,SR,,,yes
+FM5128,"SIS HMI MCV MC Breaker Switch ON Passivated — The alarm is generated if an input of the selection switch ""MC power circuit breaker OPEN/CLOSED"" is deactivated on the safety PLC. Brake Prog.: 0 The alarm is automatically acknowledged when the input is activated. Yaw Prog.: 0",0,600,no,A,,,yes
+FM5129,"SIS HMI RotBrOpenSwInput Passivated — The alarm is generated if an input is passivated on the ""Brake open"" button of the safety PLC. The alarm is automatically acknowledged when the input is activated. Brake Prog.: 0",0,600,no,A,,0,yes
+FM5130,"SIS HMI SISResetSwInput Passivated — The alarm is generated if an input is passivated on the ""Safety system reset"" button of the safety PLC. The alarm is automatically acknowledged when the input is activated. Brake Prog.: 0",0,600,no,A,,0,yes
+FM5131,"SIS HMI OpModeAutoRotBrLocalYawStop Failure — The alarm is generated when the operating mode ""WTG automatic"" and either the operating mode ""Rotor brake local"" or ""Yaw stop"" are activated. Brake Prog.: 2 The alarm is reset automatically. Yaw Prog.: 50",0,600,yes,A,,,no
+FM5132,SIS HMI OpModeSwInput Passivated — The alarm is generated when a safety control input signal of the operation mode switch has been set passive. Brake Prog.: 0 The alarm will automatically reset by activate of the safety control inputs. Yaw Prog.: 0,0,600,no,A,,,no
+FM5134,SIS HMI EmStopTowerAequiv Failure — The alarm is generated when the both channels in the tower are not opened when the emergency switch is operated. Brake Prog.: 0 The alarm is reset automatically when both channels indicate equivalent signals in operated and non- Yaw Prog.: 0 operated status of the switch.,0,600,no,A,,,no
+FM5135,"SIS HMI RotBrOpenAequiv Failure — The alarm is generated when the equivalence monitoring for the ""Brake open"" switch signals have triggered. Brake Prog.: 4 The alarm is automatically reset when the signals are equivalent. Yaw Prog.: 0",0,600,yes,A,,,yes
+FM5136,"SIS HMI YawStopAequiv Failure — The alarm is generated when the equivalence monitoring for the ""Yaw Auto/Stop"" switch signals have triggered. Brake Prog.: 0 The alarm is automatically reset when the signals are equivalent. Yaw Prog.: 50",0,600,no,A,,,yes
+FM5137,"SIS HMI YawOverrideAequiv Failure — The alarm is generated when the equivalence monitoring for the ""Enable End Position Yaw"" switch signals have triggered. Brake Prog.: 0 The alarm is automatically reset when the signals are equivalent. Yaw Prog.: 0",0,600,no,A,,,yes
+FM5138,SIS Pit 24VPwrSupply3 Failure — Refer to FM5088,0,600,yes,SR,2,0,yes
+FM5139,SIS Pit MinVoltRel not activated Failure — The alarm is generated if during the pitch battery test the feedback of the undervoltage relay does not match the status of the grid contactor (open). Brake Prog.: 2 Reset is via safety remote reset. Yaw Prog.: 0,270,600,yes,SR,,,yes
+FM5140,SIS Yaw SysPr Failure OpC PreAlarm — The alarm is generated when the system pressure for the hydraulic yaw brake falls below the minimum required pressure. Brake Prog.: 1 The alarm is reset when the system pressure return to that required. Yaw Prog.: 50,0,600,yes,A,,,yes
+FM5141,SIS Yaw HydBrPr Failure OpC PreAlarm — The alarm is generated when a fault the brake pressure for the hydraulic yaw brake is detected. The alarm can be reset remotely. Brake Prog.: 1,0,600,yes,SR,,50,yes
+FM5142,SIS AIS Main Contactor not Open — The alarm is reported if the AIS main contactor reports an error.,0,600,no,SR,0,0,yes
+FM5145,SIS Pit AccuCharge1 Failure — The alarm is generated when the pitch axle battery charge status is no longer sufficient. The alarm is automatically reset when the fault is no longer active. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5146,SIS Pit AccuCharge2 Failure — Refer to FM5145,0,600,yes,A,2,0,yes
+FM5147,SIS Pit AccuCharge3 Failure — Refer to FM5145,0,600,yes,A,2,0,yes
+FM5151,SIS SF23 MCV Main Circuit Braker OFF — The alarm is reported if for maintenance purposes the power circuit breaker of the main converter has been released safely using the selection switch in the Topbox. Brake Prog.: 0,0,600,no,A,,0,yes
+FM5152,SIS SF24 Pit Tower Damping Invalid — The alarm is reported if the pitch tower vibration damping is permitted in the current WTG operating state. Brake Prog.: 2,0,600,no,A,,0,yes
+FM5153,SIS SF20 Pit IPC Angle Diff H Stop (BP1) — This alarm is reported if in turbines with individual pitch control activated a pitch angle deviation is detected by the PLC. Brake Prog.: 1,0,600,yes,SR,,0,yes
+FM5154,SIS Pit AccuContactor1 Failure — The alarm is generated when the pitch axle battery contactor indicates a fault. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5155,SIS Pit AccuContactor2 Failure — Refer to FM5154,0,600,yes,SR,2,0,yes
+FM5156,SIS Pit AccuContactor3 Failure — Refer to FM5154,0,600,yes,SR,2,0,yes
+FM5160,SIS Pit Accu test sequence 1 fault — The alarm checks whether during the pitch battery high-voltage current test the grid contactor is open and the battery contactor is closed. Brake Prog.: 0 The alarm is automatically reset if the pitch test concluded successfully. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5162,SIS Pit AccuTestLess69Deg Failure — The alarm is generated if during the pitch test at least one pitch angle is less than 69°. The alarm is automatically reset if the pitch test concluded successfully. Brake Prog.: 0,0,600,no,A,,0,yes
+FM5163,SIS PitArchIn24 AngleConvert1 Failure — The alarm is generated when the secure pitch angle sensor on axle transmits an invalid multi-turn value. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5164,SIS PitArchIn24 AngleConvert2 Failure — refer to FM5163,0,600,yes,SR,2,0,yes
+FM5165,SIS PitArchIn24 AngleConvert3 Failure — refer to FM5163,0,600,yes,SR,2,0,yes
+FM5166,"SIS ROTB AutoHoldPr Failure — The alarm is generated when the rotor brake hold pressure is not indicated for a specified period of time in operating mode ""Automatic rotor brake"" and a safety run is triggered. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0",0,600,yes,SR,,,yes
+FM5167,SIS ROTB SysPr Failure — The alarm is generated when the rotor brake pressure falls below the minimum required for the system. Brake Prog.: 2 The alarm is automatically reset when the pressure has returned to that required for the system. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5168,"SIS ROTB RPM HSVOutput Passivated — The alarm is generated when the passivation of an output for activation of the rotor brake valves MV1, MV2 or MV3 is detected as a fault. Brake Prog.: 4 The alarm requires a local safety reset. Yaw Prog.: 0",0,600,yes,SL,,,yes
+FM5169,SIS ROTB Input Passivated OpC PreAlarm — The alarm is generated when the passivation of an input for monitoring of the rotor brake system is detected. Brake Prog.: 6 The alarm is automatically reset when the fault is no longer active. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5170,SIS ROTB Input Passivated — The alarm is generated when the passivation of an input for monitoring of the rotor brake system is detected and a safety run is performed. Brake Prog.: 2 The alarm is automatically reset when the fault is no longer active. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5171,"SIS ROTB SVOutput Passivated — The alarm is generated when the passivation of an output for activation of the rotor brake valves MV1, MV2 and MV3 is detected as a fault. Brake Prog.: 4 The alarm can be reset remotely. Yaw Prog.: 0",0,600,yes,SR,,,yes
+FM5172,SIS ROTB HydTest required OpC PreAlarm — The alarm is generated when a brake test is to be performed. The alarm is reset automatically when the brake test is passed. Brake Prog.: 1,0,600,yes,A,,0,yes
+FM5173,SIS ROTB HydTest required — The alarm is generated when a brake test is to be performed and a safety run is performed. The alarm is reset automatically when the brake test is passed. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5174,SIS ROTB SV1SV3 Nact SafetyRun CmdOff — The alarm is generated when at least one of the rotor brake valves MV1 or MV3 is deactivated and a safety run is triggered. Brake Prog.: 2,0,600,yes,A,,0,yes
+FM5176,SIS DTR GenRotDiff H Stop — The alarm is generated when the plausibility check of the generator speed with the rotor speed indicates exceeding of the maximum permissible difference over a defined period of time and safety Brake Prog.: 2 run has been performed. Yaw Prog.: 0 The alarm can be reset remotely.,0,600,yes,SR,,,yes
+FM5177,SIS Vib SenInput Passivated OpC PreAlarm — The alarm is generated when a fault occurs at the input of the safety control for the vibration sensor monitoring. Brake Prog.: 1 The alarm is reset with an Auto-Reset. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5180,SIS Met MetTempAequiv Failure OpC PreAlarm — The alarm is generated when the equivalence monitoring for the outside temperature limit sensor signals have triggered a safety run. Brake Prog.: 5 The alarm is automatically reset when the signals are equivalent. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5181,SIS DTR GenRPM Invalid — The alarm is generated if the generator speed detection signal is outside the valid range. The alarm can be reset remotely. Brake Prog.: 2,0,600,yes,SR,,0,yes
+FM5182,SIS Met TempInput Passivated OpC PreAlarm — The alarm is generated if the safety PLC detects passivation of an output for monitoring the outside temperature. Brake Prog.: 5 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5183,SIS Met TempInput Passivated — The alarm is generated if the safety PLC detects passivation of an output for monitoring the outside temperature and a safety run is triggered. Brake Prog.: 2 The alarm can be reset remotely. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5184,SIS Yaw HydBrPr Invalid OpC PreAlarm — The alarm is generated when invalid analog input signals for safety monitoring of the system are detected. Brake Prog.: 1 The alarm can be reset remotely. Yaw Prog.: 50,0,600,yes,SR,,,yes
+FM5185,SIS Met WindSpeed AnemoFailure Stop OpC PreAla — The alarm is generated if a fault is present in the wind sensors that prevents time-limited continued operation. Brake Prog.: 1,0,600,yes,SL,,0,yes
+FM5186,SIS Met WindSpeed AnemoFailure Stop — The alarm is generated if a fault is present in the wind sensors that prevents time-limited continued operation. Brake Prog.: 2,0,600,yes,SL,,0,yes
+FM5187,SIS Met TempAequiv Failure — The alarm is generated when the equivalence monitoring for the outside temperature limit sensor signals have triggered a safety run. Brake Prog.: 2 The alarm is automatically reset when the signals are equivalent. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5188,SIS Yaw HydBrPr Invalid — Refer to FM5184,0,600,yes,SR,2,50,yes
+FM5189,SIS Met WindSpeed3Min(backup) Invalid — The alarm is generated when there is fault in the generation of the 3min mean wind speed measured with the cup wind speed sensor. Brake Prog.: 0 The alarm is automatically acknowledged when the fault is no longer active. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5190,SIS Met WindSpeed3Min(primary) Invalid — The alarm is generated when there is fault in the generation of the 3min mean wind speed measured with the ultrasonic. Brake Prog.: 0 The alarm is automatically acknowledged when the fault is no longer active. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5191,SIS Pit DiagnosticInputs Invalid — The alarm is generated when the communication is interrupted to the bus coupler during reading of the unsafe input signals which are a component of the pitch diagnosis. Brake Prog.: 2 The alarm is automatically reset when the fault is no longer active. Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5192,SIS Met WindSpeed (prim/back) Invalid — The alarm is generated when both wind speed sensors have a fault.,0,600,yes,SR,2,0,yes
+FM5193,SIS Met WindSpeedErr WindEstimator Diff OpC Pre — The alarm is generated if during the continued operation of the WTG with only 1 anemometer (due to the failure of one anemometer) the remaining anemometer has too large a difference to the Brake Prog.: 1 theoretically calculated wind speed (wind estimator). Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5194,SIS Met WindSpeedErr WindEstimator Diff — The alarm is generated if during the continued operation of the WTG with only 1 anemometer (due to the failure of one anemometer) the remaining anemometer has too large a difference to the Brake Prog.: 2 theoretically calculated wind speed (wind estimator). Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5195,SIS Met WindSpeedDiff WindEstimator Diff OpC Pr — The alarm is generated if during the continued operation of the WTG with only 1 anemometer (due to too large a difference between both anemometers) the anemometer with the higher value has too Brake Prog.: 1 large a difference to the theoretically calculated wind speed (wind estimator). Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5196,SIS Met WindSpeedDiff WindEstimator Diff — The alarm is generated if during the continued operation of the WTG with only 1 anemometer (due to too large a difference between both anemometers) the anemometer with the higher value has too Brake Prog.: 2 large a difference to the theoretically calculated wind speed (wind estimator). Yaw Prog.: 0,0,600,yes,A,,,yes
+FM5200,SIS MCV Main Circuit Breaker FbOFF Failure — The alarm is reported if the circuit breaker does not return the state OPEN after a opening request by the selection switch at the Topbox or emergency stop. Brake Prog.: 0,270,600,no,SL,,0,yes
+FM5201,SIS MCV Relay K1 Fb Antival Failure — The alarm is generated if the control and feedback of the coupling relay K1 (to open the MC circuit breaker) are not antivalent to each other. Brake Prog.: 0,270,600,no,SL,,0,yes
+FM5202,SIS MCV Output Passivated — The alarm is generated if the safety PLC detects that the output for the control of the circuit breaker is deactivated. Brake Prog.: 0 The alarm is automatically reset when the output is activated. Yaw Prog.: 0,0,600,no,A,,,yes
+FM5203,SIS MCV Input Passivated — The alarm is generated if the condition monitoring of the power switch is deactivated at the Safety PLC input. Brake Prog.: 0 The alarm is automatically acknowledged when the input is activated. Yaw Prog.: 0,0,600,no,A,,,yes
+FM10743,PLC (cid:9)TOC-DLL Initialization Failure — The monitor responsible for the estimation of the system load of the electrical components and limitation of the P/Q power values could not be initialized. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM10744,PLC TOC-DLL Runtime Failure — The monitor responsible for the estimation of the system load of the electrical components and limitation of the P/Q power values was faulty during its execution. Brake Prog.: 1,270,600,yes,M,,0,yes
+FM10745,PLC TOC-DLL Interface Failure — The monitor responsible for the estimation of the system load of the electrical components and limitation of the P/Q power values could not be initialized. Brake Prog.: 1,0,600,yes,A,,0,yes
+FM10746,PLC TOC-DLL initialization active — The monitor responsible for the estimation of the system load of the electrical components and limitation of the P/Q power values is initialized. Brake Prog.: 1,0,600,yes,A,,0,yes
+FM10747,PLC TOC-DLL not active — The E-DLL is not active.,0,600,yes,A,1,0,yes
+FM10748,PLC TOC-DLL Timeout — The maximum expected runtime of the DLL has been exceeded (warning).,0,600,no,A,0,0,yes
+FM11090,Vib BldBndMomEdgeRt(MZV)1stEFHWarn — Blade vibration warning,270,600,no,M,0,0,yes
+FM11091,Vib BldBndMomEdgeRt(MZV)2ndEFHWarn — Blade vibration warning,270,600,no,M,0,0,yes
+FM11092,Vib BldBndMomEdgeRt(MZV)1stEFHStop — Blade vibration warning,270,600,yes,M,1,0,yes
+FM11093,Vib BldBndMomEdgeRt(MZV)2ndEFHStop — Blade vibration warning,270,600,yes,M,1,0,yes

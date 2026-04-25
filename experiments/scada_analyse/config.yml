@@ -1,0 +1,167 @@
+general_information:
+  name: scada_analyse
+  description: Analyse of the scada data
+  park_name: "Parc éolien de Romazieres"
+  client_name: "Energiter, 770 rue Alfred Nobel, 34000 Montpellier, France"
+  client_location: "17510 - Romazieres, Charente-Maritime, France"
+  client_contact: nordex@sssd.dt
+  number_wtg: 3
+  model_wtg: "Nordex N131 - 3.78MW"
+  nominal_power: "3.78 MW"
+  v_rated: 11.5 m/s
+  constructor: Nordex
+  author_name: Nicolas Bousquet
+  author_email: nicola.bousquet@socotec.com
+  author_phone: "+33 6 12 34 56 78"
+  writer_name: Nicolas Bousquet
+  writer_email: nicilas.bousquet@socotec.com
+  writer_phone: "+33 6 12 34 56 78"
+  verficator_name: Nicolas Bousquet
+  verficator_email: nicolas.bousquet@socotec.com
+  verficator_phone: "+33 6 12 34 56 78"
+  date_archive: "2024-06-01"
+
+validation_criteria:
+  consecutive_hours:
+    value: 120
+    unit: h
+    specification: null
+    description: heures de fonctionnement
+  cut_in_to_cut_out:
+    value: 72
+    unit: h
+    specification: [ 3, 25 ]
+    description: plage de vitesse
+  nominal_power_hours:
+    value: 3
+    unit: h
+    specification: 98
+    description: Seuil
+  local_restarts:
+    value: 3
+    unit: nb
+    specification: null
+    description: null
+  availability:
+    value: 92
+    unit: "%"
+    specification: null
+    description: null
+log_data:
+  authorized_stop: [ 6, 7, 615, 920, 921 ]
+  unauthorized_stop: [ FM3, FM300, FM615, FM954, FE1613, FE1208 ]
+
+dynamic_fields:
+  turbines:
+    - turbine_id: LU09
+      general_information:
+        model: Nordex N131 – 3.78MW
+        nominal_power: 3.78
+        constructor: Nordex
+        path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU09\\WTG_LU09.csv"
+        path_log_data: ".\\experiments\\scada_analyse\\DATA\\LU09\\WTG_message_LU09.csv"
+        path_guaranteed_power_curve: null
+      mapping_operation_data:
+        timestamp: date
+        wind_speed: Wind [m/s]
+        activation_power: Power [kW]
+        wind_direction: Wind direction [°]
+        rpm: Rotor speed [1/min]
+        temperature: Air temperature [°C]
+        nacelle_position: Nacelle position [°]
+        power_reference: null
+        pitch_pale1: Pitch angle blade 1 [°]
+        pitch_pale2: Pitch angle blade 2 [°]
+        pitch_pale3: Pitch angle blade 3 [°]
+      mapping_log_data:
+        start_date: Start date
+        end_date: End date
+        name: Code
+        oper: Error number
+        status: Main status
+      test_start: "01/04/2024 00:00:00"
+      test_end: "03/12/2025 11:35:00"
+    - turbine_id: LU10
+      general_information:
+        model: Nordex N131 – 3.78MW
+        nominal_power: 3.78
+        constructor: Nordex
+        path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU10\\WTG_LU10.csv"
+        path_log_data: ".\\experiments\\scada_analyse\\DATA\\LU10\\WTG_message_LU10.csv"
+        path_guaranteed_power_curve: null
+      mapping_operation_data:
+        timestamp: date
+        wind_speed: Wind [m/s]
+        activation_power: Power [kW]
+        wind_direction: Wind direction [°]
+        rpm: Rotor speed [1/min]
+        temperature: Air temperature [°C]
+        nacelle_position: Nacelle position [°]
+        power_reference: ""
+        pitch_pale1: Pitch angle blade 1 [°]
+        pitch_pale2: Pitch angle blade 2 [°]
+        pitch_pale3: Pitch angle blade 3 [°]
+      mapping_log_data:
+        start_date: Start date
+        end_date: End date
+        name: Code
+        oper: Error number
+        status: Main status
+      test_start: "01/04/2024  00:00:00"
+      test_end: "03/12/2025  11:35:00"
+    - turbine_id: LU11
+      general_information:
+        model: Nordex N131 – 3.78MW
+        nominal_power: 3.78
+        constructor: Nordex
+        path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU11\\WTG_LU11.csv"
+        path_log_data: ".\\experiments\\scada_analyse\\DATA\\LU11\\WTG_message_LU11.csv"
+        path_guaranteed_power_curve: null
+      mapping_operation_data:
+        timestamp: date
+        wind_speed: Wind [m/s]
+        activation_power: Power [kW]
+        wind_direction: Wind direction [°]
+        rpm: Rotor speed [1/min]
+        temperature: Air temperature [°C]
+        nacelle_position: Nacelle position [°]
+        power_reference: ""
+        pitch_pale1: Pitch angle blade 1 [°]
+        pitch_pale2: Pitch angle blade 2 [°]
+        pitch_pale3: Pitch angle blade 3 [°]
+      mapping_log_data:
+        start_date: Start date
+        end_date: End date
+        name: Code
+        oper: Error number
+        status: Main status
+      test_start: "01/04/2024  00:00:00"
+      test_end: "03/12/2025  11:35:00"
+    - turbine_id: LU12
+      general_information:
+        model: Nordex N131 – 3.78MW
+        nominal_power: 3.78
+        constructor: Nordex
+        path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU12\\WTG_LU12.csv"
+        path_log_data: ".\\experiments\\scada_analyse\\DATA\\LU12\\WTG_message_LU12.csv"
+        path_guaranteed_power_curve: null
+      mapping_operation_data:
+        timestamp: date
+        wind_speed: Wind [m/s]
+        activation_power: Power [kW]
+        wind_direction: Wind direction [°]
+        rpm: Rotor speed [1/min]
+        temperature: Air temperature [°C]
+        nacelle_position: Nacelle position [°]
+        power_reference: ""
+        pitch_pale1: Pitch angle blade 1 [°]
+        pitch_pale2: Pitch angle blade 2 [°]
+        pitch_pale3: Pitch angle blade 3 [°]
+      mapping_log_data:
+        start_date: Start date
+        end_date: End date
+        name: Code
+        oper: Error number
+        status: Main status
+      test_start: "01/04/2024  00:00:00"
+      test_end: "03/12/2025  11:35:00"
