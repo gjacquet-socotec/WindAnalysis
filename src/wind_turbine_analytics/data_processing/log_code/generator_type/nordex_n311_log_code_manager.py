@@ -311,6 +311,26 @@ class NordexN311LogCodeManager(BaseLogCodeManager):
             if code.reset_mode in ["M", "SL"]
         ]
 
+    def get_unauthorized_stop_codes(self) -> list[ErrorCode]:
+        """
+        Retourne les codes correspondant à des arrêts non autorisés (pannes).
+
+        Pour Nordex, un arrêt non autorisé est défini par :
+        - availability = "yes" (affecte la disponibilité)
+        - dead_level >= 270 (génère un arrêt immédiat)
+
+        Cette définition se base uniquement sur les données du CSV,
+        sans logique spécifique hardcodée.
+
+        Returns:
+            Liste des codes d'arrêt non autorisé
+        """
+        return [
+            code
+            for code in self.error_codes.values()
+            if code.affects_availability() and code.is_critical_stop()
+        ]
+
     def analyze_operational_impact(
         self, log_df: pd.DataFrame, code_column: str
     ) -> dict[str, any]:

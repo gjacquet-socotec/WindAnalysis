@@ -56,6 +56,11 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
         mask = (df["timestamp"] >= test_start) & (df["timestamp"] <= test_end)
         df_filtered = df[mask].copy()
 
+        # Rechercher dans le fichier log data les partie ou il y a
+        # TODO changer la logique du code. Voir les partie qui
+        # TODO nouvelle logique du code : trouves les periode d'arrête dans le code et 
+        # prendre celle qui correponde au cas d'arrêt non authorisé.
+        # prendre celle qui corresponde au cas d'un redemmarage 
         if len(df_filtered) == 0:
             return {
                 "Data hours[h]": 0,

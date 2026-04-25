@@ -291,6 +291,25 @@ from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import Ba
 
 ## 🔄 Historique des modifications majeures
 
+### 2026-04-25 : Identification des arrêts non autorisés
+
+**Changements :**
+- Ajout de `get_unauthorized_stop_codes()` dans `NordexN311LogCodeManager`
+- Tests unitaires dans `tests/test_unauthorized_stops.py`
+- Exemple d'utilisation dans `tests/example_unauthorized_stops.py`
+
+**Objectif :** Permettre d'identifier et filtrer les arrêts non autorisés (pannes) basé sur les données CSV.
+
+**Critères d'un arrêt non autorisé (selon CSV Nordex) :**
+- Affecte la disponibilité (`availability = "yes"`)
+- Génère un arrêt immédiat (`dead_level >= 270`)
+
+**Approche de conception :**
+- Utilise les méthodes existantes `affects_availability()` et `is_critical_stop()`
+- Pas de logique hardcodée (FM6, FM7) dans la classe de base
+- Logique spécifique à Nordex reste dans `NordexN311LogCodeManager`
+- Flexible : permet aux autres constructeurs de définir leurs propres critères
+
 ### 2026-04-25 : Ajout du système Reset Mode
 
 **Changements :**
