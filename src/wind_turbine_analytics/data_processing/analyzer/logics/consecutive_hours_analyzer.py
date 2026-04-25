@@ -1,3 +1,4 @@
+from src.wind_turbine_analytics.application.utils.load_data import load_csv
 from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import (
     BaseAnalyzer,
 )
@@ -9,6 +10,9 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
     Criterion,
 )
 from typing import Dict, Any
+from src.wind_turbine_analytics.data_processing.log_code.generator_type.nordex_n311_log_code_manager import (
+    NordexN311LogCodeManager,
+)
 
 logger = get_logger(__name__)
 
@@ -28,10 +32,19 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
         test_end = pd.to_datetime(turbine_config.test_end)
         mapping = turbine_config.mapping_operation_data
         timestamp_col = mapping.timestamp
+        path_log_data = turbine_config.general_information.path_log_data
+        log_code_data = load_csv(path_log_data)
         criteria_hours_threshold = criteria.validation_criterion.get(
             "consecutive_hours", Criterion()
         ).value
-
+        if log_code_data.empty:
+            logger.error(
+                f"Log data is empty for turbine {turbine_config.turbine_id} at {path_log_data}"
+            )
+            raise ValueError(
+                f"Log data is empty for turbine {turbine_config.turbine_id}"
+            )
+        manager = NordexN311LogCodeManager()
         # Accéder aux colonnes via le mapping
         df = operation_data.copy()
         df["timestamp"] = pd.to_datetime(df[timestamp_col])
