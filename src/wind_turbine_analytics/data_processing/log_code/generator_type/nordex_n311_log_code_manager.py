@@ -103,17 +103,26 @@ class NordexN311LogCodeManager(BaseLogCodeManager):
 
     def _create_code_aliases(self) -> None:
         """
-        Crée des alias pour les codes sans le préfixe "FM".
-        Permet de trouver "FM104" avec "104" ou "FM104".
+        Crée des alias pour les codes avec/sans préfixe "FM" ou "FE".
+        Permet de trouver "FM104" avec "104", "FM104", ou "FE104".
+
+        Les fichiers de logs peuvent contenir FE au lieu de FM pour certains codes.
         """
         aliases_to_add = {}
 
         for code_key, error_code in list(self.error_codes.items()):
-            # Si le code commence par FM, créer un alias sans FM
+            # Si le code commence par FM, créer des alias
             if code_key.upper().startswith("FM"):
                 numeric_part = code_key[2:]  # Enlever "FM"
-                if numeric_part and numeric_part not in self.error_codes:
-                    aliases_to_add[numeric_part] = error_code
+                if numeric_part:
+                    # Alias numérique pur (ex: "104")
+                    if numeric_part not in self.error_codes:
+                        aliases_to_add[numeric_part] = error_code
+
+                    # Alias avec FE (ex: "FE104")
+                    fe_variant = f"FE{numeric_part}"
+                    if fe_variant not in self.error_codes:
+                        aliases_to_add[fe_variant] = error_code
 
         # Ajouter les alias au dictionnaire
         self.error_codes.update(aliases_to_add)
@@ -122,22 +131,22 @@ class NordexN311LogCodeManager(BaseLogCodeManager):
     def normalize_code(code: str) -> str:
         """
         Normalise un code pour recherche flexible.
-        Supporte: "FM104", "104", "fm104" -> tous trouvés
+        Supporte: "FM104", "FE104", "104", "fm104" -> tous trouvés
 
         Args:
             code: Code à normaliser
 
         Returns:
-            Code normalisé (avec FM en majuscules si numérique pur)
+            Code normalisé en majuscules
         """
         code_str = str(code).strip().upper()
 
-        # Si c'est uniquement un nombre, ajouter FM
+        # Si c'est uniquement un nombre, retourner tel quel (alias créé)
         if code_str.isdigit():
-            return code_str  # Retourner juste le numéro pour l'alias
+            return code_str
 
-        # Si ça commence par FM, normaliser en majuscules
-        if code_str.startswith("FM"):
+        # Si ça commence par FM ou FE, normaliser en majuscules
+        if code_str.startswith("FM") or code_str.startswith("FE"):
             return code_str
 
         # Sinon, retourner tel quel

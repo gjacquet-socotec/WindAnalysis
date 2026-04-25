@@ -78,10 +78,10 @@ dynamic_fields:
         pitch_pale2: 01WEA95986 PIT 2 Pitchangle Blade Encoder
         pitch_pale3: 01WEA95986 PIT 3 Pitchangle Blade Encoder
       mapping_log_data:
-        start_date: ["date", "time"]
-        end_date: ["date", "time"]
-        name: Code
-        oper: Error number
+        start_date: [ "date", "time" ]
+        end_date: [ "date", "time" ]
+        name: oper
+        oper: name
         status: Main status
       test_start: "27.01.2026 15:30:00"
       test_end: "05.02.2026 23:50:00"
@@ -108,8 +108,8 @@ dynamic_fields:
         pitch_pale2: 06WEA95990 PIT 2 Pitchangle Blade Encoder
         pitch_pale3: 06WEA95990 PIT 3 Pitchangle Blade Encoder
       mapping_log_data:
-        start_date: ["date", "time"]
-        end_date: ["date", "time"]
+        start_date: [ "date", "time" ]
+        end_date: [ "date", "time" ]
         name: Code
         oper: Error number
         status: Main status
@@ -138,8 +138,8 @@ dynamic_fields:
         pitch_pale2: 08WEA95991 PIT 2 Pitchangle Blade Encoder
         pitch_pale3: 08WEA95991 PIT 3 Pitchangle Blade Encoder
       mapping_log_data:
-        start_date: ["date", "time"]
-        end_date: ["date", "time"]
+        start_date: [ "date", "time" ]
+        end_date: [ "date", "time" ]
         name: Code
         oper: Error number
         status: Main status

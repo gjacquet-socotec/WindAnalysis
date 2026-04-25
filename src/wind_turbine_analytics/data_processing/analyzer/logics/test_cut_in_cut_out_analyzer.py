@@ -28,62 +28,210 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
         """
-        Cette méthode doit retourner un dictionnaire avec les résultats
-        Logics :
+        Analyse des périodes de fonctionnement entre cut-in et cut-out.
 
-        STEP 1 : CREATE FILTERING:
-        - Production > 0, wind speed between cut-in and cut-out,
-        - including all downtimes (curtailments, maintenance, grid issues, etc.).
-        - Check if the wind speed is between cut-in and cut-out speeds defined
-          in the turbine configuration.
-        - Check if the power production is greater than 0.
-
-        STEP 2 : DETECT AVAILABLE AND UNAVAILABLE PERIODS:
-        - List PERIODES where the FILTER is respected
-        - Sum each PERIODE where the FILTER is respected
-        - Make a table of the PERIODES where the FILTER is respected
-          with their sum and their start and end date
-
-        - List  PERIODES where the FILTER is not respected
-        - Sum each PERIODE where the FILTER is not respected
-        - Make a table of the PERIODES where the FILTER is not respected
-         with their sum and their start and end date
-
-        STEP 3 :  CRITERIA of SUCCESS
-        - If one of the sum of the period is greater than the criteria defined
-            in the configuration, then the test is a success, else it's a
-            failure.
-
+        Logique :
+        STEP 1 : Filtrer les données (wind_speed entre cut-in/cut-out, power > 0)
+        STEP 2 : Détecter les périodes continues disponibles/indisponibles
+        STEP 3 : Soustraire les arrêts non autorisés de chaque période
+        STEP 4 : Vérifier le critère de succès (au moins une période >= seuil)
         """
+        from src.wind_turbine_analytics.application.utils.load_data import (
+            prepare_log_dataframe_with_mapping,
+        )
+
         # Extraire les informations de configuration
-        test_start = pd.to_datetime(turbine_config.test_start)
-        test_end = pd.to_datetime(turbine_config.test_end)
+        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
+        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
         mapping = turbine_config.mapping_operation_data
         timestamp_col = mapping.timestamp
+        wind_speed_col = mapping.wind_speed
+        power_col = mapping.activation_power
         path_log_data = turbine_config.general_information.path_log_data
+
+        # Récupérer les critères
+        cut_in_cut_out_criterion = criteria.validation_criterion.get(
+            "cut_in_to_cut_out", Criterion()
+        )
+        required_hours = cut_in_cut_out_criterion.value
+        cut_in_speed, cut_out_speed = cut_in_cut_out_criterion.specification
+
+        logger.info(
+            f"Analyse cut-in/cut-out pour {turbine_config.turbine_id}: "
+            f"cut-in={cut_in_speed} m/s, cut-out={cut_out_speed} m/s, "
+            f"critère={required_hours}h"
+        )
+
+        # Charger les données de log
         manager = NordexN311LogCodeManager()
-        breakpoint()
         log_code_data = load_csv(path_log_data)
 
         if log_code_data.empty:
-            logger.error(
-                f"Log data is empty for turbine {turbine_config.turbine_id} at {path_log_data}"
-            )
+            logger.error(f"Log data is empty for turbine {turbine_config.turbine_id}")
             raise ValueError(
                 f"Log data is empty for turbine {turbine_config.turbine_id}"
             )
 
-        df_of_test = operation_data.copy()
-        df_of_test = df_of_test.where(timestamp_col >= test_start).where(
-            timestamp_col <= test_end
+        # Préparer le DataFrame de log avec mapping
+        log_prepared, log_start_col, log_end_col = prepare_log_dataframe_with_mapping(
+            log_code_data, turbine_config.mapping_log_data
         )
 
-        # STEP 1 : CREATE FILTERING:
-        # - Production > 0, wind speed between cut-in and cut-out,
+        # Copier et filtrer les données opérationnelles
+        df = operation_data.copy()
+        df[timestamp_col] = pd.to_datetime(df[timestamp_col], dayfirst=True)
+        df = df.sort_values(timestamp_col)
 
-        # STEP 2 : DETECT AVAILABLE AND UNAVAILABLE PERIODS:
+        # Filtrer sur la période de test
+        mask_test_period = (df[timestamp_col] >= test_start) & (
+            df[timestamp_col] <= test_end
+        )
+        df_filtered = df[mask_test_period].copy()
+
+        if len(df_filtered) == 0:
+            logger.warning("Aucune donnée dans la période de test")
+            return {
+                "available_periods": [],
+                "unavailable_periods": [],
+                "max_available_duration_hours": 0.0,
+                "criterion_met": False,
+            }
+
+        # STEP 1: Créer le filtre (wind_speed entre cut-in/cut-out ET power > 0)
+        df_filtered["is_available"] = (
+            (df_filtered[wind_speed_col] >= cut_in_speed)
+            & (df_filtered[wind_speed_col] <= cut_out_speed)
+            & (df_filtered[power_col] > 0)
+        )
+
+        # STEP 2: Détecter les périodes continues (groupes)
+        df_filtered["period_change"] = (
+            df_filtered["is_available"] != df_filtered["is_available"].shift()
+        )
+        df_filtered["group"] = df_filtered["period_change"].cumsum()
+
+        # Agréger par groupe
+        periods = df_filtered.groupby("group").agg(
+            {
+                timestamp_col: ["min", "max"],
+                "is_available": "first",
+            }
+        )
+
+        periods.columns = ["start", "end", "is_available"]
+        periods["gross_duration_hours"] = (
+            periods["end"] - periods["start"]
+        ).dt.total_seconds() / 3600
+
+        # STEP 3: Soustraire les arrêts non autorisés de chaque période
+        unauthorized_codes = manager.get_unauthorized_stop_codes()
+        unauthorized_code_list = [code.code for code in unauthorized_codes]
+
+        logger.info(
+            f"Codes d'arrêt non autorisés identifiés: {len(unauthorized_code_list)}"
+        )
+
+        # Préparer les colonnes de log
+        log_prepared[log_start_col] = pd.to_datetime(
+            log_prepared[log_start_col], dayfirst=True, errors="coerce"
+        )
+        log_prepared[log_end_col] = pd.to_datetime(
+            log_prepared[log_end_col], dayfirst=True, errors="coerce"
+        )
+
+        # Filtrer les logs sur les codes non autorisés
+        code_col = turbine_config.mapping_log_data.oper
+        unauthorized_logs = log_prepared[
+            log_prepared[code_col].isin(unauthorized_code_list)
+        ].copy()
+
+        logger.info(
+            f"Arrêts non autorisés trouvés dans les logs: {len(unauthorized_logs)}"
+        )
+
+        # Pour chaque période, calculer le temps d'arrêt non autorisé
+        available_periods = []
+        unavailable_periods = []
+
+        for _, period in periods.iterrows():
+            period_start = period["start"]
+            period_end = period["end"]
+            gross_duration = period["gross_duration_hours"]
+
+            # Trouver les arrêts non autorisés qui chevauchent cette période
+            overlapping_stops = unauthorized_logs[
+                (unauthorized_logs[log_start_col] < period_end)
+                & (unauthorized_logs[log_end_col] > period_start)
+            ]
+
+            # Calculer le temps total d'arrêt non autorisé et collecter détails
+            total_stop_duration_hours = 0.0
+            stop_details = []
+
+            for _, stop in overlapping_stops.iterrows():
+                # Calculer le chevauchement
+                overlap_start = max(stop[log_start_col], period_start)
+                overlap_end = min(stop[log_end_col], period_end)
+                overlap_duration = (overlap_end - overlap_start).total_seconds() / 3600
+
+                if overlap_duration > 0:
+                    total_stop_duration_hours += overlap_duration
+
+                    # Récupérer le code et sa description
+                    code_value = str(stop[code_col])
+                    error_code = manager.get_code(code_value)
+
+                    stop_details.append(
+                        {
+                            "code": code_value,
+                            "description": (
+                                error_code.description
+                                if error_code
+                                else "Description non disponible"
+                            ),
+                            "start": overlap_start,
+                            "end": overlap_end,
+                            "duration_hours": round(overlap_duration, 2),
+                        }
+                    )
+
+            # Durée nette = durée brute - arrêts non autorisés
+            net_duration_hours = max(0, gross_duration - total_stop_duration_hours)
+
+            period_data = {
+                "start": period_start,
+                "end": period_end,
+                "gross_duration_hours": round(gross_duration, 2),
+                "unauthorized_stop_hours": round(total_stop_duration_hours, 2),
+                "net_duration_hours": round(net_duration_hours, 2),
+                "unauthorized_stops": stop_details,  # Liste des arrêts détaillés
+            }
+
+            if period["is_available"]:
+                available_periods.append(period_data)
+            else:
+                unavailable_periods.append(period_data)
+
+        # STEP 4: Vérifier le critère (au moins une période >= required_hours)
+        max_net_duration = (
+            max(p["net_duration_hours"] for p in available_periods)
+            if available_periods
+            else 0.0
+        )
+
+        criterion_met = max_net_duration >= required_hours
+
+        logger.info(
+            f"Durée maximale continue (nette): {max_net_duration}h, "
+            f"Critère: {required_hours}h, Réussi: {criterion_met}"
+        )
+        breakpoint()
         return {
-            "test_start": test_start,
-            "test_end": test_end,
-            "timestamp_col": timestamp_col,
+            "available_periods": available_periods,
+            "unavailable_periods": unavailable_periods,
+            "max_net_duration_hours": round(max_net_duration, 2),
+            "required_hours": required_hours,
+            "criterion_met": criterion_met,
+            "cut_in_speed": cut_in_speed,
+            "cut_out_speed": cut_out_speed,
         }
