@@ -28,8 +28,8 @@ class NominalPowerAnalyzer(BaseAnalyzer):
 
         Logique:
         STEP 1: Filtrer les données sur la période de test
-        STEP 2: Détecter les périodes où power >= specification% * P_nom
-        STEP 3: Calculer la durée cumulée totale
+        STEP 2: Créer un masque où power >= specification% * P_nom
+        STEP 3: Calculer la durée cumulée totale (nombre de points × 10min)
         STEP 4: Valider si durée >= value (heures requises)
         """
         # Extraire les informations de configuration
@@ -85,54 +85,21 @@ class NominalPowerAnalyzer(BaseAnalyzer):
         if len(df_filtered) == 0:
             logger.warning("Aucune donnée dans la période de test")
             return {
-                "nominal_power_periods": [],
                 "total_duration_hours": 0.0,
                 "required_hours": required_hours,
                 "criterion_met": False,
                 "power_threshold_kW": power_threshold,
                 "power_threshold_percent": power_threshold_percent,
+                "nominal_power_kW": P_nom,
+                "selected_window_start": None,
+                "selected_window_end": None,
             }
 
-        # STEP 2: Filtrer power >= seuil
-        df_filtered["above_threshold"] = df_filtered[power_col] >= power_threshold
+        # STEP 2: Créer un masque pour power >= seuil (utilise fillna pour gérer les NaN)
+        mask = df_filtered[power_col].fillna(0) >= power_threshold
 
-        # Détecter l'intervalle de mesure (temps entre 2 points)
-        if len(df_filtered) > 1:
-            time_diffs = df_filtered[timestamp_col].diff().dt.total_seconds() / 3600
-            # Utiliser la médiane pour éviter les outliers
-            measurement_interval_hours = time_diffs.median()
-        else:
-            measurement_interval_hours = 0.167  # 10 minutes par défaut
-
-        logger.info(
-            f"Intervalle de mesure détecté: "
-            f"{measurement_interval_hours * 60:.1f} minutes"
-        )
-
-        # Détecter les périodes continues
-        df_filtered["period_change"] = (
-            df_filtered["above_threshold"] != df_filtered["above_threshold"].shift()
-        )
-        df_filtered["group"] = df_filtered["period_change"].cumsum()
-
-        # Agréger par groupe
-        periods = df_filtered.groupby("group").agg(
-            {
-                timestamp_col: ["min", "max", "count"],
-                "above_threshold": "first",
-            }
-        )
-
-        periods.columns = ["start", "end", "count", "above_threshold"]
-
-        # Calculer durée = nombre de points × intervalle
-        periods["duration_hours"] = periods["count"] * measurement_interval_hours
-
-        # Filtrer seulement les périodes au-dessus du seuil
-        above_threshold_periods = periods[periods["above_threshold"]].copy()
-
-        # STEP 3: Calculer la durée totale cumulée
-        total_duration = above_threshold_periods["duration_hours"].sum()
+        # STEP 3: Calculer la durée cumulée (nombre de points × 10 minutes)
+        total_duration = float(mask.sum()) * (10.0 / 60.0)
 
         # STEP 4: Valider le critère
         criterion_met = total_duration >= required_hours
@@ -141,6 +108,16 @@ class NominalPowerAnalyzer(BaseAnalyzer):
         max_power = df_filtered[power_col].max()
         max_power_idx = df_filtered[power_col].idxmax()
         max_power_timestamp = df_filtered.loc[max_power_idx, timestamp_col]
+
+        # Déterminer la fenêtre de temps (premier et dernier point au-dessus du seuil)
+        first_idx = mask[mask].index.min() if mask.any() else None
+        last_idx = mask[mask].index.max() if mask.any() else None
+        selected_window_start = (
+            df_filtered.loc[first_idx, timestamp_col] if first_idx is not None else None
+        )
+        selected_window_end = (
+            df_filtered.loc[last_idx, timestamp_col] if last_idx is not None else None
+        )
 
         # Si wind_speed existe, récupérer aussi la vitesse max
         wind_speed_col = mapping.wind_speed
@@ -166,18 +143,8 @@ class NominalPowerAnalyzer(BaseAnalyzer):
                 f"le {max_wind_timestamp}"
             )
 
-        # Préparer les détails des périodes
-        period_details = []
-        for _, period in above_threshold_periods.iterrows():
-            period_details.append(
-                {
-                    "start": period["start"],
-                    "end": period["end"],
-                    "duration_hours": round(period["duration_hours"], 2),
-                }
-            )
+        # Construire le résultat
         result = {
-            "nominal_power_periods": period_details,
             "total_duration_hours": round(total_duration, 2),
             "required_hours": required_hours,
             "criterion_met": criterion_met,
@@ -186,6 +153,8 @@ class NominalPowerAnalyzer(BaseAnalyzer):
             "nominal_power_kW": P_nom,
             "max_power_observed_kW": round(max_power, 2),
             "max_power_timestamp": max_power_timestamp,
+            "selected_window_start": selected_window_start,
+            "selected_window_end": selected_window_end,
         }
 
         if max_wind_speed is not None:
