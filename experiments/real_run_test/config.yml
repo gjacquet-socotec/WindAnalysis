@@ -92,8 +92,8 @@ dynamic_fields:
         constructor: Nordex
         path_operation_data: ".\\experiments\\real_run_test\\DATA\\E6\\tenMinTimeSeries\
           -06WEA95990-Mean-1260206142342.csv"
-        path_log_data: ".\\experiments\\real_run_test\\DATA\\E6\\tenMinTimeSeries-06WEA\
-          95990-Mean-1260206142342.csv"
+        path_log_data: ".\\experiments\\real_run_test\\DATA\\E6\\alarmLog-06WEA95990-12\
+          60206135808.csv"
         path_guaranteed_power_curve: null
       mapping_operation_data:
         timestamp: Date
@@ -110,8 +110,8 @@ dynamic_fields:
       mapping_log_data:
         start_date: [ "date", "time" ]
         end_date: [ "date", "time" ]
-        name: Code
-        oper: Error number
+        name: oper
+        oper: name
         status: Main status
       test_start: "27.01.2026 15:30:00"
       test_end: "05.02.2026 23:50:00"
@@ -140,8 +140,8 @@ dynamic_fields:
       mapping_log_data:
         start_date: [ "date", "time" ]
         end_date: [ "date", "time" ]
-        name: Code
-        oper: Error number
+        name: oper
+        oper: name
         status: Main status
       test_start: "27.01.2026 15:30:00"
       test_end: "05.02.2026 23:50:00"

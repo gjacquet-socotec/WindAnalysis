@@ -132,6 +132,15 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
         )
 
         # Préparer les colonnes de log
+        # Format: "03.02.2026 12:46:01:880" (avec millisecondes après :)
+        # Remplacer le dernier : par . pour pandas
+        log_prepared[log_start_col] = log_prepared[log_start_col].str.replace(
+            r":(\d{3})$", r".\1", regex=True
+        )
+        log_prepared[log_end_col] = log_prepared[log_end_col].str.replace(
+            r":(\d{3})$", r".\1", regex=True
+        )
+
         log_prepared[log_start_col] = pd.to_datetime(
             log_prepared[log_start_col], dayfirst=True, errors="coerce"
         )
@@ -140,9 +149,16 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
         )
 
         # Filtrer les logs sur les codes non autorisés
+        # Utiliser get_code() pour gérer les alias FE/FM
         code_col = turbine_config.mapping_log_data.oper
         unauthorized_logs = log_prepared[
-            log_prepared[code_col].isin(unauthorized_code_list)
+            log_prepared[code_col].apply(
+                lambda x: (
+                    manager.get_code(str(x)) is not None
+                    and manager.get_code(str(x)).affects_availability()
+                    and manager.get_code(str(x)).is_critical_stop()
+                )
+            )
         ].copy()
 
         logger.info(
@@ -225,7 +241,6 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
             f"Durée maximale continue (nette): {max_net_duration}h, "
             f"Critère: {required_hours}h, Réussi: {criterion_met}"
         )
-        breakpoint()
         return {
             "available_periods": available_periods,
             "unavailable_periods": unavailable_periods,
