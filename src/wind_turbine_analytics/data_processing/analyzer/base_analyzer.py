@@ -1,5 +1,4 @@
-import logging
-
+from src.logger_config import get_logger
 from src.wind_turbine_analytics.application.configuration.config_models import (
     TurbineConfig,
     TurbineFarm,
@@ -21,7 +20,7 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
     Criterion,
 )
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class BaseAnalyzer:

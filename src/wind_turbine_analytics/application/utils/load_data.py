@@ -1,9 +1,9 @@
 import pandas as pd
 from pathlib import Path
 from typing import Optional, Union, List
-import logging
+from src.logger_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class CSVLoadError(Exception):

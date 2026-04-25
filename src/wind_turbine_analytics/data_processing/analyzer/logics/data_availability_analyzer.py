@@ -1,7 +1,7 @@
 from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import (
     BaseAnalyzer,
 )
-import logging
+from src.logger_config import get_logger
 import pandas as pd
 from src.wind_turbine_analytics.application.configuration.config_models import (
     TurbineConfig,
@@ -10,7 +10,8 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
 )
 from typing import Dict, Any
 import dateparser
-logger = logging.getLogger(__name__)
+
+logger = get_logger(__name__)
 
 
 class DataAvailabilityAnalyzer(BaseAnalyzer):

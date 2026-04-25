@@ -11,7 +11,7 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
     ValidationCriteria,
     Criterion,
 )
-import logging
+from src.logger_config import get_logger
 from src.wind_turbine_analytics.data_processing.log_code.generator_type.nordex_n311_log_code_manager import (
     NordexN311LogCodeManager,
 )
@@ -20,7 +20,7 @@ from src.wind_turbine_analytics.data_processing.log_code import (
     FunctionalSystem,
 )
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class EbACutInCutOutAnalyzer(BaseAnalyzer):
@@ -56,7 +56,7 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
             raise ValueError(
                 f"Log data is empty for turbine {turbine_config.turbine_id}"
             )
-
+        breakpoint()
         manager = NordexN311LogCodeManager()
         start_date_col = turbine_config.mapping_log_data.start_date
         end_date_col = turbine_config.mapping_log_data.end_date

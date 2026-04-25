@@ -1,13 +1,7 @@
 from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import (
     BaseAnalyzer,
 )
-
-from src.wind_turbine_analytics.data_processing.data_result_models import (
-    AnalysisResult,
-)
-from src.wind_turbine_analytics.application.configuration.config_models import TurbineFarm
-
-import logging
+from src.logger_config import get_logger
 import pandas as pd
 from src.wind_turbine_analytics.application.configuration.config_models import (
     TurbineConfig,
@@ -15,6 +9,8 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
     Criterion,
 )
 from typing import Dict, Any
+
+logger = get_logger(__name__)
 
 
 class ConsecutiveHoursAnalyzer(BaseAnalyzer):

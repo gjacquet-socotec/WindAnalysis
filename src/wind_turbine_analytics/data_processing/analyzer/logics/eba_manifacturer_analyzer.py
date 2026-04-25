@@ -10,9 +10,9 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
     ValidationCriteria,
     Criterion,
 )
-import logging
+from src.logger_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class EbaManufacturerAnalyzer(BaseAnalyzer):
@@ -41,7 +41,11 @@ class EbaManufacturerAnalyzer(BaseAnalyzer):
         - Vitesse de vent entre cut-in et cut-out
         - INCLUT tous les downtimes (curtailments, maintenance, problèmes réseau, etc.)
         """
-
+        logger.info(
+            "Starting EBA analysis for turbine %s (Manufacturer EBA) without error code filtering.",
+            turbine_config.turbine_id,
+        )
+        logger.info("=" * 80)
         mapping = turbine_config.mapping_operation_data
         wind_speed_col = mapping.wind_speed
         timestamp_col = mapping.timestamp
@@ -121,9 +125,9 @@ class EbaManufacturerAnalyzer(BaseAnalyzer):
         df["fixed_power"] = np.minimum(df[power_col], P_nom)
 
         # Filtrer uniquement sur la plage de vitesse et production > seuil
-        mask_operating = df[wind_speed_col].between(
-            v_min, v_max, inclusive="both"
-        ) & (df[power_col] > 0.01 * P_nom)
+        mask_operating = df[wind_speed_col].between(v_min, v_max, inclusive="both") & (
+            df[power_col] > 0.01 * P_nom
+        )
         df = df[mask_operating].copy()
 
         # Calcul des énergies
@@ -162,7 +166,11 @@ class EbaManufacturerAnalyzer(BaseAnalyzer):
             turbine_config.turbine_id,
             eba_monthly[["month", "performance"]].to_string(index=False),
         )
-
+        logger.info(
+            "Completed EBA analysis for turbine %s (Manufacturer EBA) without error code filtering.",
+            turbine_config.turbine_id,
+        )
+        logger.info("-" * 80)
         return {
             "total_real_energy": E_real,
             "total_theoretical_energy": E_theorical,
