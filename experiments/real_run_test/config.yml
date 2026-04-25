@@ -83,7 +83,7 @@ dynamic_fields:
         name: oper
         oper: name
         status: Main status
-      test_start: "27.01.2026 15:30:00"
+      test_start: "01.02.2026 00:00:00"
       test_end: "05.02.2026 23:50:00"
     - turbine_id: E6
       general_information:
@@ -113,7 +113,7 @@ dynamic_fields:
         name: oper
         oper: name
         status: Main status
-      test_start: "27.01.2026 15:30:00"
+      test_start: "01.02.2026 00:00:00"
       test_end: "05.02.2026 23:50:00"
     - turbine_id: E8
       general_information:
@@ -143,5 +143,5 @@ dynamic_fields:
         name: oper
         oper: name
         status: Main status
-      test_start: "27.01.2026 15:30:00"
+      test_start: "01.02.2026 00:00:00"
       test_end: "05.02.2026 23:50:00"

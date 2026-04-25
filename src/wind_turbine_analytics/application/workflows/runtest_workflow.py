@@ -21,6 +21,9 @@ from src.wind_turbine_analytics.data_processing.chart_builders.consecutive_hours
 from src.wind_turbine_analytics.data_processing.data_processing import (
     DataProcessingStep,
 )
+from src.wind_turbine_analytics.data_processing.analyzer.logics.nominal_power_analyzer import (
+    NominalPowerAnalyzer,
+)
 
 
 class RunTestWorkflow(BaseWorkflow):
@@ -65,7 +68,10 @@ class RunTestWorkflow(BaseWorkflow):
         # SCADA records with active power >= 3704.4 kW are counted and converted to hours (each 10-min record = 0.167 h).
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=3h) and P>= 98% of P_nominal [True/False] |
-
+        DataProcessingStep(
+            analyzer=NominalPowerAnalyzer(),
+            visualizer=None,  # [TODO] create visualizer for this analyzer
+        ).execute(self.turbine_sources, self.validation_criteria)
         # [TODO] Criteria 4 :  Local acknowledgements / restarts (<=3)
         # The number of local acknowledgements and restarts during the RT must be less than or equal to 3.
         # Local acknowledgements are identified from unauthorised stop codes in the alarm log (FM3, FM300, FM615, FM954, FE1613, FE1208)
