@@ -102,11 +102,33 @@ class TurbineMappingOperationData:
 
 @dataclass(frozen=True)
 class TurbineLogMapping:
-    start_date: str
-    end_date: str
+    start_date: Any  # str ou list[str] pour ["date", "time"]
+    end_date: Any  # str ou list[str] pour ["date", "time"]
     name: Optional[str] = None
     oper: Optional[str] = None
     status: Optional[str] = None
+
+    def get_start_date_columns(self) -> list[str]:
+        """
+        Retourne la liste des colonnes pour start_date.
+
+        Returns:
+            Liste de colonnes (ex: ["date", "time"] ou ["timestamp"])
+        """
+        if isinstance(self.start_date, list):
+            return self.start_date
+        return [self.start_date]
+
+    def get_end_date_columns(self) -> list[str]:
+        """
+        Retourne la liste des colonnes pour end_date.
+
+        Returns:
+            Liste de colonnes (ex: ["date", "time"] ou ["timestamp"])
+        """
+        if isinstance(self.end_date, list):
+            return self.end_date
+        return [self.end_date]
 
 
 @dataclass(frozen=True)

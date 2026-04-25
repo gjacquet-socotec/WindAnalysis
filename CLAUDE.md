@@ -340,6 +340,67 @@ from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import Ba
 
 ---
 
+## 📝 Configuration YAML pour les mappings de colonnes
+
+### Mapping des colonnes de logs (date/time)
+
+Le système supporte **deux formats** pour les colonnes temporelles dans les logs :
+
+#### **Format 1 : Date et Time séparés** (Recommandé pour fichiers avec colonnes séparées)
+```yaml
+mapping_log_data:
+  start_date: ["date", "time"]  # LISTE de colonnes à fusionner
+  end_date: ["date", "time"]
+  name: name
+  oper: oper
+  status: status
+```
+
+#### **Format 2 : Colonne timestamp unique**
+```yaml
+mapping_log_data:
+  start_date: timestamp  # STRING - colonne unique
+  end_date: timestamp
+  name: name
+  oper: oper
+```
+
+### Utilisation dans le code
+
+```python
+from src.wind_turbine_analytics.application.utils.load_data import (
+    load_csv,
+    prepare_log_dataframe_with_mapping
+)
+
+# Charger le fichier
+log_df = load_csv("path/to/log.csv")
+
+# Préparer avec le mapping
+log_prepared, start_col, end_col = prepare_log_dataframe_with_mapping(
+    log_df, turbine_config.mapping_log_data
+)
+
+# Utiliser avec create_time_mask
+mask = manager.create_time_mask(
+    log_df=log_prepared,
+    target_df=operation_df,
+    code_column='oper',
+    log_start_col=start_col,  # Utilise le nom préparé
+    log_end_col=end_col,
+    target_timestamp_col='timestamp'
+)
+```
+
+### Avantages
+
+✅ **Flexible** : Supporte les fichiers avec colonnes séparées ou timestamp unique  
+✅ **Automatique** : `prepare_log_dataframe_with_mapping()` fusionne si nécessaire  
+✅ **Type-safe** : Validation par `TurbineLogMapping` dataclass  
+✅ **Rétrocompatible** : Fonctionne avec l'ancien format string
+
+---
+
 ## 📚 Ressources et références
 
 ### Documentation interne

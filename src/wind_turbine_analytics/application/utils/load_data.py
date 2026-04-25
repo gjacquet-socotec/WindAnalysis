@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Any
 from src.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -9,6 +9,84 @@ logger = get_logger(__name__)
 class CSVLoadError(Exception):
     """Exception levée lors d'erreurs de chargement CSV."""
     pass
+
+
+def prepare_log_dataframe_with_mapping(
+    log_df: pd.DataFrame,
+    mapping: Any
+):
+    """
+    Prépare un DataFrame de logs en fusionnant les colonnes si nécessaire.
+
+    Args:
+        log_df: DataFrame des logs brut
+        mapping: TurbineLogMapping avec start_date et end_date
+
+    Returns:
+        Tuple (df_prepared, start_col_name, end_col_name)
+
+    Example:
+        >>> # Si mapping.start_date = ["date", "time"]
+        >>> df, start, end = prepare_log_dataframe_with_mapping(log_df, mapping)
+        >>> # df aura une colonne "start_datetime" et "end_datetime"
+    """
+    from src.wind_turbine_analytics.application.configuration.config_models import (  # noqa: E501
+        TurbineLogMapping
+    )
+
+    df = log_df.copy()
+
+    # Gérer start_date
+    if isinstance(mapping, TurbineLogMapping):
+        start_cols = mapping.get_start_date_columns()
+        end_cols = mapping.get_end_date_columns()
+    else:
+        # Fallback pour ancien format
+        start_cols = [mapping.start_date] if isinstance(
+            mapping.start_date, str
+        ) else mapping.start_date
+        end_cols = [mapping.end_date] if isinstance(
+            mapping.end_date, str
+        ) else mapping.end_date
+
+    # Vérifier si les colonnes existent réellement dans le DataFrame
+    start_cols_exist = all(col in df.columns for col in start_cols)
+    end_cols_exist = all(col in df.columns for col in end_cols)
+
+    # Créer la colonne start_datetime
+    if len(start_cols) == 1:
+        start_col_name = start_cols[0]
+    elif start_cols_exist:
+        df = create_datetime_column(df, start_cols, "start_datetime")
+        start_col_name = "start_datetime"
+    else:
+        # Les colonnes ont déjà été fusionnées par load_csv
+        # Chercher une colonne timestamp existante
+        if "timestamp" in df.columns:
+            start_col_name = "timestamp"
+        else:
+            raise ValueError(
+                f"Colonnes {start_cols} introuvables. "
+                f"Colonnes disponibles: {list(df.columns)}"
+            )
+
+    # Créer la colonne end_datetime
+    if len(end_cols) == 1:
+        end_col_name = end_cols[0]
+    elif end_cols_exist:
+        df = create_datetime_column(df, end_cols, "end_datetime")
+        end_col_name = "end_datetime"
+    else:
+        # Les colonnes ont déjà été fusionnées
+        if "timestamp" in df.columns:
+            end_col_name = "timestamp"
+        else:
+            raise ValueError(
+                f"Colonnes {end_cols} introuvables. "
+                f"Colonnes disponibles: {list(df.columns)}"
+            )
+
+    return df, start_col_name, end_col_name
 
 
 def _detect_header_row(df: pd.DataFrame) -> Optional[int]:
@@ -60,30 +138,71 @@ def _clean_header_names(df: pd.DataFrame) -> pd.DataFrame:
     """
     # Remplacer les colonnes 'Unnamed: X' par des noms vides temporairement
     new_columns = []
+    has_unnamed = False
     for col in df.columns:
         if 'unnamed' in str(col).lower():
             new_columns.append('')
+            has_unnamed = True
         else:
             new_columns.append(str(col).strip())
 
     df.columns = new_columns
 
-    # Si la première ligne contient les vrais noms, les utiliser
-    if df.iloc[0].notna().all() and not df.iloc[0].astype(str).str.isdigit().any():  # noqa: E501
-        # La première ligne semble être un en-tête
+    # Seulement si on a des colonnes Unnamed ET que la première ligne
+    # semble être un en-tête
+    if has_unnamed and df.iloc[0].notna().all():
+        # La première ligne pourrait être un en-tête
         potential_header = df.iloc[0].astype(str).str.strip()
 
-        # Vérifier si ces noms ont du sens
-        valid_names = [
-            name for name in potential_header
-            if name and name.lower() not in ['nan', '']
-        ]
+        # Vérifier si ces noms ont du sens (pas que des chiffres)
+        is_numeric = df.iloc[0].apply(
+            lambda x: str(x).replace('.', '').replace('-', '').isdigit()
+        )
 
-        if len(valid_names) >= len(df.columns) * 0.5:
-            # Utiliser la première ligne comme en-tête
-            df.columns = potential_header
-            df = df.iloc[1:].reset_index(drop=True)
-            logger.info("En-tête extrait de la première ligne de données")
+        # Si au moins 50% ne sont pas numériques, c'est probablement header
+        if is_numeric.sum() < len(df.columns) * 0.5:
+            valid_names = [
+                name for name in potential_header
+                if name and name.lower() not in ['nan', '']
+            ]
+
+            if len(valid_names) >= len(df.columns) * 0.5:
+                # Utiliser la première ligne comme en-tête
+                df.columns = potential_header
+                df = df.iloc[1:].reset_index(drop=True)
+                logger.info("En-tête extrait de la première ligne de données")
+
+    return df
+
+
+def create_datetime_column(
+    df: pd.DataFrame,
+    columns: list[str],
+    output_col: str = "datetime_combined"
+) -> pd.DataFrame:
+    """
+    Crée une colonne datetime en fusionnant plusieurs colonnes.
+
+    Args:
+        df: DataFrame source
+        columns: Liste des colonnes à fusionner (ex: ["date", "time"])
+        output_col: Nom de la colonne de sortie
+
+    Returns:
+        DataFrame avec la nouvelle colonne datetime
+
+    Example:
+        >>> df = create_datetime_column(df, ["date", "time"], "start_datetime")
+    """
+    if len(columns) == 1:
+        # Une seule colonne : copier directement
+        df[output_col] = pd.to_datetime(df[columns[0]], errors='coerce')
+    else:
+        # Plusieurs colonnes : fusionner
+        combined = df[columns[0]].astype(str)
+        for col in columns[1:]:
+            combined = combined + ' ' + df[col].astype(str)
+        df[output_col] = pd.to_datetime(combined, errors='coerce')
 
     return df
 
@@ -151,6 +270,7 @@ def load_csv(
     decimal: str = '.',
     parse_dates: Optional[List[str]] = None,
     skip_header_detection: bool = False,
+    auto_merge_datetime: bool = True,
     **kwargs
 ) -> pd.DataFrame:
     """
@@ -159,7 +279,7 @@ def load_csv(
     Gère automatiquement :
     - Détection d'en-têtes sur plusieurs lignes
     - Nettoyage des colonnes 'Unnamed'
-    - Fusion des colonnes date/time en timestamp
+    - Fusion optionnelle des colonnes date/time en timestamp
 
     Args:
         file_path: Chemin vers le fichier CSV
@@ -168,6 +288,7 @@ def load_csv(
         decimal: Séparateur décimal ('.' ou ',')
         parse_dates: Liste des colonnes à parser en dates
         skip_header_detection: Skip automatic header detection
+        auto_merge_datetime: Fusionne date/time en timestamp (défaut:True)
         **kwargs: Arguments supplémentaires pour pd.read_csv
 
     Returns:
