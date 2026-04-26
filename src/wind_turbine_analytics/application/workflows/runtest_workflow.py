@@ -50,7 +50,7 @@ class RunTestWorkflow(BaseWorkflow):
         # The WTG must be in continuous operation for a minimum of 120 consecutive hours.
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=120h) [True/False] |
-        DataProcessingStep(
+        consecutive_hours_results = DataProcessingStep(
             analyzer=ConsecutiveHoursAnalyzer(),
             visualizer=ConseccutiveHoursVisualizer(),
         ).execute(self.turbine_sources, self.validation_criteria)
@@ -59,7 +59,7 @@ class RunTestWorkflow(BaseWorkflow):
         # 10-minute intervals with hub-height wind speed between 3 m/s and 25 m/s are counted from the SCADA file (each = 0.167 h).
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=72h) [True/False] |
-        DataProcessingStep(
+        test_cut_in_cut_out_results = DataProcessingStep(
             analyzer=TestCutInCutOutAnalyzer(),
             visualizer=None,  # [TODO] create visualizer for this analyzer
         ).execute(self.turbine_sources, self.validation_criteria)
@@ -68,7 +68,7 @@ class RunTestWorkflow(BaseWorkflow):
         # SCADA records with active power >= 3704.4 kW are counted and converted to hours (each 10-min record = 0.167 h).
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=3h) and P>= 98% of P_nominal [True/False] |
-        DataProcessingStep(
+        nominal_power_result = DataProcessingStep(
             analyzer=NominalPowerAnalyzer(),
             visualizer=None,  # [TODO] create visualizer for this analyzer
         ).execute(self.turbine_sources, self.validation_criteria)

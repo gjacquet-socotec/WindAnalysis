@@ -41,15 +41,15 @@ class ScadaWorkflow(BaseWorkflow):
         return
 
     def process_step(self) -> None:
-        DataProcessingStep(
+        eba_cut_in_cut_out_results = DataProcessingStep(
             analyzer=EbACutInCutOutAnalyzer(),
             visualizer=None,  # [TODO] add visualizer for cut-in/cut-out analysis
         ).execute(self.turbine_sources, self.validation_criteria)
-        DataProcessingStep(
+        eba_manufacturer_results = DataProcessingStep(
             analyzer=EbaManufacturerAnalyzer(),
             visualizer=None,  # [TODO] add visualizer for manufacturer EBA analysis
         ).execute(self.turbine_sources, self.validation_criteria)
-        DataProcessingStep(
+        data_availability_results = DataProcessingStep(
             analyzer=DataAvailabilityAnalyzer(),
             visualizer=None,  # [TODO] add visualizer for data availability analysis
         ).execute(self.turbine_sources, self.validation_criteria)
