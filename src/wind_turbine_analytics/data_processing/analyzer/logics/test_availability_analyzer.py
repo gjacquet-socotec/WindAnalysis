@@ -12,6 +12,7 @@ from typing import Dict, Any
 from src.wind_turbine_analytics.data_processing.log_code.generator_type.nordex_n311_log_code_manager import (
     NordexN311LogCodeManager,
 )
+
 # Import local pour éviter import circulaire avec runtest_workflow
 from src.wind_turbine_analytics.application.utils.load_data import (
     prepare_log_dataframe_with_mapping,
@@ -115,14 +116,12 @@ class TestAvailabilityAnalyzer(BaseAnalyzer):
         unauthorized_code_list = [code.code for code in unauthorized_codes]
 
         logger.info(
-            f"Codes d'arrêt non autorisés identifiés: "
-            f"{len(unauthorized_code_list)}"
+            f"Codes d'arrêt non autorisés identifiés: " f"{len(unauthorized_code_list)}"
         )
 
         if len(unauthorized_code_list) == 0:
             logger.warning(
-                "Aucun code d'arrêt non autorisé défini. "
-                "Disponibilité = 100%"
+                "Aucun code d'arrêt non autorisé défini. " "Disponibilité = 100%"
             )
             return {
                 "total_hours": round(total_hours, 2),
@@ -220,7 +219,10 @@ class TestAvailabilityAnalyzer(BaseAnalyzer):
                 active_start = None
 
         # Gérer les arrêts encore actifs à la fin du test
-        if any(count > 0 for count in active_by_code.values()) and active_start is not None:
+        if (
+            any(count > 0 for count in active_by_code.values())
+            and active_start is not None
+        ):
             start = max(active_start, test_start)
             end = test_end
 
