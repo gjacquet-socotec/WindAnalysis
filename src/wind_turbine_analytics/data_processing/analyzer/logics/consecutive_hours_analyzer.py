@@ -24,6 +24,7 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
     def _compute(
         self,
         operation_data: pd.DataFrame,
+        log_data: pd.DataFrame,
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
@@ -32,11 +33,10 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
         mapping = turbine_config.mapping_operation_data
         timestamp_col = mapping.timestamp
         path_log_data = turbine_config.general_information.path_log_data
-        log_code_data = load_csv(path_log_data)
         criteria_hours_threshold = criteria.validation_criterion.get(
             "consecutive_hours", Criterion()
         ).value
-        if log_code_data.empty:
+        if log_data.empty:
             logger.error(
                 f"Log data is empty for turbine {turbine_config.turbine_id} at {path_log_data}"
             )

@@ -45,7 +45,18 @@ class BaseAnalyzer:
                     logger.warning(
                         f"Pas de chemin de données d'opération pour la turbine {turbine_id}"
                     )
-                    continue
+                    raise CSVLoadError(
+                        f"Chemin de données d'opération manquant pour la turbine {turbine_id}"
+                    )
+
+                path_log_data = turbine_data.general_information.path_log_data
+                if not path_log_data:
+                    logger.warning(
+                        f"Pas de chemin de données de log pour la turbine {turbine_id}"
+                    )
+                    raise CSVLoadError(
+                        f"Chemin de données de log manquant pour la turbine {turbine_id}"
+                    )
 
                 # Charger les données d'opération
                 logger.info(
@@ -70,9 +81,15 @@ class BaseAnalyzer:
                         operation_data[active_power_col], errors="coerce"
                     )
 
+                log_data = load_csv(path_log_data)
+                log_data["timestamp"] = pd.to_datetime(
+                    log_data["timestamp"], dayfirst=True, errors="coerce"
+                )
+
                 # TODO: Implémenter la logique d'analyse des heures consécutives
                 results[turbine_id] = self._compute(
                     operation_data,
+                    log_data,
                     turbine_data,
                     criteria,
                 )
@@ -92,6 +109,7 @@ class BaseAnalyzer:
     def _compute(
         self,
         operation_data: pd.DataFrame,
+        log_data: pd.DataFrame,
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:

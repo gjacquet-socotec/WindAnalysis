@@ -30,6 +30,7 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
     def _compute(
         self,
         operation_data: pd.DataFrame,
+        log_data: pd.DataFrame,
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
@@ -44,24 +45,13 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
         timestamp_col = mapping.timestamp
         power_col = mapping.activation_power
         P_nom = turbine_config.general_information.nominal_power
-        path_log_data = turbine_config.general_information.path_log_data
 
         test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
         test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
 
-        log_code_data = load_csv(path_log_data)
-        if log_code_data.empty:
-            logger.error(
-                f"Log data is empty for turbine {turbine_config.turbine_id} at {path_log_data}"
-            )
-            raise ValueError(
-                f"Log data is empty for turbine {turbine_config.turbine_id}"
-            )
-
         manager = NordexN311LogCodeManager()
         start_date_col = turbine_config.mapping_log_data.start_date
         end_date_col = turbine_config.mapping_log_data.end_date
-        name_col = turbine_config.mapping_log_data.name
         oper_col = turbine_config.mapping_log_data.oper
 
         if P_nom <= 100:
@@ -142,7 +132,7 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
             df[power_col] = pd.to_numeric(df[power_col], errors="coerce")
 
         mask_operating = manager.create_time_mask(
-            log_df=log_code_data,
+            log_df=log_data,
             target_df=df,
             code_column=oper_col,
             log_start_col=start_date_col,

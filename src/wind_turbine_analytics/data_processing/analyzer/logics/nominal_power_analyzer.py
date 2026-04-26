@@ -20,6 +20,7 @@ class NominalPowerAnalyzer(BaseAnalyzer):
     def _compute(
         self,
         operation_data: pd.DataFrame,
+        log_data: pd.DataFrame,
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:

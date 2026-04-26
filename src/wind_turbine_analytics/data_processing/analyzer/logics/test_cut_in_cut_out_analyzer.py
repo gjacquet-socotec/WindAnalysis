@@ -27,6 +27,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
     def _compute(
         self,
         operation_data: pd.DataFrame,
+        log_data: pd.DataFrame,
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
@@ -46,7 +47,6 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
         timestamp_col = mapping.timestamp
         wind_speed_col = mapping.wind_speed
         power_col = mapping.activation_power
-        path_log_data = turbine_config.general_information.path_log_data
 
         # Récupérer les critères
         cut_in_cut_out_criterion = criteria.validation_criterion.get(
@@ -63,9 +63,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
 
         # Charger les données de log
         manager = NordexN311LogCodeManager()
-        log_code_data = load_csv(path_log_data)
-
-        if log_code_data.empty:
+        if log_data.empty:
             logger.error(f"Log data is empty for turbine {turbine_config.turbine_id}")
             raise ValueError(
                 f"Log data is empty for turbine {turbine_config.turbine_id}"
@@ -73,7 +71,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
 
         # Préparer le DataFrame de log avec mapping
         log_prepared, log_start_col, log_end_col = prepare_log_dataframe_with_mapping(
-            log_code_data, turbine_config.mapping_log_data
+            log_data, turbine_config.mapping_log_data
         )
 
         # Copier et filtrer les données opérationnelles

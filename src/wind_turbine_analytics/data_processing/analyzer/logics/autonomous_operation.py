@@ -40,6 +40,7 @@ class AutonomousOperationAnalyzer(BaseAnalyzer):
     def _compute(
         self,
         operation_data: pd.DataFrame,
+        log_data: pd.DataFrame,
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
@@ -67,10 +68,9 @@ class AutonomousOperationAnalyzer(BaseAnalyzer):
                 - manual_restart_events: Liste détaillée des événements
         """
         # STEP 1: Extraire les informations de configuration
-        breakpoint()
+
         test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
         test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
-        path_log_data = turbine_config.general_information.path_log_data
 
         # Récupérer le critère local_restarts
         local_restart_criterion = criteria.validation_criterion.get(
@@ -85,13 +85,11 @@ class AutonomousOperationAnalyzer(BaseAnalyzer):
 
         # Charger les données de log
         manager = NordexN311LogCodeManager()
-        log_code_data = load_csv(path_log_data)
-        log_code_data["timestamp"] = pd.to_datetime(log_code_data["timestamp"], dayfirst=True)
 
-        if log_code_data.empty:
+        if log_data.empty:
             logger.warning(
                 f"Aucune donnée de log pour {turbine_config.turbine_id} "
-                f"à {path_log_data}"
+                f"à {turbine_config.general_information.path_log_data}"
             )
             return {
                 "manual_restart_codes": [],
@@ -103,7 +101,7 @@ class AutonomousOperationAnalyzer(BaseAnalyzer):
 
         # Préparer le DataFrame de log avec mapping
         log_prepared, log_start_col, _ = prepare_log_dataframe_with_mapping(
-            log_code_data, turbine_config.mapping_log_data
+            log_data, turbine_config.mapping_log_data
         )
 
         # STEP 2: Filtrer les logs sur la période de test

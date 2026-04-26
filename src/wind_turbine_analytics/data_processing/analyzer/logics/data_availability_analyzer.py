@@ -21,6 +21,7 @@ class DataAvailabilityAnalyzer(BaseAnalyzer):
     def _compute(
         self,
         operation_data: pd.DataFrame,
+        log_data: pd.DataFrame,
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
@@ -42,29 +43,6 @@ class DataAvailabilityAnalyzer(BaseAnalyzer):
                 operation_data[timestamp_col], dayfirst=True, errors="coerce"
             )
 
-        # Normaliser test_start et test_end pour qu'ils aient le même dtype que les données
-        # Retirer les informations de timezone si présentes
-        data_tz = operation_data[timestamp_col].dt.tz
-
-        if data_tz is not None:
-            # Les données ont un timezone
-            if test_start.tz is None:
-                test_start = test_start.tz_localize(data_tz)
-            else:
-                test_start = test_start.tz_convert(data_tz)
-
-            if test_end.tz is None:
-                test_end = test_end.tz_localize(data_tz)
-            else:
-                test_end = test_end.tz_convert(data_tz)
-        else:
-            # Les données n'ont pas de timezone
-            if test_start.tz is not None:
-                test_start = test_start.tz_localize(None)
-            if test_end.tz is not None:
-                test_end = test_end.tz_localize(None)
-
-        # Filtrer les données dans la période de test
         test_data = operation_data[
             (operation_data[timestamp_col] >= test_start)
             & (operation_data[timestamp_col] <= test_end)
