@@ -29,8 +29,6 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
     ) -> Dict[str, Any]:
 
         # Extraire les informations de configuration
-        test_start = pd.to_datetime(turbine_config.test_start)
-        test_end = pd.to_datetime(turbine_config.test_end)
         mapping = turbine_config.mapping_operation_data
         timestamp_col = mapping.timestamp
         path_log_data = turbine_config.general_information.path_log_data
@@ -47,13 +45,25 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
             )
         # Accéder aux colonnes via le mapping
         df = operation_data.copy()
-        df["timestamp"] = pd.to_datetime(df[timestamp_col])
+        df[timestamp_col] = pd.to_datetime(df[timestamp_col])
+
+        # Convertir test_start et test_end en utilisant le MÊME dtype que la colonne timestamp
+        # Cela garantit que les comparaisons fonctionnent correctement
+        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
+        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
+        print(f"duration :  {test_end - test_start}")
+
+        # S'assurer que la colonne timestamp n'a pas de timezone non plus
+        if df[timestamp_col].dt.tz is not None:
+            df[timestamp_col] = df[timestamp_col].dt.tz_localize(None)
+
+        self._format_window(test_start, test_end)
 
         # Trier par timestamp
-        df = df.sort_values("timestamp")
+        df = df.sort_values(timestamp_col).reset_index(drop=True)
 
         # Filtrer entre test_start et test_end
-        mask = (df["timestamp"] >= test_start) & (df["timestamp"] <= test_end)
+        mask = (df[timestamp_col] >= test_start) & (df[timestamp_col] <= test_end)
         df_filtered = df[mask].copy()
 
         # Rechercher dans le fichier log data les partie ou il y a
@@ -66,7 +76,7 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
             }
 
         # Calculer les différences de temps entre enregistrements consécutifs
-        df_filtered["time_diff"] = df_filtered["timestamp"].diff()
+        df_filtered["time_diff"] = df_filtered[timestamp_col].diff()
 
         # Définir un seuil d'interruption (ex: > 15 minutes = interruption)
         max_gap = pd.Timedelta(minutes=15)
@@ -77,7 +87,7 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
 
         # Pour chaque groupe continu, calculer la durée
         continuous_periods = df_filtered.groupby("group").agg(
-            {"timestamp": ["min", "max"]}
+            {timestamp_col: ["min", "max"]}
         )
 
         continuous_periods.columns = ["start", "end"]

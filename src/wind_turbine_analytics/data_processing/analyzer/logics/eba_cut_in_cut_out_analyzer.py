@@ -45,8 +45,9 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
         power_col = mapping.activation_power
         P_nom = turbine_config.general_information.nominal_power
         path_log_data = turbine_config.general_information.path_log_data
-        test_start = turbine_config.test_start
-        test_end = turbine_config.test_end
+
+        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
+        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
 
         log_code_data = load_csv(path_log_data)
         if log_code_data.empty:

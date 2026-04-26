@@ -164,3 +164,6 @@ class BaseAnalyzer:
         )
 
         return power_curve
+
+    def _format_window(self, start: pd.Timestamp, end: pd.Timestamp) -> str:
+        return f"{start.strftime('%Y-%m-%d %H:%M:%S')} to {end.strftime('%Y-%m-%d %H:%M:%S')}"
