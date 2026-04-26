@@ -40,6 +40,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
         STEP 3 : Soustraire les arrêts non autorisés de chaque période
         STEP 4 : Vérifier le critère de succès (au moins une période >= seuil)
         """
+
         # Extraire les informations de configuration
         test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
         test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
@@ -151,22 +152,10 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
         # Préparer les colonnes de log
         # Format: "03.02.2026 12:46:01:880" (avec millisecondes après :)
         # Remplacer le dernier : par . pour pandas
-        log_prepared[log_start_col] = log_prepared[log_start_col].str.replace(
-            r":(\d{3})$", r".\1", regex=True
-        )
-        log_prepared[log_end_col] = log_prepared[log_end_col].str.replace(
-            r":(\d{3})$", r".\1", regex=True
-        )
-
-        log_prepared[log_start_col] = pd.to_datetime(
-            log_prepared[log_start_col], dayfirst=True, errors="coerce"
-        )
-        log_prepared[log_end_col] = pd.to_datetime(
-            log_prepared[log_end_col], dayfirst=True, errors="coerce"
-        )
 
         # Filtrer les logs sur les codes non autorisés
         # Utiliser get_code() pour gérer les alias FE/FM
+
         code_col = turbine_config.mapping_log_data.oper
         unauthorized_logs = log_prepared[
             log_prepared[code_col].apply(

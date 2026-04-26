@@ -82,6 +82,9 @@ class BaseAnalyzer:
                     )
 
                 log_data = load_csv(path_log_data)
+                log_data["timestamp"] = log_data["timestamp"].str.replace(
+                    r":(\d{3})$", r".\1", regex=True
+                )
                 log_data["timestamp"] = pd.to_datetime(
                     log_data["timestamp"], dayfirst=True, errors="coerce"
                 )
