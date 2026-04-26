@@ -82,6 +82,22 @@ class DataAvailabilityAnalyzer(BaseAnalyzer):
         temperature_availability = [] if temperature_col else None
 
         # Pour chaque tranche de 10 minutes
+        if not pd.api.types.is_float_dtype(test_data[wind_speed_col]):
+            logger.warning(
+                f"Wind speed column '{wind_speed_col}' is not numeric, "
+                f"cannot compute availability for turbine {turbine_config.turbine_id}"
+            )
+            test_data[wind_speed_col] = pd.to_numeric(
+                test_data[wind_speed_col], errors="coerce"
+            )
+        if not pd.api.types.is_float_dtype(test_data[active_power_col]):
+            logger.warning(
+                f"Active power column '{active_power_col}' is not numeric, "
+                f"cannot compute availability for turbine {turbine_config.turbine_id}"
+            )
+            test_data[active_power_col] = pd.to_numeric(
+                test_data[active_power_col], errors="coerce"
+            )
 
         for i in range(len(time_range) - 1):
             start_interval = time_range[i]

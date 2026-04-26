@@ -51,7 +51,25 @@ class BaseAnalyzer:
                 logger.info(
                     f"Chargement des données pour la turbine {turbine_id} depuis {path_operation_data}"
                 )
+                # try to solve inconsistency of data types for different columns
                 operation_data = load_csv(path_operation_data)
+                timestamp_col = turbine_data.mapping_operation_data.timestamp
+                wind_seed_col = turbine_data.mapping_operation_data.wind_speed
+                active_power_col = turbine_data.mapping_operation_data.activation_power
+
+                operation_data[timestamp_col] = pd.to_datetime(
+                    operation_data[timestamp_col], dayfirst=True, errors="coerce"
+                )
+
+                if not pd.api.types.is_numeric_dtype(operation_data[wind_seed_col]):
+                    operation_data[wind_seed_col] = pd.to_numeric(
+                        operation_data[wind_seed_col], errors="coerce"
+                    )
+                if not pd.api.types.is_numeric_dtype(operation_data[active_power_col]):
+                    operation_data[active_power_col] = pd.to_numeric(
+                        operation_data[active_power_col], errors="coerce"
+                    )
+
                 # TODO: Implémenter la logique d'analyse des heures consécutives
                 results[turbine_id] = self._compute(
                     operation_data,

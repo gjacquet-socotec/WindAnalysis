@@ -56,7 +56,7 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
             raise ValueError(
                 f"Log data is empty for turbine {turbine_config.turbine_id}"
             )
-        breakpoint()
+
         manager = NordexN311LogCodeManager()
         start_date_col = turbine_config.mapping_log_data.start_date
         end_date_col = turbine_config.mapping_log_data.end_date
@@ -126,6 +126,20 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
             .copy()
             .dropna(subset=[wind_speed_col, power_col])
         )
+
+        if not pd.api.types.is_float_dtype(df[wind_speed_col]):
+            logger.warning(
+                f"Wind speed column '{wind_speed_col}' is not numeric, "
+                f"cannot compute cut-in/cut-out analysis for turbine {turbine_config.turbine_id}"
+            )
+            df[wind_speed_col] = pd.to_numeric(df[wind_speed_col], errors="coerce")
+        if not pd.api.types.is_float_dtype(df[power_col]):
+            logger.warning(
+                f"Power column '{power_col}' is not numeric, "
+                f"cannot compute cut-in/cut-out analysis for turbine {turbine_config.turbine_id}"
+            )
+            df[power_col] = pd.to_numeric(df[power_col], errors="coerce")
+
         mask_operating = manager.create_time_mask(
             log_df=log_code_data,
             target_df=df,

@@ -13,6 +13,9 @@ from typing import Dict, Any
 from src.wind_turbine_analytics.data_processing.log_code.generator_type.nordex_n311_log_code_manager import (
     NordexN311LogCodeManager,
 )
+from src.wind_turbine_analytics.application.utils.load_data import (
+    prepare_log_dataframe_with_mapping,
+)
 
 logger = get_logger(__name__)
 
@@ -36,10 +39,6 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
         STEP 3 : Soustraire les arrêts non autorisés de chaque période
         STEP 4 : Vérifier le critère de succès (au moins une période >= seuil)
         """
-        from src.wind_turbine_analytics.application.utils.load_data import (
-            prepare_log_dataframe_with_mapping,
-        )
-
         # Extraire les informations de configuration
         test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
         test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
@@ -98,6 +97,26 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
             }
 
         # STEP 1: Créer le filtre (wind_speed entre cut-in/cut-out ET power > 0)
+        # Ensure wind speed column is float to avoid comparison issues
+        if not pd.api.types.is_float_dtype(df_filtered[wind_speed_col]):
+            logger.warning(
+                "Column '%s' is not float (dtype=%s). Converting to float.",
+                wind_speed_col,
+                df_filtered[wind_speed_col].dtype,
+            )
+            df_filtered[wind_speed_col] = pd.to_numeric(
+                df_filtered[wind_speed_col], errors="coerce"
+            ).astype(float)
+        if not pd.api.types.is_float_dtype(df_filtered[power_col]):
+            logger.warning(
+                "Column '%s' is not float (dtype=%s). Converting to float.",
+                power_col,
+                df_filtered[power_col].dtype,
+            )
+            df_filtered[power_col] = pd.to_numeric(
+                df_filtered[power_col], errors="coerce"
+            ).astype(float)
+
         df_filtered["is_available"] = (
             (df_filtered[wind_speed_col] >= cut_in_speed)
             & (df_filtered[wind_speed_col] <= cut_out_speed)

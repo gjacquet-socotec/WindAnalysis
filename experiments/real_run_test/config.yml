@@ -61,7 +61,7 @@ dynamic_fields:
         nominal_power: 3.78
         constructor: Nordex
         path_operation_data: ".\\experiments\\real_run_test\\DATA\\E1\\tenMinTimeSeries\
-          -01WEA95986-Mean-1260206142049.csv"
+          -01WEA95986-Mean-1260206141902.csv"
         path_log_data: ".\\experiments\\real_run_test\\DATA\\E1\\alarmLog-01WEA95986-12\
           60206141836.csv"
         path_guaranteed_power_curve: null
