@@ -24,6 +24,13 @@ from src.wind_turbine_analytics.data_processing.data_processing import (
 from src.wind_turbine_analytics.data_processing.analyzer.logics.nominal_power_analyzer import (
     NominalPowerAnalyzer,
 )
+# Import de AutonomousOperationAnalyzer
+# Note: Cet import peut causer un import circulaire si autonomous_operation.py
+# importe depuis application.utils. Si c'est le cas, il faut déplacer load_data
+# hors du package application.
+from src.wind_turbine_analytics.data_processing.analyzer.logics.autonomous_operation import (
+    AutonomousOperationAnalyzer,
+)
 
 
 class RunTestWorkflow(BaseWorkflow):
@@ -87,7 +94,14 @@ class RunTestWorkflow(BaseWorkflow):
         # Local acknowledgements are identified from unauthorised stop codes in the alarm log (FM3, FM300, FM615, FM954, FE1613, FE1208)
         # For each row :
         # | WTG | Local Acknowledgements / Restarts | Criterion (<=3) [True/False] |
+        autonomous_operation_result = DataProcessingStep(
+            analyzer=AutonomousOperationAnalyzer(),
+            visualizer=None,  # [TODO] create visualizer for this analyzer
+        ).execute(self.turbine_sources, self.validation_criteria)
 
+        self._presenter.show_analysis_result(
+            autonomous_operation_result, "Autonomous Operation Analysis (Criterion 4)"
+        )
         # [TODO] Criteria 5 :  Availability (>=92%)
         # Local acknowledgements are identified from unauthorised stop codes in the alarm log (FM3, FM300, FM615, FM954, FE1613, FE1208)
         # For each row :
