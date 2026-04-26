@@ -27,6 +27,7 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
         turbine_config: TurbineConfig,
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
+
         # Extraire les informations de configuration
         test_start = pd.to_datetime(turbine_config.test_start)
         test_end = pd.to_datetime(turbine_config.test_end)
@@ -44,7 +45,6 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
             raise ValueError(
                 f"Log data is empty for turbine {turbine_config.turbine_id}"
             )
-        manager = NordexN311LogCodeManager()
         # Accéder aux colonnes via le mapping
         df = operation_data.copy()
         df["timestamp"] = pd.to_datetime(df[timestamp_col])
