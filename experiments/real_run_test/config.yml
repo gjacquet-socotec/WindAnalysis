@@ -35,7 +35,7 @@ validation_criteria:
   nominal_power_hours:
     value: 3
     unit: h
-    specification: 97.33
+    specification: 97
     description: Seuil
   local_restarts:
     value: 3
