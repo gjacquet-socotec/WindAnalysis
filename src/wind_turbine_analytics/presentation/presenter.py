@@ -1,4 +1,6 @@
 from __future__ import annotations
+from typing import Any
+from src.wind_turbine_analytics.data_processing.data_result_models import AnalysisResult
 
 
 class PipelinePresenter:
@@ -11,4 +13,8 @@ class PipelinePresenter:
         return None
 
     def info(self, message: str) -> None:
+        return None
+
+    def show_analysis_result(self, result: AnalysisResult, analysis_name: str) -> None:
+        """Display analysis results in a structured way."""
         return None

@@ -46,7 +46,7 @@ class RunTestWorkflow(BaseWorkflow):
         # For each row :
         # | WTG | RT Start [date] | RT End [date] | Duration [h]| Data Available (%) |
 
-        # [TODO] Criteria 1 :  Minimum of 120 consecutive hours :
+        # Criteria 1: Minimum of 120 consecutive hours
         # The WTG must be in continuous operation for a minimum of 120 consecutive hours.
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=120h) [True/False] |
@@ -54,8 +54,11 @@ class RunTestWorkflow(BaseWorkflow):
             analyzer=ConsecutiveHoursAnalyzer(),
             visualizer=ConseccutiveHoursVisualizer(),
         ).execute(self.turbine_sources, self.validation_criteria)
+        self._presenter.show_analysis_result(
+            consecutive_hours_results, "Consecutive Hours Analysis (Criterion 1)"
+        )
 
-        # [TODO] Criteria 2 :  72 hours within cut-in to cut-out wind speed range (3-25 m/s)
+        # Criteria 2: 72 hours within cut-in to cut-out wind speed range (3-25 m/s)
         # 10-minute intervals with hub-height wind speed between 3 m/s and 25 m/s are counted from the SCADA file (each = 0.167 h).
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=72h) [True/False] |
@@ -63,8 +66,11 @@ class RunTestWorkflow(BaseWorkflow):
             analyzer=TestCutInCutOutAnalyzer(),
             visualizer=None,  # [TODO] create visualizer for this analyzer
         ).execute(self.turbine_sources, self.validation_criteria)
+        self._presenter.show_analysis_result(
+            test_cut_in_cut_out_results, "Test Cut-In/Cut-Out Analysis (Criterion 2)"
+        )
 
-        # [TODO] Criteria 3 :  3 hours at or above 98% of nominal power
+        # Criteria 3: 3 hours at or above 98% of nominal power
         # SCADA records with active power >= 3704.4 kW are counted and converted to hours (each 10-min record = 0.167 h).
         # For each row :
         # | WTG | Data hours[h] | Criterion (>=3h) and P>= 98% of P_nominal [True/False] |
@@ -72,6 +78,10 @@ class RunTestWorkflow(BaseWorkflow):
             analyzer=NominalPowerAnalyzer(),
             visualizer=None,  # [TODO] create visualizer for this analyzer
         ).execute(self.turbine_sources, self.validation_criteria)
+        self._presenter.show_analysis_result(
+            nominal_power_result, "Nominal Power Analysis (Criterion 3)"
+        )
+
         # [TODO] Criteria 4 :  Local acknowledgements / restarts (<=3)
         # The number of local acknowledgements and restarts during the RT must be less than or equal to 3.
         # Local acknowledgements are identified from unauthorised stop codes in the alarm log (FM3, FM300, FM615, FM954, FE1613, FE1208)

@@ -41,9 +41,7 @@ class ColoredFormatter(logging.Formatter):
 
 
 def setup_logger(
-    name: str,
-    level: int = logging.INFO,
-    log_file: Optional[str] = None
+    name: str, level: int = logging.INFO, log_file: Optional[str] = None
 ) -> logging.Logger:
     """
     Configure and return a logger with colored console output.
@@ -69,7 +67,7 @@ def setup_logger(
     console_handler.setLevel(level)
 
     # Format: [timestamp] [LEVEL] [logger_name] message
-    console_format = "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s"
+    console_format = "[%(asctime)s] [%(levelname)s] %(message)s"
     date_format = "%Y-%m-%d %H:%M:%S"
 
     colored_formatter = ColoredFormatter(console_format, datefmt=date_format)
@@ -81,7 +79,7 @@ def setup_logger(
         file_handler = logging.FileHandler(log_file, encoding="utf-8")
         file_handler.setLevel(level)
 
-        file_format = "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s"
+        file_format = "[%(asctime)s] [%(levelname)s] %(message)s"
         file_formatter = logging.Formatter(file_format, datefmt=date_format)
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
