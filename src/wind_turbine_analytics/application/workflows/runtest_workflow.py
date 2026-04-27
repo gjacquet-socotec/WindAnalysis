@@ -12,32 +12,24 @@ from src.wind_turbine_analytics.application.workflows.base_workflow import BaseW
 from src.logger_config import get_logger
 
 logger = get_logger(__name__)
-from src.wind_turbine_analytics.data_processing.analyzer.logics.consecutive_hours_analyzer import (
+
+# Imports des analyzers pour RunTest
+from src.wind_turbine_analytics.data_processing.analyzer.logics import (
     ConsecutiveHoursAnalyzer,
-)
-from src.wind_turbine_analytics.data_processing.analyzer.logics.test_cut_in_cut_out_analyzer import (
     TestCutInCutOutAnalyzer,
+    NominalPowerAnalyzer,
+    AutonomousOperationAnalyzer,
+    TestAvailabilityAnalyzer,
 )
+
+# Imports des visualizers
 from src.wind_turbine_analytics.data_processing.chart_builders.consecutive_hours_visualizer import (
     ConseccutiveHoursVisualizer,
 )
+
+# Import du DataProcessingStep
 from src.wind_turbine_analytics.data_processing.data_processing import (
     DataProcessingStep,
-)
-from src.wind_turbine_analytics.data_processing.analyzer.logics.nominal_power_analyzer import (
-    NominalPowerAnalyzer,
-)
-
-# Import de AutonomousOperationAnalyzer
-# Note: Cet import peut causer un import circulaire si autonomous_operation.py
-# importe depuis application.utils. Si c'est le cas, il faut déplacer load_data
-# hors du package application.
-from src.wind_turbine_analytics.data_processing.analyzer.logics.autonomous_operation import (
-    AutonomousOperationAnalyzer,
-)
-
-from src.wind_turbine_analytics.data_processing.analyzer.logics.test_availability_analyzer import (
-    TestAvailabilityAnalyzer,
 )
 
 # Imports des tablers pour génération de rapports Word
