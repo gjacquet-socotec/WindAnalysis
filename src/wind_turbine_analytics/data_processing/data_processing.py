@@ -18,19 +18,20 @@ class DataProcessingStep:
     def __init__(
         self,
         analyzer: BaseAnalyzer,
-        visualizer: Optional[BaseVisualizer] = None,
+        visualizers: Optional[List[BaseVisualizer]] = None,
         tabler: Optional[Union[BaseTabler, List[BaseTabler]]] = None,
     ) -> None:
         self.analyzer: BaseAnalyzer = analyzer
-        self.visualizer: Optional[BaseVisualizer] = visualizer
+        self.visualizers: Optional[List[BaseVisualizer]] = visualizers
         self.tabler: Optional[Union[BaseTabler, List[BaseTabler]]] = tabler
 
     def execute(self, context: TurbineFarm, criteria: ValidationCriteria) -> Any:
         result = self.analyzer.analyze(context, criteria)
 
         if result.requires_visuals:
-            if self.visualizer is not None:
-                self.visualizer.generate(result)
+            if self.visualizers is not None:
+                for visualizer in self.visualizers:
+                    visualizer.generate(result)
 
         # Génération de tableaux
         if self.tabler is not None:

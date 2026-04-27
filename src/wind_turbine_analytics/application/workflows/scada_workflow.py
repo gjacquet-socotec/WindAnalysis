@@ -44,7 +44,7 @@ class ScadaWorkflow(BaseWorkflow):
         # EBA Cut-In/Cut-Out Analysis
         eba_cut_in_cut_out_results = DataProcessingStep(
             analyzer=EbACutInCutOutAnalyzer(),
-            visualizer=None,  # [TODO] add visualizer for cut-in/cut-out analysis
+            visualizers=None,  # [TODO] add visualizer for cut-in/cut-out analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
             eba_cut_in_cut_out_results, "EBA Cut-In/Cut-Out Analysis"
@@ -53,7 +53,7 @@ class ScadaWorkflow(BaseWorkflow):
         # EBA Manufacturer Analysis
         eba_manufacturer_results = DataProcessingStep(
             analyzer=EbaManufacturerAnalyzer(),
-            visualizer=None,  # [TODO] add visualizer for manufacturer EBA analysis
+            visualizers=None,  # [TODO] add visualizer for manufacturer EBA analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
             eba_manufacturer_results, "EBA Manufacturer Analysis"
@@ -62,7 +62,7 @@ class ScadaWorkflow(BaseWorkflow):
         # Data Availability Analysis
         data_availability_results = DataProcessingStep(
             analyzer=DataAvailabilityAnalyzer(),
-            visualizer=None,  # [TODO] add visualizer for data availability analysis
+            visualizers=None,  # [TODO] add visualizer for data availability analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
             data_availability_results, "Data Availability Analysis"

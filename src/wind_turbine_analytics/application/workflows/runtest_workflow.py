@@ -10,6 +10,13 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
 from typing import Any
 from src.wind_turbine_analytics.application.workflows.base_workflow import BaseWorkflow
 from src.logger_config import get_logger
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders import (
+    ConsecutiveHoursVisualizer,
+    CutInCutoutTimelineVisualizer,
+    HeatmapChartVisualizer,
+    PowerCurveChartVisualizer,
+    WindRoseChartVisualizer,
+)
 
 logger = get_logger(__name__)
 
@@ -22,10 +29,6 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics import (
     TestAvailabilityAnalyzer,
 )
 
-# Imports des visualizers
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.consecutive_hours_visualizer import (
-    ConseccutiveHoursVisualizer,
-)
 
 # Import du DataProcessingStep
 from src.wind_turbine_analytics.data_processing.data_processing import (
@@ -68,7 +71,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 1: Minimum of 120 consecutive hours
         consecutive_hours_results = DataProcessingStep(
             analyzer=ConsecutiveHoursAnalyzer(),
-            visualizer=ConseccutiveHoursVisualizer(),
+            visualizers=[ConsecutiveHoursVisualizer()],
             tabler=ConsecutiveHoursTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -82,7 +85,9 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 2: 72 hours within cut-in to cut-out wind speed range
         test_cut_in_cut_out_results = DataProcessingStep(
             analyzer=TestCutInCutOutAnalyzer(),
-            visualizer=None,
+            visualizers=[
+                CutInCutoutTimelineVisualizer()
+            ],  # [TODO] implement this visualizer
             tabler=CutInCutOutTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -97,7 +102,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Note: 2 tableaux pour ce critère (valeurs + durée)
         nominal_power_result = DataProcessingStep(
             analyzer=NominalPowerAnalyzer(),
-            visualizer=None,
+            visualizers=[PowerCurveChartVisualizer(), WindRoseChartVisualizer()],
             tabler=[NominalPowerValuesTabler(), NominalPowerDurationTabler()],
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -109,7 +114,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 4: Local acknowledgements / restarts (<=3)
         autonomous_operation_result = DataProcessingStep(
             analyzer=AutonomousOperationAnalyzer(),
-            visualizer=None,
+            visualizers=None,
             tabler=AutonomousOperationTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -123,7 +128,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 5: Availability (>=92%)
         availability_result = DataProcessingStep(
             analyzer=TestAvailabilityAnalyzer(),
-            visualizer=None,
+            visualizers=[HeatmapChartVisualizer()],
             tabler=AvailabilityTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -167,7 +172,9 @@ class RunTestWorkflow(BaseWorkflow):
             csv_files_data = csv_files_tabler.generate_from_turbine_farm(
                 self.turbine_sources
             )
-            logger.info(f"CSV files table generated with {len(csv_files_data.get('csv_files_table', []))} rows")
+            logger.info(
+                f"CSV files table generated with {len(csv_files_data.get('csv_files_table', []))} rows"
+            )
             context.update(csv_files_data)
 
             # Préparer les métadonnées à partir de turbine_sources
@@ -192,25 +199,68 @@ class RunTestWorkflow(BaseWorkflow):
                     first_turbine_config.test_end if first_turbine_config else "N/A"
                 ),
                 "turbines": turbine_list,
-
                 # Informations sur le parc (depuis general_information)
-                "park_name": self.general_information.park_name if self.general_information else "N/A",
-                "model_wtg": self.general_information.model_wtg if self.general_information else "N/A",
-                "nominal_power": self.general_information.nominal_power if self.general_information else "N/A",
-
+                "park_name": (
+                    self.general_information.park_name
+                    if self.general_information
+                    else "N/A"
+                ),
+                "model_wtg": (
+                    self.general_information.model_wtg
+                    if self.general_information
+                    else "N/A"
+                ),
+                "nominal_power": (
+                    self.general_information.nominal_power
+                    if self.general_information
+                    else "N/A"
+                ),
                 # Liste des fichiers CSV
                 "csv_files": csv_files_list,
-
                 # Valeurs des critères de validation
-                "consecutive_hours_h": criteria.get("consecutive_hours").value if "consecutive_hours" in criteria else 120,
-                "cut_in_to_cut_out_h": criteria.get("cut_in_to_cut_out").value if "cut_in_to_cut_out" in criteria else 72,
+                "consecutive_hours_h": (
+                    criteria.get("consecutive_hours").value
+                    if "consecutive_hours" in criteria
+                    else 120
+                ),
+                "cut_in_to_cut_out_h": (
+                    criteria.get("cut_in_to_cut_out").value
+                    if "cut_in_to_cut_out" in criteria
+                    else 72
+                ),
                 # Cut-in/cut-out vitesses min/max depuis specification
-                "cut_in_v_min": criteria.get("cut_in_to_cut_out").specification[0] if "cut_in_to_cut_out" in criteria and criteria.get("cut_in_to_cut_out").specification else 3,
-                "cut_in_v_max": criteria.get("cut_in_to_cut_out").specification[1] if "cut_in_to_cut_out" in criteria and criteria.get("cut_in_to_cut_out").specification else 25,
-                "nominal_power_h": criteria.get("nominal_power_hours").value if "nominal_power_hours" in criteria else 3,
-                "nominal_power_pct": criteria.get("nominal_power_hours").specification if "nominal_power_hours" in criteria else 97,
-                "local_restarts_max": criteria.get("local_restarts").value if "local_restarts" in criteria else 3,
-                "availability_min_pct": criteria.get("availability").value if "availability" in criteria else 92,
+                "cut_in_v_min": (
+                    criteria.get("cut_in_to_cut_out").specification[0]
+                    if "cut_in_to_cut_out" in criteria
+                    and criteria.get("cut_in_to_cut_out").specification
+                    else 3
+                ),
+                "cut_in_v_max": (
+                    criteria.get("cut_in_to_cut_out").specification[1]
+                    if "cut_in_to_cut_out" in criteria
+                    and criteria.get("cut_in_to_cut_out").specification
+                    else 25
+                ),
+                "nominal_power_h": (
+                    criteria.get("nominal_power_hours").value
+                    if "nominal_power_hours" in criteria
+                    else 3
+                ),
+                "nominal_power_pct": (
+                    criteria.get("nominal_power_hours").specification
+                    if "nominal_power_hours" in criteria
+                    else 97
+                ),
+                "local_restarts_max": (
+                    criteria.get("local_restarts").value
+                    if "local_restarts" in criteria
+                    else 3
+                ),
+                "availability_min_pct": (
+                    criteria.get("availability").value
+                    if "availability" in criteria
+                    else 92
+                ),
             }
 
             # Rendre le rapport Word
@@ -245,22 +295,34 @@ class RunTestWorkflow(BaseWorkflow):
 
         for turbine_id, turbine_config in self.turbine_sources.farm.items():
             # Fichier de données d'opération
-            if turbine_config.general_information and turbine_config.general_information.path_operation_data:
-                operation_path = Path(turbine_config.general_information.path_operation_data)
-                files_list.append({
-                    'turbine': turbine_id,
-                    'type': 'Données SCADA',
-                    'filename': operation_path.name
-                })
+            if (
+                turbine_config.general_information
+                and turbine_config.general_information.path_operation_data
+            ):
+                operation_path = Path(
+                    turbine_config.general_information.path_operation_data
+                )
+                files_list.append(
+                    {
+                        "turbine": turbine_id,
+                        "type": "Données SCADA",
+                        "filename": operation_path.name,
+                    }
+                )
 
             # Fichier de logs
-            if turbine_config.general_information and turbine_config.general_information.path_log_data:
+            if (
+                turbine_config.general_information
+                and turbine_config.general_information.path_log_data
+            ):
                 log_path = Path(turbine_config.general_information.path_log_data)
-                files_list.append({
-                    'turbine': turbine_id,
-                    'type': 'Logs alarmes',
-                    'filename': log_path.name
-                })
+                files_list.append(
+                    {
+                        "turbine": turbine_id,
+                        "type": "Logs alarmes",
+                        "filename": log_path.name,
+                    }
+                )
 
         return files_list
 

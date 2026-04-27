@@ -5,7 +5,7 @@ from src.wind_turbine_analytics.data_processing.visualizer.base_visualizer impor
 from typing import Any
 
 
-class ConseccutiveHoursVisualizer(BaseVisualizer):
+class ConsecutiveHoursVisualizer(BaseVisualizer):
     def __init__(self):
         super().__init__(chart_name="consecutive_hours_chart")
 

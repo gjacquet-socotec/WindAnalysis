@@ -1,11 +1,11 @@
 from src.wind_turbine_analytics.data_processing.data_result_models import (
     AnalysisResult,
 )
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 
 class BaseVisualizer:
-    def __init__(self, chart_name: str):
+    def __init__(self, chart_name: Optional[str] = None):
         self.chart_name = chart_name
 
     def generate(self, result: AnalysisResult) -> None:
