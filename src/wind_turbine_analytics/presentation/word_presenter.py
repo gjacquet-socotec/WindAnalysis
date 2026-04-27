@@ -124,7 +124,7 @@ class WordPresenter:
 
         Mapping des tableaux (indices python-docx):
         - Tableau 0: Historique des révisions (SKIP)
-        - Tableau 1: Périodes de Run Test (SKIP - pas encore implémenté)
+        - Tableau 1: Liste des fichiers CSV utilisés
         - Tableau 2: Heures consécutives (critère 1)
         - Tableau 3: Cut-in/Cut-out (critère 2)
         - Tableau 4: Puissance nominale - valeurs (critère 3a)
@@ -146,13 +146,14 @@ class WordPresenter:
 
             # Adapter les tableaux avec les BONS indices
             if len(doc.tables) >= 8:
+                self._adapt_table_csv_files(doc.tables[1])  # Liste des fichiers CSV
                 self._adapt_table_consecutive_hours(doc.tables[2])  # Critère 1
                 self._adapt_table_cut_in_cut_out(doc.tables[3])  # Critère 2
                 self._adapt_table_nominal_power_values(doc.tables[4])  # Critère 3a
                 self._adapt_table_nominal_power_duration(doc.tables[5])  # Critère 3b
                 self._adapt_table_autonomous_operation(doc.tables[6])  # Critère 4
                 self._adapt_table_availability(doc.tables[7])  # Critère 5
-                logger.info("✅ 6 tableaux adaptés")
+                logger.info("✅ 7 tableaux adaptés")
             else:
                 logger.warning(
                     f"Template n'a que {len(doc.tables)} tableaux, "
@@ -201,6 +202,29 @@ class WordPresenter:
             row_2.cells[0].text = loop_syntax
             for col_idx in range(1, len(row_2.cells)):
                 row_2.cells[col_idx].text = ""
+
+    def _adapt_table_csv_files(self, table) -> None:
+        """Adapte le tableau de la liste des fichiers CSV utilisés."""
+        if len(table.rows) < 2:
+            return
+
+        # S'assurer que le tableau a 3 colonnes
+        if len(table.columns) < 3:
+            # Ajouter les colonnes manquantes
+            for _ in range(3 - len(table.columns)):
+                for row in table.rows:
+                    row.add_cell()
+
+        headers = ["WTG", "Path Operation Data", "Path Alarm Log"]
+        row_1 = table.rows[0]
+        for col_idx, header in enumerate(headers):
+            if col_idx < len(row_1.cells):
+                row_1.cells[col_idx].text = header
+
+        row_2 = table.rows[1]
+        row_2.cells[0].text = "{%tr for item in csv_files_table%}{{item.wtg}}"
+        row_2.cells[1].text = "{{item.path_operation}}"
+        row_2.cells[2].text = "{{item.path_log}}{%endtr%}"
 
     def _adapt_table_consecutive_hours(self, table) -> None:
         """

@@ -41,6 +41,7 @@ from src.wind_turbine_analytics.data_processing.tabler.tables.runtest import (
     AutonomousOperationTabler,
     AvailabilityTabler,
     RunTestSummaryTabler,
+    CsvFilesTabler,
 )
 from src.wind_turbine_analytics.presentation.word_presenter import WordPresenter
 
@@ -160,6 +161,14 @@ class RunTestWorkflow(BaseWorkflow):
             # Générer le tableau récapitulatif et l'ajouter au contexte
             summary_data = summary_tabler.generate()
             context.update(summary_data)
+
+            # Générer le tableau des fichiers CSV utilisés
+            csv_files_tabler = CsvFilesTabler()
+            csv_files_data = csv_files_tabler.generate_from_turbine_farm(
+                self.turbine_sources
+            )
+            logger.info(f"CSV files table generated with {len(csv_files_data.get('csv_files_table', []))} rows")
+            context.update(csv_files_data)
 
             # Préparer les métadonnées à partir de turbine_sources
             turbine_list = list(self.turbine_sources.farm.keys())

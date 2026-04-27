@@ -21,6 +21,9 @@ from src.wind_turbine_analytics.data_processing.tabler.tables.runtest.table_avai
 from src.wind_turbine_analytics.data_processing.tabler.tables.runtest.table_summary import (
     RunTestSummaryTabler,
 )
+from src.wind_turbine_analytics.data_processing.tabler.tables.runtest.table_csv_files import (
+    CsvFilesTabler,
+)
 
 __all__ = [
     "ConsecutiveHoursTabler",
@@ -30,4 +33,5 @@ __all__ = [
     "AutonomousOperationTabler",
     "AvailabilityTabler",
     "RunTestSummaryTabler",
+    "CsvFilesTabler",
 ]

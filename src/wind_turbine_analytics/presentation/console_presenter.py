@@ -100,7 +100,11 @@ class ConsolePipelinePresenter(PipelinePresenter):
                 print(f"{prefix}{key}:")
                 self._display_dataframe(value, indent + 2)
             else:
-                print(f"{prefix}{key}: {value}")
+                # Convertir en string et remplacer les caractères Unicode problématiques
+                value_str = str(value)
+                # Remplacer ✓ et ✗ par des alternatives ASCII
+                value_str = value_str.replace("✓", "v").replace("✗", "x")
+                print(f"{prefix}{key}: {value_str}")
 
     def _display_detailed_results(self, detailed_results: Dict[str, Any]) -> None:
         """Display detailed results with proper formatting for different data types."""
