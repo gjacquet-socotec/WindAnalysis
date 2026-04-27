@@ -98,6 +98,9 @@ class WordPresenter:
             # Remplacer les balises de métadonnées dans les paragraphes
             self._replace_metadata_tags(doc, full_context)
 
+            # Insérer les images de visualisation
+            self._insert_images(doc, full_context)
+
             # Créer le dossier output si nécessaire
             self.output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -738,3 +741,57 @@ class WordPresenter:
                     para.add_run(full_text)
 
         logger.info("✅ Métadonnées et critères remplacés")
+
+    def _insert_images(self, doc: Document, context: Dict[str, Any]) -> None:
+        """
+        Insère les images de visualisation à la place des balises dans le document.
+
+        Args:
+            doc: Document Word
+            context: Contexte contenant les chemins des images dans 'chart_paths'
+        """
+        from docx.shared import Inches
+
+        logger.info("Insertion des images de visualisation...")
+
+        # Mapping des balises vers les noms de charts
+        image_tags = {
+            '{{wind_rose_visualizer}}': 'wind_rose_chart',
+            '{{wind_bin_visualizer}}': 'wind_histogram_chart',
+            '{{power_curve_visualizer}}': 'power_curve_chart',
+            '{{cut_in_cut_out_timeline_visualizer}}': 'cutin_cutout_timeline_chart',
+        }
+
+        # Récupérer les chemins des images depuis le contexte
+        chart_paths = context.get('chart_paths', {})
+
+        if not chart_paths:
+            logger.warning("⚠️ Aucun chemin d'image trouvé dans le contexte")
+            return
+
+        # Parcourir tous les paragraphes pour trouver les balises
+        for para in doc.paragraphs:
+            for tag, chart_name in image_tags.items():
+                if tag in para.text:
+                    # Vérifier si l'image existe
+                    if chart_name not in chart_paths:
+                        logger.warning(f"⚠️ Image non trouvée pour {chart_name}")
+                        continue
+
+                    image_path = chart_paths[chart_name]
+                    if not Path(image_path).exists():
+                        logger.warning(f"⚠️ Fichier image introuvable: {image_path}")
+                        continue
+
+                    # Supprimer le texte de la balise
+                    para.text = ""
+
+                    # Insérer l'image
+                    run = para.add_run()
+                    try:
+                        run.add_picture(str(image_path), width=Inches(6.0))
+                        logger.info(f"✅ Image insérée: {chart_name}")
+                    except Exception as e:
+                        logger.error(f"❌ Erreur lors de l'insertion de {chart_name}: {e}")
+
+        logger.info("✅ Images insérées dans le document")

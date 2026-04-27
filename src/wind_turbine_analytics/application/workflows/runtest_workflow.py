@@ -179,6 +179,18 @@ class RunTestWorkflow(BaseWorkflow):
             )
             context.update(csv_files_data)
 
+            # Collecter les chemins des images de visualisation
+            chart_paths = {}
+            for analysis_name, result in all_results.items():
+                if result.metadata and "charts" in result.metadata:
+                    for chart_name, chart_info in result.metadata["charts"].items():
+                        if "png_path" in chart_info:
+                            chart_paths[chart_name] = chart_info["png_path"]
+                            logger.info(f"Chemin d'image collecté: {chart_name} -> {chart_info['png_path']}")
+
+            # Ajouter les chemins d'images au contexte
+            context["chart_paths"] = chart_paths
+
             # Préparer les métadonnées à partir de turbine_sources
             turbine_list = list(self.turbine_sources.farm.keys())
 
