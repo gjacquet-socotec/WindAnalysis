@@ -26,10 +26,16 @@ class DataProcessingStep:
         self.tabler: Optional[Union[BaseTabler, List[BaseTabler]]] = tabler
 
     def execute(self, context: TurbineFarm, criteria: ValidationCriteria) -> Any:
+        from src.logger_config import get_logger
+        logger = get_logger(__name__)
+
         result = self.analyzer.analyze(context, criteria)
+
+        logger.info(f"requires_visuals={result.requires_visuals}, visualizers={self.visualizers}")
 
         if result.requires_visuals:
             if self.visualizers is not None:
+                logger.info(f"Génération de {len(self.visualizers)} visualisation(s)...")
                 for visualizer in self.visualizers:
                     visualizer.generate(result)
 

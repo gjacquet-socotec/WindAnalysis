@@ -11,11 +11,7 @@ from typing import Any
 from src.wind_turbine_analytics.application.workflows.base_workflow import BaseWorkflow
 from src.logger_config import get_logger
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders import (
-    ConsecutiveHoursVisualizer,
-    CutInCutoutTimelineVisualizer,
-    HeatmapChartVisualizer,
     PowerCurveChartVisualizer,
-    WindRoseChartVisualizer,
 )
 
 logger = get_logger(__name__)
@@ -71,7 +67,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 1: Minimum of 120 consecutive hours
         consecutive_hours_results = DataProcessingStep(
             analyzer=ConsecutiveHoursAnalyzer(),
-            visualizers=[ConsecutiveHoursVisualizer()],
+            visualizers=None,  # TODO: implement ConsecutiveHoursVisualizer
             tabler=ConsecutiveHoursTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -85,9 +81,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 2: 72 hours within cut-in to cut-out wind speed range
         test_cut_in_cut_out_results = DataProcessingStep(
             analyzer=TestCutInCutOutAnalyzer(),
-            visualizers=[
-                CutInCutoutTimelineVisualizer()
-            ],  # [TODO] implement this visualizer
+            visualizers=None,  # TODO: implement CutInCutoutTimelineVisualizer
             tabler=CutInCutOutTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -102,7 +96,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Note: 2 tableaux pour ce critère (valeurs + durée)
         nominal_power_result = DataProcessingStep(
             analyzer=NominalPowerAnalyzer(),
-            visualizers=[PowerCurveChartVisualizer(), WindRoseChartVisualizer()],
+            visualizers=[PowerCurveChartVisualizer()],  # TODO: add WindRoseChartVisualizer
             tabler=[NominalPowerValuesTabler(), NominalPowerDurationTabler()],
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -128,7 +122,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 5: Availability (>=92%)
         availability_result = DataProcessingStep(
             analyzer=TestAvailabilityAnalyzer(),
-            visualizers=[HeatmapChartVisualizer()],
+            visualizers=None,  # TODO: implement HeatmapChartVisualizer
             tabler=AvailabilityTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(

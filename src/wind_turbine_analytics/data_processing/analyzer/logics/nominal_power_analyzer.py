@@ -144,6 +144,15 @@ class NominalPowerAnalyzer(BaseAnalyzer):
                 f"le {max_wind_timestamp}"
             )
 
+        # Préparer les données pour visualisation (courbe de puissance)
+        # Extraire wind_speed et power pour le visualizer
+        chart_data = None
+        if wind_speed_col and wind_speed_col in df_filtered.columns:
+            chart_data = df_filtered[[wind_speed_col, power_col]].copy()
+            chart_data.columns = ["wind_speed", "power"]
+            # Supprimer les NaN
+            chart_data = chart_data.dropna()
+
         # Construire le résultat
         result = {
             "total_duration_hours": round(total_duration, 2),
@@ -156,6 +165,7 @@ class NominalPowerAnalyzer(BaseAnalyzer):
             "max_power_timestamp": max_power_timestamp,
             "selected_window_start": selected_window_start,
             "selected_window_end": selected_window_end,
+            "chart_data": chart_data,  # Données pour visualisation
         }
 
         if max_wind_speed is not None:

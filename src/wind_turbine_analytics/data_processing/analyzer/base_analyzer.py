@@ -106,7 +106,7 @@ class BaseAnalyzer:
                 logger.error(f"Erreur inattendue pour la turbine {turbine_id}: {e}")
                 results[turbine_id] = {"error": str(e)}
         return AnalysisResult(
-            detailed_results=results, status="completed", requires_visuals=False
+            detailed_results=results, status="completed", requires_visuals=True
         )
 
     def _compute(

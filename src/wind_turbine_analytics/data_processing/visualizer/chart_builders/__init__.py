@@ -13,13 +13,13 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.heatma
     HeatmapChartVisualizer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.pitch_chart_visualizer import (
-    PitchChartVisualizer,
+    PitchChart,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.power_curve_chart_visualizer import (
     PowerCurveChartVisualizer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.rpm_chart_visualizer import (
-    RpmChartVisualizer,
+    RPMChartVisualizer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_histogram_chart_visualizer import (
     WindHistogramChartVisualizer,
@@ -33,9 +33,9 @@ __all__ = [
     "CutInCutoutTimelineVisualizer",
     "EnergyChartVisualizer",
     "HeatmapChartVisualizer",
-    "PitchChartVisualizer",
+    "PitchChart",
     "PowerCurveChartVisualizer",
-    "RpmChartVisualizer",
+    "RPMChartVisualizer",
     "WindHistogramChartVisualizer",
     "WindRoseChartVisualizer",
 ]
