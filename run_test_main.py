@@ -11,7 +11,7 @@ from src.wind_turbine_analytics.application import (
 
 DEFAULT_RUNTEST_ROOT = "./experiments/scada_analyse"
 DEFAULT_TEMPLATE_PATH = "./assets/templates/template_runtest_new.docx"
-DEFAULT_OUTPUT_PATH = "./output/scada_output.docx"
+DEFAULT_OUTPUT_PATH = "./output/runtest_output.docx"
 
 
 if __name__ == "__main__":
