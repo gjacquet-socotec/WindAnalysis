@@ -23,7 +23,20 @@ class WindRoseChartVisualizer(BaseVisualizer):
 
     def _create_figure(self, result: AnalysisResult) -> go.Figure:
         if not result.detailed_results:
-            return self._create_empty_figure()
+            fig = go.Figure()
+            fig.update_layout(
+                title="Rose des Vents - Fréquence par Direction",
+                template="plotly_white",
+            )
+            fig.add_annotation(
+                text="Aucune donnée disponible",
+                x=0.5,
+                y=0.5,
+                xref="paper",
+                yref="paper",
+                showarrow=False,
+            )
+            return fig
 
         turbine_ids = list(result.detailed_results.keys())
         n_turbines = len(turbine_ids)

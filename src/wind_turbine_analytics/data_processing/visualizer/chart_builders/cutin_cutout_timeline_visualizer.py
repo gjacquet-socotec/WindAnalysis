@@ -3,9 +3,8 @@ from src.wind_turbine_analytics.data_processing.visualizer.base_visualizer impor
     BaseVisualizer,
 )
 import plotly.graph_objects as go
-import plotly.express as px
-from plotly.subplots import make_subplots
 import pandas as pd
+import numpy as np
 from src.logger_config import get_logger
 
 logger = get_logger(__name__)
@@ -13,181 +12,125 @@ logger = get_logger(__name__)
 
 class CutInCutoutTimelineVisualizer(BaseVisualizer):
     """
-    Visualiseur de timeline Cut-in/Cut-out.
-
-    Génère une timeline (Gantt chart) montrant:
-    - Périodes RUN (vert): turbine en fonctionnement
-    - Périodes STOP (rouge): turbine à l'arrêt
-    - Annotations avec codes d'alarme sur les périodes STOP
-    - Une ligne par turbine (empilées verticalement)
-
-    Utilise les données de TestCutInCutOutAnalyzer.all_periods
+    Visualiseur de timeline amélioré pour les tests Cut-in/Cut-out.
+    Affiche RUN, STOP et UNAUTHORIZED STOP par turbine.
     """
 
     def __init__(self):
         super().__init__(chart_name="cutin_cutout_timeline_chart", use_plotly=True)
 
     def _create_figure(self, result: AnalysisResult) -> go.Figure:
-        """
-        Crée la figure Plotly avec timeline pour toutes les turbines.
-
-        Args:
-            result: Résultat de TestCutInCutOutAnalyzer (contient all_periods)
-
-        Returns:
-            Figure Plotly avec timeline Gantt
-        """
         if not result.detailed_results:
-            logger.warning("Aucune donnée détaillée pour générer la timeline")
+            logger.warning("Aucune donnée détaillée pour la timeline")
             return self._create_empty_figure()
 
-        # Préparer les données pour le Gantt chart
-        timeline_data = []
+        # Configuration des couleurs
+        color_map = {
+            "RUN": "#2ecc71",  # Vert
+            "STOP": "#e74c3c",  # Rouge
+            "UNAUTHORIZED STOP": "#f39c12",  # Orange
+            "DATA GAP": "#bdc3c7",  # Gris
+        }
+
+        fig = go.Figure()
+
+        # Pour ne pas répéter les légendes
+        added_labels = set()
 
         for turbine_id, turbine_data in result.detailed_results.items():
             all_periods = turbine_data.get("all_periods", [])
 
             if not all_periods:
-                logger.warning(f"Pas de périodes pour {turbine_id}")
                 continue
 
-            # Ajouter chaque période à la timeline
             for period in all_periods:
-                is_available = period.get("is_available", False)
                 start = period.get("start")
                 end = period.get("end")
-                alarm_codes = period.get("alarm_codes", [])
-
                 if start is None or end is None:
                     continue
 
-                # Formater les codes d'alarme
-                alarm_text = ", ".join(alarm_codes) if alarm_codes else "No alarms"
+                # Détermination du statut précis
+                is_available = period.get("is_available", False)
+                unauthorized_hours = period.get("unauthorized_stop_hours", 0)
 
-                # Statut
-                status = "RUN" if is_available else "STOP"
-                color = "#43a047" if is_available else "#d32f2f"
+                if is_available:
+                    status = "RUN"
+                elif unauthorized_hours > 0:
+                    status = "UNAUTHORIZED STOP"
+                else:
+                    status = "STOP"
 
-                timeline_data.append({
-                    "Task": f"{turbine_id}",
-                    "Start": start,
-                    "Finish": end,
-                    "Status": status,
-                    "Color": color,
-                    "Alarm_Codes": alarm_text,
-                })
+                # Calcul de la durée
+                duration_ms = (end - start).total_seconds() * 1000
 
-        if not timeline_data:
-            logger.warning("Aucune période valide trouvée")
-            return self._create_empty_figure()
+                # ✅ ASTUCE : Si durée nulle (même timestamp), on met 10min
+                # pour qu'un trait soit visible sur le graphique
+                display_duration = max(duration_ms, 10 * 60 * 1000)
 
-        # Créer le DataFrame
-        df = pd.DataFrame(timeline_data)
+                alarm_codes = period.get("alarm_codes", [])
+                alarm_text = ", ".join(alarm_codes) if alarm_codes else "None"
 
-        # Créer la figure avec Plotly (Gantt chart)
-        fig = go.Figure()
-
-        # Ajouter les traces par turbine et statut
-        for turbine_id in df["Task"].unique():
-            df_turbine = df[df["Task"] == turbine_id]
-
-            for idx, row in df_turbine.iterrows():
-                # Calculer la durée en secondes (pour éviter les Timedelta non sérialisables)
-                duration_seconds = (row["Finish"] - row["Start"]).total_seconds()
-
-                # Formater les dates pour l'hover
-                start_str = row["Start"].strftime("%Y-%m-%d %H:%M") if hasattr(row["Start"], "strftime") else str(row["Start"])
-                end_str = row["Finish"].strftime("%Y-%m-%d %H:%M") if hasattr(row["Finish"], "strftime") else str(row["Finish"])
-
-                # Ajouter une barre pour cette période
+                # Construction de la barre
                 fig.add_trace(
                     go.Bar(
-                        x=[duration_seconds / 3600],  # Convertir en heures pour l'affichage
-                        y=[row["Task"]],
-                        base=row["Start"],
+                        base=start,
+                        x=[display_duration],
+                        y=[turbine_id],
                         orientation="h",
-                        marker=dict(color=row["Color"]),
-                        name=row["Status"],
-                        showlegend=False,
+                        marker_color=color_map.get(status, "#34495e"),
+                        name=status,
+                        showlegend=(status not in added_labels),
+                        legendgroup=status,
                         hovertemplate=(
-                            f"<b>{row['Task']}</b><br>"
-                            f"Status: {row['Status']}<br>"
-                            f"Start: {start_str}<br>"
-                            f"End: {end_str}<br>"
-                            f"Duration: {duration_seconds/3600:.2f}h<br>"
-                            f"Alarm Codes: {row['Alarm_Codes']}<br>"
+                            f"<b>WTG {turbine_id}</b><br>"
+                            f"Status: {status}<br>"
+                            f"Start: {start.strftime('%Y-%m-%d %H:%M')}<br>"
+                            f"End: {end.strftime('%Y-%m-%d %H:%M')}<br>"
+                            f"Duration: {period.get('gross_duration_hours', 0):.2f}h<br>"
+                            f"Alarms: {alarm_text}<br>"
+                            f"Unauth. Stop: {unauthorized_hours:.2f}h"
                             "<extra></extra>"
                         ),
                     )
                 )
-
-        # Ajouter une légende manuelle
-        fig.add_trace(
-            go.Scatter(
-                x=[None],
-                y=[None],
-                mode="markers",
-                marker=dict(size=10, color="#43a047"),
-                name="RUN (Available)",
-                showlegend=True,
-            )
-        )
-        fig.add_trace(
-            go.Scatter(
-                x=[None],
-                y=[None],
-                mode="markers",
-                marker=dict(size=10, color="#d32f2f"),
-                name="STOP (Unavailable)",
-                showlegend=True,
-            )
-        )
+                added_labels.add(status)
 
         # Mise en page
         fig.update_layout(
-            title="Cut-In/Cut-Out Timeline - All Turbines",
+            title="Timeline de Fonctionnement et Arrêts par Turbine",
             xaxis=dict(
-                title="Time",
+                title="Temps",
                 type="date",
+                tickformat="%d/%m %H:%M",
                 showgrid=True,
+                gridcolor="rgba(0,0,0,0.1)",
             ),
             yaxis=dict(
-                title="Turbine",
-                categoryorder="category ascending",
-                showgrid=True,
+                title="Turbines",
+                categoryorder="array",
+                categoryarray=list(result.detailed_results.keys())[
+                    ::-1
+                ],  # Inverse pour E1 en haut
             ),
-            height=max(400, len(df["Task"].unique()) * 80),
+            barmode="stack",
+            height=max(400, len(result.detailed_results) * 100),
             width=1200,
             template="plotly_white",
-            showlegend=True,
             legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
             ),
-            hovermode="closest",
+            margin=dict(l=80, r=40, t=100, b=60),
         )
 
         return fig
 
     def _create_empty_figure(self) -> go.Figure:
-        """Crée une figure vide en cas de données manquantes."""
         fig = go.Figure()
         fig.add_annotation(
-            text="No data available for timeline",
-            xref="paper",
-            yref="paper",
+            text="No timeline data available",
             x=0.5,
             y=0.5,
             showarrow=False,
-            font=dict(size=20, color="red"),
-        )
-        fig.update_layout(
-            title="Cut-In/Cut-Out Timeline",
-            height=400,
-            width=800,
-            template="plotly_white",
+            font=dict(size=18),
         )
         return fig
