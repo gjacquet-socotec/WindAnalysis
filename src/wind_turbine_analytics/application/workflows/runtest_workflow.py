@@ -180,6 +180,9 @@ class RunTestWorkflow(BaseWorkflow):
             # Extraire les valeurs des critères depuis validation_criteria
             criteria = self.validation_criteria.validation_criterion
 
+            # Créer la liste des fichiers CSV utilisés
+            csv_files_list = self._get_csv_files_list()
+
             metadata = {
                 "test_start": (
                     first_turbine_config.test_start if first_turbine_config else "N/A"
@@ -188,6 +191,14 @@ class RunTestWorkflow(BaseWorkflow):
                     first_turbine_config.test_end if first_turbine_config else "N/A"
                 ),
                 "turbines": turbine_list,
+
+                # Informations sur le parc (depuis general_information)
+                "park_name": self.general_information.park_name if self.general_information else "N/A",
+                "model_wtg": self.general_information.model_wtg if self.general_information else "N/A",
+                "nominal_power": self.general_information.nominal_power if self.general_information else "N/A",
+
+                # Liste des fichiers CSV
+                "csv_files": csv_files_list,
 
                 # Valeurs des critères de validation
                 "consecutive_hours_h": criteria.get("consecutive_hours").value if "consecutive_hours" in criteria else 120,
@@ -218,6 +229,39 @@ class RunTestWorkflow(BaseWorkflow):
             )
         except Exception as e:
             logger.error(f"Failed to render Word report: {e}")
+
+    def _get_csv_files_list(self) -> list:
+        """
+        Récupère la liste des fichiers CSV utilisés pour l'analyse.
+
+        Returns:
+            Liste de dictionnaires avec les informations des fichiers
+            Format: [{'turbine': 'E1', 'type': 'Operation', 'filename': 'xxx.csv'}, ...]
+        """
+        from pathlib import Path
+
+        files_list = []
+
+        for turbine_id, turbine_config in self.turbine_sources.farm.items():
+            # Fichier de données d'opération
+            if turbine_config.general_information and turbine_config.general_information.path_operation_data:
+                operation_path = Path(turbine_config.general_information.path_operation_data)
+                files_list.append({
+                    'turbine': turbine_id,
+                    'type': 'Données SCADA',
+                    'filename': operation_path.name
+                })
+
+            # Fichier de logs
+            if turbine_config.general_information and turbine_config.general_information.path_log_data:
+                log_path = Path(turbine_config.general_information.path_log_data)
+                files_list.append({
+                    'turbine': turbine_id,
+                    'type': 'Logs alarmes',
+                    'filename': log_path.name
+                })
+
+        return files_list
 
 
 def run_runtest_pipeline(config: RunTestPipelineConfig, presenter) -> Any:

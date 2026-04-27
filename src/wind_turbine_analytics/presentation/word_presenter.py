@@ -407,7 +407,16 @@ class WordPresenter:
                 table_counter += 1
 
                 # Identifier et créer le bon tableau
-                if table_counter == 2:
+                if table_counter == 1:
+                    # Tableau 1: Historique des révisions - garder tel quel (skip)
+                    pass
+                elif table_counter == 2:
+                    # NOUVEAU: Tableau "Liste des fichiers"
+                    new_doc.add_heading('Liste des fichiers transmis', level=2)
+                    self._create_table_header(new_doc, 'csv_files_table', [
+                        'Turbine', 'Type', 'Nom du fichier'
+                    ])
+                elif table_counter == 3:
                     # NOUVEAU: Tableau récapitulatif global
                     new_doc.add_heading('Synthèse des résultats des Run Tests', level=2)
                     self._create_table_header(new_doc, 'summary_table', [
@@ -415,7 +424,7 @@ class WordPresenter:
                         'Criterion 3\n(≥3h @97%)', 'Criterion 4\n(≤3 restarts)',
                         'Criterion 5\n(≥92%)', 'Overall'
                     ])
-                elif table_counter == 3:
+                elif table_counter == 4:
                     new_doc.add_heading('Durée cumulée de fonctionnement', level=2)
                     self._create_table_header(new_doc, 'consecutive_hours_table',
                                               ['WTG', 'Data hours [h]', 'Criterion (≥120h)'])
@@ -607,6 +616,14 @@ class WordPresenter:
             '{{test_end}}': context.get('test_end', ''),
             '{{turbine_list}}': context.get('turbine_list', ''),
             '{{turbine_count}}': str(context.get('turbine_count', '')),
+
+            # Informations sur le parc
+            '{{Nom_du_parc}}': context.get('park_name', ''),
+            '{{Nombre_WTG}}': str(context.get('turbine_count', '')),
+            '{{Modèle_turbine}}': context.get('model_wtg', ''),
+            '{{model_wtg}}': context.get('model_wtg', ''),
+            '{{Puissance_nominale}}': context.get('nominal_power', ''),
+            '{{nominal_power}}': context.get('nominal_power', ''),
 
             # Valeurs des critères de validation (avec et sans espaces)
             '{{consecutive_hours_h}}': str(context.get('consecutive_hours_h', '120')),
