@@ -171,7 +171,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
             f"Arrêts non autorisés trouvés dans les logs: {len(unauthorized_logs)}"
         )
 
-        # Pour chaque période, calculer le temps d'arrêt non autorisé
+        # Pour chaque période, calculer le temps d'arrêt non autorisé et collecter les codes
         available_periods = []
         unavailable_periods = []
 
@@ -179,6 +179,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
             period_start = period["start"]
             period_end = period["end"]
             gross_duration = period["gross_duration_hours"]
+            is_available = period["is_available"]
 
             # Trouver les arrêts non autorisés qui chevauchent cette période
             overlapping_stops = unauthorized_logs[
@@ -189,6 +190,7 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
             # Calculer le temps total d'arrêt non autorisé et collecter détails
             total_stop_duration_hours = 0.0
             stop_details = []
+            alarm_codes_for_period = []
 
             for _, stop in overlapping_stops.iterrows():
                 # Calculer le chevauchement
@@ -202,6 +204,10 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
                     # Récupérer le code et sa description
                     code_value = str(stop[code_col])
                     error_code = manager.get_code(code_value)
+
+                    # Ajouter le code à la liste (éviter les doublons)
+                    if code_value not in alarm_codes_for_period:
+                        alarm_codes_for_period.append(code_value)
 
                     stop_details.append(
                         {
@@ -227,9 +233,11 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
                 "unauthorized_stop_hours": round(total_stop_duration_hours, 2),
                 "net_duration_hours": round(net_duration_hours, 2),
                 "unauthorized_stops": stop_details,  # Liste des arrêts détaillés
+                "alarm_codes": alarm_codes_for_period,  # Codes d'alarme pour cette période
+                "is_available": is_available,  # Indicateur disponible/indisponible
             }
 
-            if period["is_available"]:
+            if is_available:
                 available_periods.append(period_data)
             else:
                 unavailable_periods.append(period_data)
@@ -248,7 +256,12 @@ class TestCutInCutOutAnalyzer(BaseAnalyzer):
             f"Critère: {required_hours}h, Réussi: {criterion_met}"
         )
 
+        # Combiner toutes les périodes et trier par chronologie
+        all_periods = available_periods + unavailable_periods
+        all_periods_sorted = sorted(all_periods, key=lambda p: p["start"])
+
         return {
+            "all_periods": all_periods_sorted,  # Toutes les périodes triées
             "available_periods": available_periods,
             "unavailable_periods": unavailable_periods,
             "max_net_duration_hours": round(max_net_duration, 2),

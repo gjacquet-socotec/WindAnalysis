@@ -237,10 +237,25 @@ class WordPresenter:
 
     def _adapt_table_cut_in_cut_out(self, table) -> None:
         """Adapte le tableau cut-in à cut-out."""
-        if len(table.rows) < 2 or len(table.columns) < 3:
+        if len(table.rows) < 2:
             return
 
-        headers = ["WTG", "Data hours [h]", "Criterion (≥72h)"]
+        # S'assurer que le tableau a 7 colonnes
+        if len(table.columns) < 7:
+            # Ajouter les colonnes manquantes
+            for _ in range(7 - len(table.columns)):
+                for row in table.rows:
+                    row.add_cell()
+
+        headers = [
+            "WTG",
+            "Status",
+            "Duration [h]",
+            "Start running",
+            "Stop running",
+            "Alarm codes",
+            "Criterion (≥72h)",
+        ]
         row_1 = table.rows[0]
         for col_idx, header in enumerate(headers):
             if col_idx < len(row_1.cells):
@@ -248,8 +263,12 @@ class WordPresenter:
 
         row_2 = table.rows[1]
         row_2.cells[0].text = "{%tr for item in cut_in_cut_out_table%}{{item.wtg}}"
-        row_2.cells[1].text = "{{item.data_hours}}"
-        row_2.cells[2].text = "{{item.criterion_met}}{%endtr%}"
+        row_2.cells[1].text = "{{item.status}}"
+        row_2.cells[2].text = "{{item.duration}}"
+        row_2.cells[3].text = "{{item.start_running}}"
+        row_2.cells[4].text = "{{item.stop_running}}"
+        row_2.cells[5].text = "{{item.alarm_codes}}"
+        row_2.cells[6].text = "{{item.criterion_met}}{%endtr%}"
 
     def _adapt_table_nominal_power_values(self, table) -> None:
         """Adapte le tableau puissance nominale - valeurs."""
