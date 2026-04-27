@@ -12,6 +12,10 @@ from src.wind_turbine_analytics.application.workflows.base_workflow import BaseW
 from src.logger_config import get_logger
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders import (
     PowerCurveChartVisualizer,
+    WindRoseChartVisualizer,
+    WindHistogramChartVisualizer,
+    HeatmapChartVisualizer,
+    CutInCutoutTimelineVisualizer,
 )
 
 logger = get_logger(__name__)
@@ -81,7 +85,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 2: 72 hours within cut-in to cut-out wind speed range
         test_cut_in_cut_out_results = DataProcessingStep(
             analyzer=TestCutInCutOutAnalyzer(),
-            visualizers=None,  # TODO: implement CutInCutoutTimelineVisualizer
+            visualizers=[CutInCutoutTimelineVisualizer()],
             tabler=CutInCutOutTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -96,7 +100,11 @@ class RunTestWorkflow(BaseWorkflow):
         # Note: 2 tableaux pour ce critère (valeurs + durée)
         nominal_power_result = DataProcessingStep(
             analyzer=NominalPowerAnalyzer(),
-            visualizers=[PowerCurveChartVisualizer()],  # TODO: add WindRoseChartVisualizer
+            visualizers=[
+                PowerCurveChartVisualizer(),
+                WindRoseChartVisualizer(),
+                WindHistogramChartVisualizer(),
+            ],
             tabler=[NominalPowerValuesTabler(), NominalPowerDurationTabler()],
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -122,7 +130,7 @@ class RunTestWorkflow(BaseWorkflow):
         # Criteria 5: Availability (>=92%)
         availability_result = DataProcessingStep(
             analyzer=TestAvailabilityAnalyzer(),
-            visualizers=None,  # TODO: implement HeatmapChartVisualizer
+            visualizers=[HeatmapChartVisualizer()],
             tabler=AvailabilityTabler(),
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
