@@ -188,10 +188,11 @@ class RunTestWorkflow(BaseWorkflow):
             }
 
             # Rendre le rapport Word
+            # Le template optimisé sera créé automatiquement s'il n'existe pas
             presenter = WordPresenter(
                 template_path=self._config.template_path,
                 output_path=self._config.output_path,
-                create_new_template=True  # Créer un nouveau template optimisé
+                auto_create_template=False,
             )
             presenter.render_report(context, metadata=metadata)
 

@@ -28,7 +28,7 @@ class WordPresenter:
         self,
         template_path: str,
         output_path: str,
-        create_new_template: bool = False
+        auto_create_template: bool = True
     ):
         """
         Initialise le présentateur Word.
@@ -36,32 +36,35 @@ class WordPresenter:
         Args:
             template_path: Chemin vers le template Word (.docx)
             output_path: Chemin où sauvegarder le rapport généré
-            create_new_template: Si True, crée un nouveau template optimisé
-                                 à partir du template existant
+            auto_create_template: Si True, crée automatiquement un template optimisé
+                                  s'il n'existe pas déjà
 
         Raises:
-            FileNotFoundError: Si le template n'existe pas et create_new_template=False
+            FileNotFoundError: Si le template n'existe pas et auto_create_template=False
         """
         self.template_path = Path(template_path)
         self.output_path = Path(output_path)
 
-        # Si le template n'existe pas, essayer la version _new
-        if not self.template_path.exists():
-            new_template_path = self.template_path.parent / f"{self.template_path.stem}_new{self.template_path.suffix}"
-            if new_template_path.exists():
-                logger.info(f"Template original introuvable, utilisation de: {new_template_path}")
-                self.template_path = new_template_path
-            elif not create_new_template:
-                raise FileNotFoundError(
-                    f"Template not found: {self.template_path}. "
-                    f"Set create_new_template=True to create a new template."
-                )
+        # Vérifier si un template optimisé existe déjà
+        new_template_path = self.template_path.parent / f"{self.template_path.stem}_new{self.template_path.suffix}"
 
-        logger.info(f"WordPresenter initialized with template: {self.template_path}")
-
-        # Créer un nouveau template si demandé
-        if create_new_template:
+        if new_template_path.exists():
+            # Utiliser le template optimisé existant
+            logger.info(f"Utilisation du template optimisé existant: {new_template_path.name}")
+            self.template_path = new_template_path
+        elif self.template_path.exists() and auto_create_template:
+            # Créer le template optimisé UNE SEULE FOIS
+            logger.info(f"Template optimisé introuvable, création à partir de: {self.template_path.name}")
             self._create_new_template()
+            # Utiliser le nouveau template créé
+            self.template_path = new_template_path
+        elif not self.template_path.exists():
+            raise FileNotFoundError(
+                f"Template not found: {self.template_path}. "
+                f"Please provide a valid template path."
+            )
+
+        logger.info(f"WordPresenter prêt avec: {self.template_path.name}")
 
     def render_report(
         self, context: Dict[str, Any], metadata: Dict[str, Any] = None
