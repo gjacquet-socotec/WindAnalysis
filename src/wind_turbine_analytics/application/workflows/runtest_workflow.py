@@ -177,6 +177,9 @@ class RunTestWorkflow(BaseWorkflow):
             if turbine_list:
                 first_turbine_config = self.turbine_sources.farm[turbine_list[0]]
 
+            # Extraire les valeurs des critères depuis validation_criteria
+            criteria = self.validation_criteria.validation_criterion
+
             metadata = {
                 "test_start": (
                     first_turbine_config.test_start if first_turbine_config else "N/A"
@@ -185,6 +188,17 @@ class RunTestWorkflow(BaseWorkflow):
                     first_turbine_config.test_end if first_turbine_config else "N/A"
                 ),
                 "turbines": turbine_list,
+
+                # Valeurs des critères de validation
+                "consecutive_hours_h": criteria.get("consecutive_hours").value if "consecutive_hours" in criteria else 120,
+                "cut_in_to_cut_out_h": criteria.get("cut_in_to_cut_out").value if "cut_in_to_cut_out" in criteria else 72,
+                # Cut-in/cut-out vitesses min/max depuis specification
+                "cut_in_v_min": criteria.get("cut_in_to_cut_out").specification[0] if "cut_in_to_cut_out" in criteria and criteria.get("cut_in_to_cut_out").specification else 3,
+                "cut_in_v_max": criteria.get("cut_in_to_cut_out").specification[1] if "cut_in_to_cut_out" in criteria and criteria.get("cut_in_to_cut_out").specification else 25,
+                "nominal_power_h": criteria.get("nominal_power_hours").value if "nominal_power_hours" in criteria else 3,
+                "nominal_power_pct": criteria.get("nominal_power_hours").specification if "nominal_power_hours" in criteria else 97,
+                "local_restarts_max": criteria.get("local_restarts").value if "local_restarts" in criteria else 3,
+                "availability_min_pct": criteria.get("availability").value if "availability" in criteria else 92,
             }
 
             # Rendre le rapport Word

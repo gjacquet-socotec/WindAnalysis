@@ -596,25 +596,76 @@ class WordPresenter:
 
         Args:
             doc: Document Word
-            context: Contexte avec les métadonnées
+            context: Contexte avec les métadonnées et critères
         """
         logger.info("Remplacement des balises de métadonnées...")
 
         replacements = {
+            # Métadonnées générales
             '{{generation_date}}': context.get('generation_date', ''),
             '{{test_start}}': context.get('test_start', ''),
             '{{test_end}}': context.get('test_end', ''),
             '{{turbine_list}}': context.get('turbine_list', ''),
             '{{turbine_count}}': str(context.get('turbine_count', '')),
+
+            # Valeurs des critères de validation (avec et sans espaces)
+            '{{consecutive_hours_h}}': str(context.get('consecutive_hours_h', '120')),
+            '{{cut_in_to_cut_out_h}}': str(context.get('cut_in_to_cut_out_h', '72')),
+            '{{cut_in_v_min}}': str(context.get('cut_in_v_min', '3')),
+            '{{cut_in_v_max}}': str(context.get('cut_in_v_max', '25')),
+            '{{nominal_power_h}}': str(context.get('nominal_power_h', '3')),
+            '{{ nominal_power_h}}': str(context.get('nominal_power_h', '3')),  # Variante avec espace
+            '{{nominal_power_pct}}': str(context.get('nominal_power_pct', '97')),
+            '{{nominal_power_pct }}': str(context.get('nominal_power_pct', '97')),  # Variante avec espace
+            '{{ nominal_power_pct}}': str(context.get('nominal_power_pct', '97')),  # Variante avec espace
+            '{{local_restarts_max}}': str(context.get('local_restarts_max', '3')),
+            '{{local_restarts_max }}': str(context.get('local_restarts_max', '3')),  # Variante avec espace
+            '{{availability_min_pct}}': str(context.get('availability_min_pct', '92')),
+            '{{availability_min_pct }}': str(context.get('availability_min_pct', '92')),  # Variante avec espace
         }
 
         # Parcourir tous les paragraphes
         for para in doc.paragraphs:
-            for old_tag, new_value in replacements.items():
-                if old_tag in para.text:
-                    # Remplacer dans chaque run
-                    for run in para.runs:
-                        if old_tag in run.text:
-                            run.text = run.text.replace(old_tag, str(new_value))
+            # Vérifier si le paragraphe contient une balise
+            full_text = para.text
+            modified = False
 
-        logger.info("✅ Métadonnées remplacées")
+            for old_tag, new_value in replacements.items():
+                if old_tag in full_text:
+                    full_text = full_text.replace(old_tag, str(new_value))
+                    modified = True
+
+            # Si le texte a été modifié, reconstruire le paragraphe
+            if modified:
+                # Sauvegarder le formatage du premier run
+                first_run_format = None
+                if para.runs:
+                    first_run = para.runs[0]
+                    first_run_format = {
+                        'bold': first_run.bold,
+                        'italic': first_run.italic,
+                        'underline': first_run.underline,
+                        'font_name': first_run.font.name,
+                        'font_size': first_run.font.size,
+                    }
+
+                # Supprimer tous les runs
+                for run in para.runs:
+                    run.text = ''
+
+                # Ajouter le nouveau texte dans le premier run
+                if para.runs:
+                    para.runs[0].text = full_text
+                    # Restaurer le formatage
+                    if first_run_format:
+                        para.runs[0].bold = first_run_format['bold']
+                        para.runs[0].italic = first_run_format['italic']
+                        para.runs[0].underline = first_run_format['underline']
+                        if first_run_format['font_name']:
+                            para.runs[0].font.name = first_run_format['font_name']
+                        if first_run_format['font_size']:
+                            para.runs[0].font.size = first_run_format['font_size']
+                else:
+                    para.add_run(full_text)
+
+        logger.info("✅ Métadonnées et critères remplacés")
