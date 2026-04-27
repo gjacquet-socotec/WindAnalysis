@@ -211,10 +211,17 @@ class WordPresenter:
         - Autres cellules : {{item.field}}
         - Dernière cellule : {{item.field}}{%endtr%}
         """
-        if len(table.rows) < 2 or len(table.columns) < 3:
+        if len(table.rows) < 2:
             return
 
-        headers = ["WTG", "Data hours [h]", "Criterion (≥120h)"]
+        # S'assurer que le tableau a 5 colonnes
+        if len(table.columns) < 5:
+            # Ajouter les colonnes manquantes
+            for _ in range(5 - len(table.columns)):
+                for row in table.rows:
+                    row.add_cell()
+
+        headers = ["WTG", "Data hours [h]", "Start date", "End date", "Status"]
         row_1 = table.rows[0]
         for col_idx, header in enumerate(headers):
             if col_idx < len(row_1.cells):
@@ -224,7 +231,9 @@ class WordPresenter:
         # Syntaxe docxtpl: répartir sur les cellules
         row_2.cells[0].text = "{%tr for item in consecutive_hours_table%}{{item.wtg}}"
         row_2.cells[1].text = "{{item.data_hours}}"
-        row_2.cells[2].text = "{{item.criterion_met}}{%endtr%}"
+        row_2.cells[2].text = "{{item.start_date}}"
+        row_2.cells[3].text = "{{item.end_date}}"
+        row_2.cells[4].text = "{{item.status}}{%endtr%}"
 
     def _adapt_table_cut_in_cut_out(self, table) -> None:
         """Adapte le tableau cut-in à cut-out."""

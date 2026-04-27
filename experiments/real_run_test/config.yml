@@ -89,7 +89,7 @@ dynamic_fields:
         oper: name
         status: Main status
       test_start: "01.02.2026 00:00:00"
-      test_end: "05.02.2026 23:50:00"
+      test_end: "05.02.2026 23:59:00"
     - turbine_id: E6
       general_information:
         model: Nordex N131 – 3.78MW
@@ -119,7 +119,7 @@ dynamic_fields:
         oper: name
         status: Main status
       test_start: "01.02.2026 00:00:00"
-      test_end: "05.02.2026 23:50:00"
+      test_end: "05.02.2026 23:59:00"
     - turbine_id: E8
       general_information:
         model: Nordex N131 – 3.78MW
@@ -149,4 +149,4 @@ dynamic_fields:
         oper: name
         status: Main status
       test_start: "01.02.2026 00:00:00"
-      test_end: "05.02.2026 23:50:00"
+      test_end: "05.02.2026 23:59:00"

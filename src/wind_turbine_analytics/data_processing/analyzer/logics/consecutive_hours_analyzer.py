@@ -99,7 +99,14 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
         max_duration = continuous_periods["duration_hours"].max()
         has_120h = max_duration >= criteria_hours_threshold
 
+        # Récupérer les dates de début et fin de la période maximale
+        max_period_idx = continuous_periods["duration_hours"].idxmax()
+        max_period_start = continuous_periods.loc[max_period_idx, "start"]
+        max_period_end = continuous_periods.loc[max_period_idx, "end"]
+
         return {
             "duration": round(max_duration, 2),
             "criterion": bool(has_120h),
+            "start_date": max_period_start,
+            "end_date": max_period_end,
         }
