@@ -5,14 +5,11 @@ from typing import Dict, Any
 
 
 class BaseVisualizer:
+    def __init__(self, chart_name: str):
+        self.chart_name = chart_name
+
     def generate(self, result: AnalysisResult) -> None:
         """Placeholder for the main visualization method."""
-        for check_name, passed in result.detailed_results.items():
-            if not passed:
-                self._plot_failed_check(check_name, result.metadata)
-
-    def _plot_failed_check(self, check_name: str, metadata: Dict[str, Any]) -> Any:
-        """Placeholder for plotting logic for a failed check."""
         raise NotImplementedError(
-            f"Visualization for failed check '{check_name}' is not implemented."
+            f"Visualization for failed check '{self.chart_name}' is not implemented."
         )

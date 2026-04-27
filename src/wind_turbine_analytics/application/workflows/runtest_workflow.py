@@ -23,7 +23,7 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics import (
 )
 
 # Imports des visualizers
-from src.wind_turbine_analytics.data_processing.chart_builders.consecutive_hours_visualizer import (
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.consecutive_hours_visualizer import (
     ConseccutiveHoursVisualizer,
 )
 
