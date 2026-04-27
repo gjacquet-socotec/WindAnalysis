@@ -173,11 +173,81 @@ clean_data = manager.filter_by_codes(
 - `DataAvailabilityAnalyzer` : Disponibilité des données
 - `EbACutInCutOutAnalyzer` : EBA avec filtrage des codes d'erreur
 - `EbaManufacturerAnalyzer` : EBA sans filtrage (tous downtimes inclus)
+- `NominalPowerAnalyzer` : Heures au-dessus d'un seuil de puissance nominale
+- `TestCutInCutOutAnalyzer` : Analyse cut-in à cut-out avec filtrage arrêts
+- `AutonomousOperationAnalyzer` : Autonomie d'exploitation (redémarrages manuels)
+- `TestAvailabilityAnalyzer` : Disponibilité pendant la période de test
 
 **Convention :**
 - Méthode `analyze()` : Point d'entrée public
 - Méthode `_compute()` : Implémentation spécifique (abstraite)
 - Retourne toujours un `AnalysisResult`
+
+### 4. Analyseur d'Autonomie d'Exploitation
+
+**Fichier** : `src/wind_turbine_analytics/data_processing/analyzer/logics/autonomous_operation.py`
+
+**Classe** : `AutonomousOperationAnalyzer`
+
+**Objectif** : Vérifier que l'éolienne peut fonctionner sans redémarrage manuel local pendant la période de test.
+
+**Critère** : Nombre de codes nécessitant redémarrage manuel ≤ 3 (config: `local_restarts.value`)
+
+**Utilisation typique** :
+```python
+from src.wind_turbine_analytics.data_processing.analyzer.logics.autonomous_operation import AutonomousOperationAnalyzer
+
+analyzer = AutonomousOperationAnalyzer()
+result = analyzer.analyze(turbine_farm, criteria)
+
+# Résultat :
+# {
+#     "manual_restart_count": 0,
+#     "required_threshold": 3,
+#     "criterion_met": True,
+#     "manual_restart_events": []
+# }
+```
+
+**Notes** :
+- Identifie les codes MANUAL et SAFETY_LOCAL via `NordexN311LogCodeManager.get_codes_by_reset_mode()`
+- Gère les événements ON/OFF dans les logs
+- Pour Nordex N311 : aucun code manuel dans la base (validation automatique)
+
+### 5. Analyseur de Disponibilité
+
+**Fichier** : `src/wind_turbine_analytics/data_processing/analyzer/logics/test_availability_analyzer.py`
+
+**Classe** : `TestAvailabilityAnalyzer`
+
+**Objectif** : Calculer la disponibilité pendant la période de test.
+
+**Critère** : Disponibilité ≥ 92% (config: `availability.value`)
+
+**Formule** : `availability = (total_hours - unauthorized_downtime) / total_hours × 100`
+
+**Utilisation typique** :
+```python
+from src.wind_turbine_analytics.data_processing.analyzer.logics.test_availability_analyzer import TestAvailabilityAnalyzer
+
+analyzer = TestAvailabilityAnalyzer()
+result = analyzer.analyze(turbine_farm, criteria)
+
+# Résultat :
+# {
+#     "total_hours": 119.83,
+#     "unauthorized_downtime_hours": 0.0,
+#     "availability_percent": 100.0,
+#     "required_threshold": 92,
+#     "criterion_met": True
+# }
+```
+
+**Notes** :
+- Utilise la durée calendaire (test_end - test_start)
+- Identifie les arrêts via `get_unauthorized_stop_codes()`
+- Algorithme de suivi d'état pour gérer les chevauchements de codes
+- Clipping des périodes dans la fenêtre de test
 
 ---
 
@@ -337,6 +407,34 @@ from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import Ba
 - `conftest.py` pour gestion du PYTHONPATH
 
 **Objectif :** Suivre les conventions Python standard.
+
+### 2026-04-26 : Implémentation des Analyseurs d'Autonomie et Disponibilité
+
+**Changements :**
+- Ajout de `AutonomousOperationAnalyzer` (critère 4 - redémarrages locaux)
+- Ajout de `TestAvailabilityAnalyzer` (critère 5 - disponibilité)
+- Correction du seuil de puissance nominale : 97.33% → 97%
+- Création du script de diagnostic : `tests/debug_nominal_power_full_diagnostic.py`
+
+**Objectif :** Compléter les 5 critères de validation RunTest.
+
+**Résultats validés** (données réelles E1, E6, E8) :
+1. ✅ Heures consécutives : ~120h
+2. ✅ Cut-in à Cut-out : Validé (avec filtrage arrêts non autorisés)
+3. ✅ Puissance nominale : 3.67h, 5.33h, 7.33h (seuil 97%)
+4. ✅ Autonomie : 0 redémarrages manuels
+5. ✅ Disponibilité : 100% (0h d'arrêt)
+
+**Approche de conception :**
+- Réutilisation de `NordexN311LogCodeManager` pour identifier les codes
+- Algorithme de suivi d'état pour les événements ON/OFF
+- Gestion des chevauchements de codes multiples
+- Clipping des périodes dans la fenêtre de test
+
+**Notes techniques :**
+- Import circulaire résolu : `runtest_workflow.py` importe les analyseurs au niveau module
+- Signature `_compute()` étendue : `operation_data, log_data, turbine_config, criteria`
+- Les deux analyseurs reçoivent `log_data` déjà chargé par `BaseAnalyzer`
 
 ---
 

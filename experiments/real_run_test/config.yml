@@ -21,6 +21,11 @@ general_information:
   verficator_phone: "+33 6 12 34 56 78"
   date_archive: "2024-06-01"
 
+# Paramètres de génération de rapport Word
+render_template: true
+template_path: "./assets/templates/template_runtest.docx"
+output_path: "./outputs/runtest_report.docx"
+
 validation_criteria:
   consecutive_hours:
     value: 120
