@@ -61,9 +61,7 @@ class RunTestWorkflow(BaseWorkflow):
 
     def run(self) -> None:
         self.validation_step()
-        # [TODO] comptue analysis per turbine
         self.process_step()
-        # [TODO] gather those information per turbine
         return
 
     def process_step(self) -> None:
@@ -193,6 +191,7 @@ class RunTestWorkflow(BaseWorkflow):
             presenter = WordPresenter(
                 template_path=self._config.template_path,
                 output_path=self._config.output_path,
+                create_new_template=True  # Créer un nouveau template optimisé
             )
             presenter.render_report(context, metadata=metadata)
 

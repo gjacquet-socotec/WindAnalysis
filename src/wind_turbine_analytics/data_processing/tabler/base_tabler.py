@@ -91,105 +91,20 @@ class BaseTabler(ABC):
         """
         raise NotImplementedError("Subclasses must implement _get_table_headers()")
 
-    def _format_as_word_table(self) -> str:
+    def _format_as_word_table(self) -> List[Dict[str, Any]]:
         """
-        Formate les données en tableau texte pour Word.
+        Formate les données pour tableaux Word natifs avec docxtpl.
 
         Returns:
-            Chaîne de caractères formatée en tableau
+            Liste de dictionnaires (une ligne = un dict)
         """
         if not self._table_data:
             logger.warning(f"Tableau '{self.table_name}' vide (aucune donnée)")
-            return "Aucune donnée disponible"
+            return []
 
-        # Obtenir les en-têtes
-        headers = self._get_table_headers()
-
-        # Mapper les clés des données aux en-têtes
-        key_mapping = self._create_key_mapping(headers)
-
-        # Construire le tableau texte
-        lines = []
-
-        # Ligne d'en-tête avec séparateur |
-        header_line = " | ".join(headers)
-        lines.append(header_line)
-
-        # Ligne de séparation
-        separator = "-" * len(header_line)
-        lines.append(separator)
-
-        # Lignes de données
-        for row in self._table_data:
-            values = []
-            for header in headers:
-                key = key_mapping.get(header)
-                if key and key in row:
-                    value = str(row[key])
-                else:
-                    value = "N/A"
-                values.append(value)
-
-            line = " | ".join(values)
-            lines.append(line)
-
-        return "\n".join(lines)
-
-    def _create_key_mapping(self, headers: List[str]) -> Dict[str, str]:
-        """
-        Crée un mapping entre les en-têtes et les clés des données.
-
-        Args:
-            headers: Liste des en-têtes
-
-        Returns:
-            Dict mapping header -> clé de données
-        """
-        # Mapping basé sur les clés courantes
-        common_mappings = {
-            "WTG": "wtg",
-            "Data hours [h]": "data_hours",
-            "Data hours[h]": "data_hours",
-            "Criterion (>=120h)": "criterion_met",
-            "Criterion (>=72h)": "criterion_met",
-            "Max Power [kW]": "max_power_kw",
-            "Max Wind Speed [m/s]": "max_wind_speed_ms",
-            "Status": "status",
-            "Duration [h]": "duration_hours",
-            "Start": "start",
-            "End": "end",
-            "Local Acknowledgements / Restarts": "manual_restart_count",
-            "Criterion (<=3)": "criterion_met",
-            "Availability (%)": "availability_percent",
-            "WTG OK [h]": "wtg_ok_hours",
-            "Warning [h]": "warning_hours",
-            "Criterion (>=92%)": "criterion_met",
-            "Consecutive Hours (>=120h)": "consecutive_hours",
-            "Cut-In/Cut-Out (>=72h)": "cut_in_cut_out",
-            "Nominal Power (>=3h)": "nominal_power",
-            "Autonomous Operation (<=3)": "autonomous_operation",
-            "Availability (>=92%)": "availability",
-            "Overall": "overall",
-        }
-
-        mapping = {}
-        for header in headers:
-            if header in common_mappings:
-                mapping[header] = common_mappings[header]
-            else:
-                # Fallback: utiliser le header en snake_case
-                key = (
-                    header.lower()
-                    .replace(" ", "_")
-                    .replace("[", "")
-                    .replace("]", "")
-                    .replace("(", "")
-                    .replace(")", "")
-                    .replace("%", "percent")
-                )
-                mapping[header] = key
-
-        return mapping
+        # Retourner directement les données pour docxtpl
+        # docxtpl utilisera la syntaxe {% tr for item in table %}
+        return self._table_data
 
     def _format_status_cell(
         self, passed: bool, true_label: str = "✓", false_label: str = "✗"
