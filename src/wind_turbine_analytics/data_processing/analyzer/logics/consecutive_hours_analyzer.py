@@ -96,7 +96,8 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
         ).dt.total_seconds() / 3600
 
         # Trouver la période continue maximale
-        max_duration = continuous_periods["duration_hours"].max()
+        # Ajouter 10 minutes pour pendre en compte les plages de temps
+        max_duration = continuous_periods["duration_hours"].max() + 1 / 6
         has_120h = max_duration >= criteria_hours_threshold
 
         # Récupérer les dates de début et fin de la période maximale
