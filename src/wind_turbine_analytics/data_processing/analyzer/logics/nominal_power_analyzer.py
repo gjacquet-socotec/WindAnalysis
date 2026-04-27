@@ -144,12 +144,26 @@ class NominalPowerAnalyzer(BaseAnalyzer):
                 f"le {max_wind_timestamp}"
             )
 
-        # Préparer les données pour visualisation (courbe de puissance)
-        # Extraire wind_speed et power pour le visualizer
+        # Préparer les données pour visualisation (courbe de puissance + rose des vents)
+        # Extraire wind_speed, power et wind_direction pour les visualizers
         chart_data = None
         if wind_speed_col and wind_speed_col in df_filtered.columns:
-            chart_data = df_filtered[[wind_speed_col, power_col]].copy()
-            chart_data.columns = ["wind_speed", "power"]
+            # Colonnes à extraire
+            cols_to_extract = [wind_speed_col, power_col]
+
+            # Vérifier si wind_direction existe
+            wind_dir_col = mapping.wind_direction if hasattr(mapping, 'wind_direction') else None
+            if wind_dir_col and wind_dir_col in df_filtered.columns:
+                cols_to_extract.append(wind_dir_col)
+
+            chart_data = df_filtered[cols_to_extract].copy()
+
+            # Renommer les colonnes
+            new_names = ["wind_speed", "power"]
+            if len(cols_to_extract) == 3:
+                new_names.append("wind_direction")
+            chart_data.columns = new_names
+
             # Supprimer les NaN
             chart_data = chart_data.dropna()
 
