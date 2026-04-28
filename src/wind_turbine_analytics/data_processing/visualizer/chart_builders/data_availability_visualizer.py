@@ -26,6 +26,40 @@ class DataAvailabilityVisualizer(BaseVisualizer):
     def __init__(self):
         super().__init__(chart_name="data_availability", use_plotly=True)
 
+    def _calculate_optimal_tickformat(self, timestamps: pd.Series) -> dict:
+        """
+        Determine optimal X-axis formatting based on data time span.
+
+        Args:
+            timestamps: All timestamps in the availability data
+
+        Returns:
+            Dict with xaxis configuration parameters
+        """
+        if len(timestamps) == 0:
+            return {}
+
+        time_span = (timestamps.max() - timestamps.min()).total_seconds() / 86400.0
+
+        if time_span <= 7:
+            return {
+                "tickformat": "%d/%m %H:%M",
+                "dtick": 3600000 * 6,
+                "tickangle": -45,
+            }
+        elif time_span <= 60:
+            return {
+                "tickformat": "%d %b",
+                "dtick": 86400000 * 3,
+                "tickangle": 0,
+            }
+        else:
+            return {
+                "tickformat": "%b %Y",
+                "dtick": "M1",
+                "tickangle": 0,
+            }
+
     def _create_figure(self, result: AnalysisResult) -> go.Figure:
         """
         Crée un graphique de disponibilité des données SCADA.
@@ -125,8 +159,20 @@ class DataAvailabilityVisualizer(BaseVisualizer):
                 categoryarray=y_labels,
             ),
             xaxis=dict(
+                title="Time",
+                type="date",
                 showgrid=True,
                 gridcolor="lightgray",
+                **self._calculate_optimal_tickformat(
+                    pd.concat([
+                        turbine_results[tid]["availability_table"]["timestamp"]
+                        for tid in turbine_ids
+                        if "availability_table" in turbine_results[tid]
+                    ]) if any(
+                        "availability_table" in turbine_results[tid]
+                        for tid in turbine_ids
+                    ) else pd.Series(dtype='datetime64[ns]')
+                ),
             ),
             plot_bgcolor="white",
         )
@@ -171,9 +217,10 @@ class DataAvailabilityVisualizer(BaseVisualizer):
                 legend_group = "good"
                 legend_name = "Good (>95%)"
             elif segment_value == 0:
-                # On ne trace pas les segments indisponibles
-                # (ou on peut les tracer en blanc/gris clair)
-                continue
+                color = "#FFA500"  # Orange (Unavailable)
+                legend_group = "unavailable"
+                legend_name = "Unavailable (0%)"
+                # Ne pas faire continue - tracer la barre
             else:
                 # Valeurs intermédiaires (si on a des valeurs partielles)
                 color = "#ff7f0e"  # Orange (Partial 30-95%)
@@ -190,6 +237,12 @@ class DataAvailabilityVisualizer(BaseVisualizer):
             # Calculer la durée en heures (pour sérialisation JSON)
             duration = (segment_end - segment_start).total_seconds() / 3600.0
 
+            # Mapper le statut pour clarté
+            status_text = {
+                1: "Available (100%)",
+                0: "Unavailable (0%)",
+            }.get(segment_value, f"Partial ({segment_value*100:.0f}%)")
+
             traces.append(
                 go.Bar(
                     x=[duration],
@@ -202,10 +255,10 @@ class DataAvailabilityVisualizer(BaseVisualizer):
                     showlegend=show_legend,
                     hovertemplate=(
                         f"<b>{turbine_id} - {variable}</b><br>"
-                        f"Start: {segment_start}<br>"
-                        f"End: {segment_end}<br>"
+                        f"Start: {segment_start.strftime('%Y-%m-%d %H:%M')}<br>"
+                        f"End: {segment_end.strftime('%Y-%m-%d %H:%M')}<br>"
                         f"Duration: {duration:.1f}h<br>"
-                        f"Status: {'Available' if segment_value == 1 else 'Partial'}"
+                        f"Status: {status_text}"
                         "<extra></extra>"
                     ),
                 )
