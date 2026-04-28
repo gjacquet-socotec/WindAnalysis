@@ -9,6 +9,7 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
     ScadaRunnerConfig,
 )
 from src.wind_turbine_analytics.application.workflows.base_workflow import BaseWorkflow
+from src.wind_turbine_analytics.data_processing.analyzer.logics.wind_direction_calibration_analyzer import WindDirectionCalibrationAnalyzer
 from src.wind_turbine_analytics.data_processing.data_processing import (
     DataProcessingStep,
 )
@@ -18,7 +19,9 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics import (
     DataAvailabilityAnalyzer,
     CodeErrorAnalyzer,
 )
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.data_availability_visualizer import DataAvailabilityVisualizer
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.data_availability_visualizer import (
+    DataAvailabilityVisualizer,
+)
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_cut_in_cut_out_visualizer import (
     EbaCutInCutOutVisualizer,
 )
@@ -31,7 +34,10 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_lo
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.top_error_code_frequency_visualizer import (
     TopErrorCodeFrequencyVisualizer,
 )
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.treemap_error_code_visualizer import TreemapErrorCodeVisualizer
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.treemap_error_code_visualizer import (
+    TreemapErrorCodeVisualizer,
+)
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_direction_calibration_visualizer import WindDirectionCalibrationVisualizer
 
 
 class ScadaWorkflow(BaseWorkflow):
@@ -51,14 +57,14 @@ class ScadaWorkflow(BaseWorkflow):
 
     def process_step(self) -> None:
         # EBA Cut-In/Cut-Out Analysis
-        eba_cut_in_cut_out_results = DataProcessingStep(
+        DataProcessingStep(
             analyzer=EbACutInCutOutAnalyzer(),
             visualizers=[EbaCutInCutOutVisualizer()],
             tabler=None,  # [TODO] add tabler for cut-in/cut-out analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
         # EBA Manufacturer Analysis
-        eba_manufacturer_results = DataProcessingStep(
+        DataProcessingStep(
             analyzer=EbaManufacturerAnalyzer(),
             visualizers=[
                 EbaManufacturerVisualizer(),
@@ -66,19 +72,27 @@ class ScadaWorkflow(BaseWorkflow):
             ],  # [TODO] add visualizer for manufacturer EBA analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
-        code_error_results = DataProcessingStep(
+        DataProcessingStep(
             analyzer=CodeErrorAnalyzer(),
             visualizers=[
                 TopErrorCodeFrequencyVisualizer(),
-                TreemapErrorCodeVisualizer()
+                TreemapErrorCodeVisualizer(),
             ],  # [TODO] add visualizer for code error analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
         # Data Availability Analysis
-        data_availability_results = DataProcessingStep(
+        DataProcessingStep(
             analyzer=DataAvailabilityAnalyzer(),
             visualizers=[
-                DataAvailabilityVisualizer()],  # [TODO] add visualizer for data availability analysis
+                DataAvailabilityVisualizer()
+            ],  # [TODO] add visualizer for data availability analysis
+        ).execute(self.turbine_sources, self.validation_criteria)
+
+        DataProcessingStep(
+            analyzer=WindDirectionCalibrationAnalyzer(),
+            visualizers=[
+                WindDirectionCalibrationVisualizer()
+            ],  # [TODO] add visualizer for wind direction calibration analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
 
