@@ -169,22 +169,25 @@ class EbaCutInCutOutVisualizer(BaseVisualizer):
                 showgrid=True,
                 gridcolor="lightgray",
                 tickangle=-45,
+                tickmode="array",
+                tickvals=all_months_sorted,
+                ticktext=all_months_sorted,
             ),
             yaxis=dict(
                 title="",  # Pas de titre sur Y, juste les valeurs
                 showgrid=True,
                 gridcolor="lightgray",
-                range=[50, 105],  # Plage 50-105% pour correspondre à l'image
+                range=[0, 105],  # Plage 50-105% pour correspondre à l'image
                 ticksuffix="%",
             ),
-            height=500,
-            width=1000,
+            height=600,
+            width=1100,
             template="plotly_white",
             showlegend=True,
             legend=dict(
                 orientation="h",
                 yanchor="bottom",
-                y=-0.25,
+                y=-0.3,
                 xanchor="center",
                 x=0.5,
             ),
