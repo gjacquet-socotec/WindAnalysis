@@ -436,6 +436,51 @@ from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import Ba
 - Signature `_compute()` étendue : `operation_data, log_data, turbine_config, criteria`
 - Les deux analyseurs reçoivent `log_data` déjà chargé par `BaseAnalyzer`
 
+### 2026-04-28 : Ajout du visualiseur des pertes d'énergie (EbaLossVisualizer)
+
+**Changements :**
+- Ajout de `EbaLossVisualizer` dans `chart_builders/eba_loss_visualizer.py`
+- Tests unitaires dans `tests/test_eba_loss_visualizer.py`
+- Exemple d'utilisation dans `tests/example_eba_loss_visualizer.py`
+
+**Objectif :** Visualiser les pertes d'énergie mensuelles par turbine sous forme d'histogramme avec échelle de couleurs.
+
+**Caractéristiques :**
+- **Type de graphique** : Histogramme groupé (barres par turbine et par mois)
+- **Axe X** : Périodes mensuelles
+- **Axe Y** : Pourcentage de perte d'énergie (calculé : 100 - performance)
+- **Couleurs** : Dégradé du bleu (faibles pertes) au rouge (pertes élevées)
+- **Palette** : Utilise `seaborn.color_palette("coolwarm")` pour générer le gradient
+- **Format de sortie** : PNG + JSON (Plotly) pour intégration future dans dashboard web
+
+**Utilisation typique :**
+```python
+from src.wind_turbine_analytics.data_processing.analyzer.logics.eba_manifacturer_analyzer import EbaManufacturerAnalyzer
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_loss_visualizer import EbaLossVisualizer
+
+# Analyser les turbines
+analyzer = EbaManufacturerAnalyzer()
+result = analyzer.analyze(turbine_farm, criteria)
+
+# Générer le visualiseur
+visualizer = EbaLossVisualizer()
+output_paths = visualizer.generate(result)
+# Retourne: {"png_path": "...", "json_path": "..."}
+```
+
+**Approche de conception :**
+- Hérite de `BaseVisualizer` pour uniformité
+- Calcul automatique des pertes : `loss_percent = 100 - performance`
+- Normalisation des couleurs sur l'ensemble des données (min/max)
+- Gestion des turbines multiples avec barres groupées (`barmode="group"`)
+- Tooltips interactifs avec Plotly (hover sur les barres)
+
+**Notes techniques :**
+- Compatible avec `EbaManufacturerAnalyzer` (utilise `monthly_performance`)
+- Largeur des barres ajustée dynamiquement selon le nombre de turbines
+- Support des données manquantes (affiche 0 pour les mois sans données)
+- Fichiers de sortie stockés dans `result.metadata["charts"]`
+
 ---
 
 ## 📝 Configuration YAML pour les mappings de colonnes
