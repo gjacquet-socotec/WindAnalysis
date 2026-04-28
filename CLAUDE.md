@@ -481,6 +481,72 @@ output_paths = visualizer.generate(result)
 - Support des données manquantes (affiche 0 pour les mois sans données)
 - Fichiers de sortie stockés dans `result.metadata["charts"]`
 
+### 2026-04-28 : Implémentation du visualiseur Top Error Codes (TopErrorCodeFrequencyVisualizer)
+
+**Changements :**
+- Implémentation complète de `TopErrorCodeFrequencyVisualizer` dans `chart_builders/top_error_code_frequency_visualizer.py`
+- Tests unitaires dans `tests/test_top_error_frequency_visualizer.py`
+- Exemple d'utilisation dans `tests/example_top_error_frequency_visualizer.py`
+
+**Objectif :** Visualiser le top 10 des codes d'erreur par fréquence et durée pour identifier les problèmes récurrents et impactants.
+
+**Caractéristiques :**
+- **Type de graphique** : Grille de subplots avec barres horizontales
+  - **Une ligne par turbine** pour analyse individuelle
+  - **Colonne gauche** : Top 10 par fréquence (nombre d'occurrences)
+  - **Colonne droite** : Top 10 par durée totale (heures d'indisponibilité)
+- **Couleurs par criticité** :
+  - 🔴 Rouge (`#d62728`) : CRITICAL
+  - 🟠 Orange (`#ff7f0e`) : HIGH
+  - 🟡 Jaune (`#ffbb33`) : MEDIUM
+  - 🟢 Vert (`#2ca02c`) : LOW
+  - ⚫ Gris (`#7f7f7f`) : Unknown
+- **Orientation** : Barres horizontales (meilleure lisibilité pour les codes)
+- **Ordre** : Inversé pour avoir les valeurs les plus élevées en haut
+- **Format de sortie** : PNG + JSON (Plotly) pour dashboard web
+
+**Utilisation typique :**
+```python
+from src.wind_turbine_analytics.data_processing.analyzer.logics.code_error_analyzer import CodeErrorAnalyzer
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.top_error_code_frequency_visualizer import TopErrorCodeFrequencyVisualizer
+
+# Analyser les codes d'erreur
+analyzer = CodeErrorAnalyzer()
+result = analyzer.analyze(turbine_farm, criteria)
+
+# Générer le visualiseur
+visualizer = TopErrorCodeFrequencyVisualizer()
+output_paths = visualizer.generate(result)
+# Retourne: {"png_path": "...", "json_path": "..."}
+```
+
+**Approche de conception :**
+- Hérite de `BaseVisualizer` pour uniformité
+- Utilise `make_subplots` de Plotly pour créer une grille (n_turbines x 2)
+- Hauteur dynamique : `400 + (n_turbines * 350)` pixels
+- Extrait `code_frequency` (fréquence) et `most_impactful_codes` (durée) du résultat
+- Mapping automatique des couleurs selon criticité depuis `CodeErrorAnalyzer`
+- Tooltips interactifs avec description complète des codes
+- Affichage des valeurs sur les barres (`textposition="outside"`)
+- Turbines triées alphabétiquement pour cohérence
+
+**Insights fournis :**
+- **Fréquence** : Identifie les codes qui apparaissent le plus souvent → problèmes récurrents
+- **Durée** : Identifie les codes avec le plus d'impact temporel → priorités de maintenance
+- **Criticité visuelle** : Permet de repérer rapidement les codes critiques (rouge/orange)
+- **Comparaison** : Un code fréquent peut avoir une courte durée (reset rapide) vs code rare mais long
+- **Analyse par turbine** : Identifie les problèmes spécifiques à chaque éolienne
+- **Vue d'ensemble** : Permet de comparer la santé entre turbines du même parc
+
+**Notes techniques :**
+- Compatible avec `CodeErrorAnalyzer` (utilise `code_frequency` et `most_impactful_codes`)
+- Gère plusieurs turbines simultanément (une ligne par turbine dans la grille)
+- Inversion de l'ordre des données pour affichage top-down
+- Troncature des descriptions à 50 caractères pour lisibilité
+- `showlegend=False` car les noms des turbines sont dans les titres des subplots
+- Axes X avec titre seulement sur la dernière ligne (évite répétition)
+- Espacement vertical adaptatif : `0.08 / n_turbines` pour optimiser l'espace
+
 ---
 
 ## 📝 Configuration YAML pour les mappings de colonnes

@@ -27,6 +27,9 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_ma
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_loss_visualizer import (
     EbaLossVisualizer,
 )
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.top_error_code_frequency_visualizer import (
+    TopErrorCodeFrequencyVisualizer,
+)
 
 
 class ScadaWorkflow(BaseWorkflow):
@@ -63,7 +66,9 @@ class ScadaWorkflow(BaseWorkflow):
 
         code_error_results = DataProcessingStep(
             analyzer=CodeErrorAnalyzer(),
-            visualizers=None,  # [TODO] add visualizer for code error analysis
+            visualizers=[
+                TopErrorCodeFrequencyVisualizer()
+            ],  # [TODO] add visualizer for code error analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
         # Data Availability Analysis
