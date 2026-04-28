@@ -14,6 +14,8 @@ from src.wind_turbine_analytics.application.utils.load_data import (
 )
 from src.wind_turbine_analytics.application.utils.date_parser import (
     robust_date_parser,
+    smart_date_converter,
+    to_smart_timestamp,
 )
 import pandas as pd
 import numpy as np
@@ -73,8 +75,8 @@ class BaseAnalyzer:
                 wind_seed_col = turbine_data.mapping_operation_data.wind_speed
                 active_power_col = turbine_data.mapping_operation_data.activation_power
 
-                operation_data[timestamp_col] = pd.to_datetime(
-                    operation_data[timestamp_col], dayfirst=True, errors="coerce"
+                operation_data[timestamp_col] = smart_date_converter(
+                    operation_data, timestamp_col
                 )
 
                 if not pd.api.types.is_numeric_dtype(operation_data[wind_seed_col]):
@@ -92,10 +94,13 @@ class BaseAnalyzer:
                     log_data, turbine_data.mapping_log_data
                 )
                 if start_col == end_col:  # case of unique timestamp column
-                    log_data[start_col] = robust_date_parser(log_data[start_col])
+                    log_data[start_col] = smart_date_converter(log_data, start_col)
                 else:
-                    log_data[start_col] = robust_date_parser(log_data[start_col])
-                    log_data[end_col] = robust_date_parser(log_data[end_col])
+                    log_data[start_col] = smart_date_converter(log_data, start_col)
+                    log_data[end_col] = smart_date_converter(log_data, end_col)
+
+                turbine_data.test_start = to_smart_timestamp(turbine_data.test_start)
+                turbine_data.test_end = to_smart_timestamp(turbine_data.test_end)
 
                 # TODO: Implémenter la logique d'analyse des heures consécutives
                 results[turbine_id] = self._compute(

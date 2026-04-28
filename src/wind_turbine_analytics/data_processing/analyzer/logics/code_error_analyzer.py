@@ -49,8 +49,8 @@ class CodeErrorAnalyzer(BaseAnalyzer):
         start_date_col = mapping_log.start_date
         end_date_col = mapping_log.end_date
 
-        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
-        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
+        test_start = turbine_config.test_start
+        test_end = turbine_config.test_end
 
         # Initialiser le gestionnaire de codes
         manager = NordexN311LogCodeManager()

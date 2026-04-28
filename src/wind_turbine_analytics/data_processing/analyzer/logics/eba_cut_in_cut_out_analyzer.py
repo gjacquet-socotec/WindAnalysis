@@ -44,8 +44,8 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
         power_col = mapping.activation_power
         P_nom = turbine_config.general_information.nominal_power
 
-        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
-        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
+        test_start = turbine_config.test_start
+        test_end = turbine_config.test_end
 
         manager = NordexN311LogCodeManager()
         start_date_col = turbine_config.mapping_log_data.start_date
@@ -77,7 +77,7 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
         ):
             raise ValueError("Invalid specification for cut_in_to_cut_out criterion")
         v_min, v_max = specification
-        dt_minutes = 10
+        dt_minutes = 5  # Assuming data is at 5-minute intervals; adjust as needed
         dt_hours = dt_minutes / 60.0
 
         theorical_power_curve = None
@@ -174,7 +174,6 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
         eba_monthly["performance"] = (
             100.0 * eba_monthly["E_real_monthly"] / eba_monthly["E_theorical_monthly"]
         ).fillna(0.0)
-
         logger.info(
             "Turbine %s: Monthly performance:\n%s",
             turbine_config.turbine_id,

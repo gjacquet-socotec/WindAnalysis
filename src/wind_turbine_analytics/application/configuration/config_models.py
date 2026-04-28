@@ -1,9 +1,10 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, Optional, Union
+import pandas as pd
 
 
-@dataclass(frozen=True)
+@dataclass()
 class RunTestPipelineConfig:
     root_path: str
     template_path: str = "./assets/template_runtest.docx"
@@ -11,7 +12,7 @@ class RunTestPipelineConfig:
     render_template: bool = True
 
 
-@dataclass(frozen=True)
+@dataclass()
 class ScadaRunnerConfig:
     root_path: str
     template_path: str = "./assets/template_scada.docx"
@@ -19,7 +20,7 @@ class ScadaRunnerConfig:
     render_template: bool = False
 
 
-@dataclass(frozen=True)
+@dataclass()
 class ScadaYamlSource:
     operation_path: str
     log_path: str
@@ -28,7 +29,7 @@ class ScadaYamlSource:
     timestamp_key: str
 
 
-@dataclass(frozen=True)
+@dataclass()
 class GeneralInformation:
     name: str = ""
     description: str = ""
@@ -53,14 +54,15 @@ class GeneralInformation:
     date_archive: str = ""
 
 
-@dataclass(frozen=True)
+@dataclass()
 class LogCode:
     manual_stop: list[str] = field(default_factory=list)
     authorized_stop: list[str] = field(default_factory=list)
     unauthorized_stop: list[str] = field(default_factory=list)
     curtailment: list[str] = field(default_factory=list)
 
-@dataclass(frozen=True)
+
+@dataclass()
 class Criterion:
     value: Optional[Any] = None
     unit: Optional[Any] = None
@@ -68,12 +70,12 @@ class Criterion:
     description: bool = True
 
 
-@dataclass(frozen=True)
+@dataclass()
 class ValidationCriteria:
     validation_criterion: Optional[dict[str, Criterion]] = field(default_factory=dict)
 
 
-@dataclass(frozen=True)
+@dataclass()
 class TurbineGeneralInformation:
     model: Optional[str] = None
     nominal_power: Optional[float] = None
@@ -84,7 +86,7 @@ class TurbineGeneralInformation:
     timestamp: str = ""
 
 
-@dataclass(frozen=True)
+@dataclass()
 class TurbineMappingOperationData:
     timestamp: Optional[str] = None
     wind_speed: Optional[str] = None
@@ -100,7 +102,7 @@ class TurbineMappingOperationData:
     pitch_pale3: Optional[str] = None
 
 
-@dataclass(frozen=True)
+@dataclass()
 class TurbineLogMapping:
     start_date: Any  # str ou list[str] pour ["date", "time"]
     end_date: Any  # str ou list[str] pour ["date", "time"]
@@ -131,16 +133,16 @@ class TurbineLogMapping:
         return [self.end_date]
 
 
-@dataclass(frozen=True)
+@dataclass()
 class TurbineConfig:
     turbine_id: str
     general_information: Optional[TurbineGeneralInformation] = None
     mapping_operation_data: Optional[TurbineMappingOperationData] = None
     mapping_log_data: Optional[TurbineLogMapping] = None
-    test_start: Optional[str] = None
-    test_end: Optional[str] = None
+    test_start: Optional[Union[str, pd.Timestamp]] = None
+    test_end: Optional[Union[str, pd.Timestamp]] = None
 
 
-@dataclass(frozen=True)
+@dataclass()
 class TurbineFarm:
     farm: Optional[dict[str, TurbineConfig]] = field(default_factory=dict)

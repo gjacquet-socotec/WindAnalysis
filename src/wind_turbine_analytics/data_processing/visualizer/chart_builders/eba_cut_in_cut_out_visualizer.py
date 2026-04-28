@@ -85,7 +85,10 @@ class EbaCutInCutOutVisualizer(BaseVisualizer):
             # Convertir en DataFrame
             df_monthly = pd.DataFrame(monthly_data)
 
-            if "month" not in df_monthly.columns or "performance" not in df_monthly.columns:
+            if (
+                "month" not in df_monthly.columns
+                or "performance" not in df_monthly.columns
+            ):
                 logger.warning(f"Colonnes manquantes pour {turbine_id}")
                 continue
 
@@ -156,7 +159,7 @@ class EbaCutInCutOutVisualizer(BaseVisualizer):
         fig.update_layout(
             title={
                 "text": "Energy-based Availability (EbA) - Cut-in / Cut-out period<br>"
-                        "<sub>Monthly evolution per WTG and wind farm average</sub>",
+                "<sub>Monthly evolution per WTG and wind farm average</sub>",
                 "font": {"size": 14},
                 "x": 0.5,
                 "xanchor": "center",

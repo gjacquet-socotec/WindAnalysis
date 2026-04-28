@@ -48,8 +48,8 @@ class ConsecutiveHoursAnalyzer(BaseAnalyzer):
 
         # Convertir test_start et test_end en utilisant le MÊME dtype que la colonne timestamp
         # Cela garantit que les comparaisons fonctionnent correctement
-        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
-        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
+        test_start = turbine_config.test_start
+        test_end = turbine_config.test_end
         print(f"duration :  {test_end - test_start}")
 
         # S'assurer que la colonne timestamp n'a pas de timezone non plus

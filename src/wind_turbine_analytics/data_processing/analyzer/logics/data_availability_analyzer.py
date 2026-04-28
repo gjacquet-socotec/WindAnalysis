@@ -26,8 +26,8 @@ class DataAvailabilityAnalyzer(BaseAnalyzer):
         criteria: ValidationCriteria,
     ) -> Dict[str, Any]:
 
-        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
-        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
+        test_start = turbine_config.test_start
+        test_end = turbine_config.test_end
         mapping = turbine_config.mapping_operation_data
         timestamp_col = mapping.timestamp
 

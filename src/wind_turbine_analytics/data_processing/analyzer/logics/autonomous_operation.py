@@ -68,8 +68,8 @@ class AutonomousOperationAnalyzer(BaseAnalyzer):
         """
         # STEP 1: Extraire les informations de configuration
 
-        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
-        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
+        test_start = turbine_config.test_start
+        test_end = turbine_config.test_end
 
         # Récupérer le critère local_restarts
         local_restart_criterion = criteria.validation_criterion.get(
