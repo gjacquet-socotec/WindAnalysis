@@ -52,8 +52,8 @@ class EbaManufacturerAnalyzer(BaseAnalyzer):
         timestamp_col = mapping.timestamp
         power_col = mapping.activation_power
         P_nom = turbine_config.general_information.nominal_power
-        test_start = pd.to_datetime(turbine_config.test_start, dayfirst=True)
-        test_end = pd.to_datetime(turbine_config.test_end, dayfirst=True)
+        test_start = turbine_config.test_start
+        test_end = turbine_config.test_end
 
         if P_nom <= 100:
             logger.warning(

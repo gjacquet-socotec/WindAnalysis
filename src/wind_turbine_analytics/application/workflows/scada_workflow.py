@@ -21,6 +21,9 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics import (
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_cut_in_cut_out_visualizer import (
     EbaCutInCutOutVisualizer,
 )
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_manifacturer_visualizer import (
+    EbaManufacturerVisualizer,
+)
 
 
 class ScadaWorkflow(BaseWorkflow):
@@ -42,9 +45,7 @@ class ScadaWorkflow(BaseWorkflow):
         # EBA Cut-In/Cut-Out Analysis
         eba_cut_in_cut_out_results = DataProcessingStep(
             analyzer=EbACutInCutOutAnalyzer(),
-            visualizers=[
-                EbaCutInCutOutVisualizer()
-            ],  # [TODO] add visualizer for cut-in/cut-out analysis
+            visualizers=[EbaCutInCutOutVisualizer()],
             tabler=None,  # [TODO] add tabler for cut-in/cut-out analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -54,7 +55,9 @@ class ScadaWorkflow(BaseWorkflow):
         # EBA Manufacturer Analysis
         eba_manufacturer_results = DataProcessingStep(
             analyzer=EbaManufacturerAnalyzer(),
-            visualizers=None,  # [TODO] add visualizer for manufacturer EBA analysis
+            visualizers=[
+                EbaManufacturerVisualizer()
+            ],  # [TODO] add visualizer for manufacturer EBA analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
             eba_manufacturer_results, "EBA Manufacturer Analysis"
