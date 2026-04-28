@@ -210,6 +210,34 @@ class WindDirectionCalibrationAnalyzer(BaseAnalyzer):
             f"Criterion met: {criterion_met}"
         )
 
+        # Créer chart_data avec colonnes standardisées pour les visualiseurs
+        # Vérifier que toutes les colonnes nécessaires existent
+        columns_to_include = []
+        standard_names = []
+
+        if wind_direction_col in test_data.columns:
+            columns_to_include.append(wind_direction_col)
+            standard_names.append("wind_direction")
+
+        if mapping.activation_power and mapping.activation_power in test_data.columns:
+            columns_to_include.append(mapping.activation_power)
+            standard_names.append("activation_power")
+
+        if wind_speed_col in test_data.columns:
+            columns_to_include.append(wind_speed_col)
+            standard_names.append("wind_speed")
+
+        if timestamp_col in test_data.columns:
+            columns_to_include.append(timestamp_col)
+            standard_names.append("timestamp")
+
+        if nacelle_position_col in test_data.columns:
+            columns_to_include.append(nacelle_position_col)
+            standard_names.append("nacelle_position")
+
+        chart_data_df = test_data[columns_to_include].copy()
+        chart_data_df.columns = standard_names
+
         return {
             "overall_mean_angular_error": round(overall_mean_error, 2),
             "overall_std_angular_error": round(overall_std_error, 2),
@@ -223,4 +251,5 @@ class WindDirectionCalibrationAnalyzer(BaseAnalyzer):
             "criterion_met": criterion_met,
             "total_measurements": len(test_data),
             "daily_calibration": daily_results,
+            "chart_data": chart_data_df,
         }

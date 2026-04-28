@@ -39,6 +39,7 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.treema
     TreemapErrorCodeVisualizer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_direction_calibration_visualizer import WindDirectionCalibrationVisualizer
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_rose_chart_visualizer import WindRoseChartVisualizer
 
 
 class ScadaWorkflow(BaseWorkflow):
@@ -93,7 +94,8 @@ class ScadaWorkflow(BaseWorkflow):
             analyzer=WindDirectionCalibrationAnalyzer(),
             visualizers=[
                 WindDirectionCalibrationVisualizer(),
-                PowerRoseChartVisualizer()
+                PowerRoseChartVisualizer(),
+                WindRoseChartVisualizer(),
             ],  # [TODO] add visualizer for wind direction calibration analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
