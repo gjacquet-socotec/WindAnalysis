@@ -122,19 +122,45 @@ class EbaManufacturerAnalyzer(BaseAnalyzer):
         # PAS DE FILTRAGE DES CODES D'ERREUR ICI
         # C'est la différence principale avec EbACutInCutOutAnalyzer
 
+        # DIFFÉRENCE CLÉ : On filtre SEULEMENT sur la vitesse de vent,
+        # PAS sur la production. Cela permet d'inclure les périodes où la turbine
+        # ne produit pas (downtime, maintenance, pannes) dans le calcul de l'EBA.
+        # L'énergie théorique sera calculée même si production = 0.
+
         df["theorical_power"] = theorical_power_curve(df[wind_speed_col])
         df["fixed_power"] = np.minimum(df[power_col], P_nom)
 
-        # Filtrer uniquement sur la plage de vitesse et production > seuil
-        mask_operating = df[wind_speed_col].between(v_min, v_max, inclusive="both") & (
-            df[power_col] > 0.01 * P_nom
-        )
-        df = df[mask_operating].copy()
+        # Filtrer UNIQUEMENT sur la plage de vitesse (PAS sur la production)
+        # Cela inclut les périodes de downtime où power ≈ 0 mais vent dans la plage
+        mask_wind_range = df[wind_speed_col].between(v_min, v_max, inclusive="both")
+        df = df[mask_wind_range].copy()
 
-        # Calcul des énergies
+        logger.info(
+            "Turbine %s (Manufacturer EBA): Including ALL periods with wind in range [%.1f, %.1f] m/s, "
+            "even with low/zero production (downtimes included)",
+            turbine_config.turbine_id,
+            v_min,
+            v_max,
+        )
+
+        # Calcul des énergies (énergie réelle peut être 0 pendant downtimes)
         df["real_energy"] = df["fixed_power"] * dt_hours
         df["theorical_energy"] = df["theorical_power"] * dt_hours
         df["loss_energy"] = np.maximum(0, df["theorical_energy"] - df["real_energy"])
+
+        # Statistiques sur les périodes de faible production (probables downtimes)
+        downtime_mask = df[power_col] <= 0.01 * P_nom
+        downtime_periods = downtime_mask.sum()
+        total_periods = len(df)
+        downtime_percent = (downtime_periods / total_periods * 100) if total_periods > 0 else 0
+
+        logger.info(
+            "Turbine %s (Manufacturer EBA): %d/%d periods (%.2f%%) with production <= 1%% of P_nom (likely downtimes)",
+            turbine_config.turbine_id,
+            downtime_periods,
+            total_periods,
+            downtime_percent,
+        )
 
         E_real = df["real_energy"].sum()
         E_theorical = df["theorical_energy"].sum()
