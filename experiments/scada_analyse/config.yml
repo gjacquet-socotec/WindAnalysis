@@ -85,8 +85,8 @@ dynamic_fields:
         name: Code
         oper: Error number
         status: Main status
-      test_start: "01/04/2024 00:00:00"
-      test_end: "03/12/2025 11:35:00"
+      test_start: "2024-04-01 00:00:00"
+      test_end: "2025-12-03 11:35:00"
     - turbine_id: LU10
       general_information:
         model: Nordex N131 – 3.78MW
@@ -114,7 +114,7 @@ dynamic_fields:
         oper: Error number
         status: Main status
       test_start: "01/04/2024  00:00:00"
-      test_end: "03/12/2025  11:35:00"
+      test_end: "2025-12-03 11:35:00"
     - turbine_id: LU11
       general_information:
         model: Nordex N131 – 3.78MW
@@ -141,8 +141,8 @@ dynamic_fields:
         name: Code
         oper: Error number
         status: Main status
-      test_start: "01/04/2024  00:00:00"
-      test_end: "03/12/2025  11:35:00"
+      test_start: "2024-04-01 00:00:00"
+      test_end: "2025-12-03 11:35:00"
     - turbine_id: LU12
       general_information:
         model: Nordex N131 – 3.78MW
@@ -169,5 +169,5 @@ dynamic_fields:
         name: Code
         oper: Error number
         status: Main status
-      test_start: "01/04/2024  00:00:00"
-      test_end: "03/12/2025  11:35:00"
+      test_start: "2024-04-01 00:00:00"
+      test_end: "2025-12-03 11:35:00"

@@ -18,6 +18,9 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics import (
     DataAvailabilityAnalyzer,
     CodeErrorAnalyzer,
 )
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_cut_in_cut_out_visualizer import (
+    EbaCutInCutOutVisualizer,
+)
 
 
 class ScadaWorkflow(BaseWorkflow):
@@ -39,7 +42,9 @@ class ScadaWorkflow(BaseWorkflow):
         # EBA Cut-In/Cut-Out Analysis
         eba_cut_in_cut_out_results = DataProcessingStep(
             analyzer=EbACutInCutOutAnalyzer(),
-            visualizers=None,  # [TODO] add visualizer for cut-in/cut-out analysis
+            visualizers=[
+                EbaCutInCutOutVisualizer()
+            ],  # [TODO] add visualizer for cut-in/cut-out analysis
             tabler=None,  # [TODO] add tabler for cut-in/cut-out analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
@@ -60,7 +65,6 @@ class ScadaWorkflow(BaseWorkflow):
             visualizers=None,  # [TODO] add visualizer for code error analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(code_error_results, "Code Error Analysis")
-
         # Data Availability Analysis
         # data_availability_results = DataProcessingStep(
         #     analyzer=DataAvailabilityAnalyzer(),

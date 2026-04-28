@@ -38,7 +38,6 @@ class CodeErrorAnalyzer(BaseAnalyzer):
         - Identification des codes les plus fréquents et leur impact
         - Répartition par niveau de criticité
         """
-        breakpoint()
         # Configuration et validation
         mapping_op = turbine_config.mapping_operation_data
         mapping_log = turbine_config.mapping_log_data
