@@ -31,6 +31,7 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_ma
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_loss_visualizer import (
     EbaLossVisualizer,
 )
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.power_rose_chart_visualizer import PowerRoseChartVisualizer
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.top_error_code_frequency_visualizer import (
     TopErrorCodeFrequencyVisualizer,
 )
@@ -91,7 +92,8 @@ class ScadaWorkflow(BaseWorkflow):
         DataProcessingStep(
             analyzer=WindDirectionCalibrationAnalyzer(),
             visualizers=[
-                WindDirectionCalibrationVisualizer()
+                WindDirectionCalibrationVisualizer(),
+                PowerRoseChartVisualizer()
             ],  # [TODO] add visualizer for wind direction calibration analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 

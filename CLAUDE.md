@@ -249,6 +249,136 @@ result = analyzer.analyze(turbine_farm, criteria)
 - Algorithme de suivi d'état pour gérer les chevauchements de codes
 - Clipping des périodes dans la fenêtre de test
 
+### 6. Analyseur de Calibration de Direction du Vent
+
+**Fichier** : `src/wind_turbine_analytics/data_processing/analyzer/logics/wind_direction_calibration_analyzer.py`
+
+**Classe** : `WindDirectionCalibrationAnalyzer`
+
+**Objectif** : Vérifier que la nacelle suit correctement la direction du vent en comparant `wind_direction` (anémomètre) et `nacelle_position` (position yaw).
+
+**Critère** : Écart angulaire moyen journalier ≤ 5° (config: `threshold_degrees`)
+
+**Métriques calculées par jour** :
+1. **Écart angulaire moyen** : Différence absolue moyenne (gestion wraparound 360°→0°)
+2. **Écart-type** : Mesure la dispersion des écarts
+3. **Écart maximum** : Détecte les anomalies ponctuelles
+4. **Corrélation** : Mesure si la nacelle suit bien le vent (proche de 1.0 = bon)
+
+**Utilisation typique** :
+```python
+from src.wind_turbine_analytics.data_processing.analyzer.logics.wind_direction_calibration_analyzer import WindDirectionCalibrationAnalyzer
+
+analyzer = WindDirectionCalibrationAnalyzer()
+result = analyzer.analyze(turbine_farm, criteria)
+
+# Résultat :
+# {
+#     "overall_mean_angular_error": 3.02,
+#     "overall_std_angular_error": 0.95,
+#     "overall_max_angular_error": 5.24,
+#     "overall_correlation": 0.976,
+#     "threshold_degrees": 5.0,
+#     "criterion_met": True,
+#     "total_measurements": 168,
+#     "daily_calibration": [
+#         {
+#             "date": "2024-01-01",
+#             "mean_angular_error": 2.78,
+#             "std_angular_error": 1.01,
+#             "max_angular_error": 4.4,
+#             "correlation": 0.98,
+#             "num_measurements": 24
+#         },
+#         ...
+#     ]
+# }
+```
+
+**Notes** :
+- Filtre automatiquement les données avec `wind_speed > cut-in` (périodes actives uniquement)
+- Gestion du wraparound 360°/0° : `angle1=359°, angle2=1°` → écart = 2° (chemin le plus court)
+- Fonction `_calculate_angular_difference` utilise la formule : `min(|a1 - a2|, 360 - |a1 - a2|)`
+- Agrégation journalière pour éviter des graphiques trop lourds
+
+**Visualiseur associé** : `WindDirectionCalibrationVisualizer`
+- Génère 2 subplots par turbine :
+  1. **Écart angulaire moyen journalier** (ligne bleue vs seuil rouge 5°)
+  2. **Corrélation journalière** (ligne verte vs référence orange 0.95)
+- Annotation automatique du résultat global : `[OK]` ou `[!]`
+- Format PNG + JSON pour dashboard web futur
+
+**Approche de conception** :
+- Hérite de `BaseAnalyzer` pour uniformité
+- Pattern d'agrégation journalière similaire à `DataAvailabilityAnalyzer`
+- Structure de retour similaire à `EbaManufacturerAnalyzer` (métriques globales + détails journaliers)
+
+### 7. Visualiseur Rose des Puissances (PowerRoseChartVisualizer)
+
+**Fichier** : `src/wind_turbine_analytics/data_processing/visualizer/chart_builders/power_rose_chart_visualizer.py`
+
+**Classe** : `PowerRoseChartVisualizer`
+
+**Objectif** : Visualiser la puissance moyenne produite selon la direction du vent sous forme de rose polaire (16 secteurs de 22.5°).
+
+**Utilité** : 
+- Détecter les problèmes de calibration de nacelle (secteurs sous-performants)
+- Identifier les effets de sillage entre turbines
+- Repérer les obstacles environnementaux (arbres, bâtiments)
+
+**Relation avec WindDirectionCalibrationVisualizer** :
+- **WindDirectionCalibrationVisualizer** : Diagnostic (écarts nacelle/vent)
+- **PowerRoseChartVisualizer** : Impact (conséquence sur la production)
+- **Utilisation combinée** : Secteurs avec faible puissance + écart élevé = Action prioritaire
+
+**Utilisation typique** :
+```python
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.power_rose_chart_visualizer import PowerRoseChartVisualizer
+
+# Préparer un AnalysisResult avec chart_data
+result = AnalysisResult(
+    detailed_results={
+        "E01": {
+            "chart_data": pd.DataFrame({
+                "wind_direction": [...],  # 0-360°
+                "activation_power": [...],  # kW
+            })
+        }
+    },
+    status="completed"
+)
+
+# Générer la rose des puissances
+visualizer = PowerRoseChartVisualizer()
+output_paths = visualizer.generate(result)
+# Retourne: {"png_path": "...", "json_path": "..."}
+```
+
+**Caractéristiques** :
+- **16 secteurs directionnels** : N, NNE, NE, ENE, E, ESE, SE, SSE, S, SSW, SW, WSW, W, WNW, NW, NNW
+- **Gradient de couleurs** : Rouge (faible production) → Bleu (haute production)
+- **Graphique polaire** : Longueur des barres = puissance moyenne en kW
+- **Grille multi-turbines** : Max 3 colonnes, ajustement automatique
+- **Tooltips interactifs** : Direction, puissance moyenne, nombre d'observations
+
+**Insights fournis** :
+- **Secteurs sous-performants** : Identifie visuellement les directions avec faible production
+- **Uniformité** : Une rose équilibrée indique une bonne calibration globale
+- **Asymétries** : Des secteurs faibles indiquent un problème localisé (calibration ou obstacle)
+- **Comparaison turbines** : Détecte les effets de sillage (turbine en aval sous-performe sur certains secteurs)
+
+**Notes techniques** :
+- Binning directionnel avec gestion du wraparound 360°/0° (décalage de 11.25° pour centrer le Nord)
+- Calcul de la puissance moyenne par secteur (pas de somme)
+- Palette de couleurs normalisée sur le max global pour comparaison entre turbines
+- Axe radial avec échelle en kW (ajustée automatiquement)
+
+**Approche de conception** :
+- Inspiré de `WindRoseChartVisualizer` mais pour la puissance au lieu de la fréquence
+- Utilise `go.Barpolar` de Plotly pour graphiques polaires
+- Grille de subplots avec `specs=[{"type": "polar"}]`
+- Gradient de couleurs pour visualisation rapide des performances
+
 ---
 
 ## 📐 Conventions de code
@@ -546,6 +676,99 @@ output_paths = visualizer.generate(result)
 - `showlegend=False` car les noms des turbines sont dans les titres des subplots
 - Axes X avec titre seulement sur la dernière ligne (évite répétition)
 - Espacement vertical adaptatif : `0.08 / n_turbines` pour optimiser l'espace
+
+### 2026-04-28 : Implémentation de l'Analyseur de Calibration de Direction du Vent
+
+**Changements :**
+- Ajout de `WindDirectionCalibrationAnalyzer` dans `analyzer/logics/wind_direction_calibration_analyzer.py`
+- Ajout de `WindDirectionCalibrationVisualizer` dans `visualizer/chart_builders/wind_direction_calibration_visualizer.py`
+- Tests unitaires complets dans `tests/test_wind_direction_calibration.py` (14 tests ✓)
+- Tests du visualiseur dans `tests/test_wind_direction_calibration_visualizer.py` (8 tests ✓)
+- Exemples d'utilisation : `tests/example_wind_direction_calibration.py` et `tests/example_wind_direction_calibration_visualizer.py`
+
+**Objectif :** Analyser la qualité de la calibration de la nacelle par rapport à la direction du vent.
+
+**Caractéristiques de l'analyseur :**
+- **Critère** : Écart angulaire moyen journalier ≤ 5°
+- **4 métriques par jour** : Écart moyen, écart-type, écart max, corrélation
+- **Gestion du wraparound 360°/0°** : Calcul du chemin angulaire le plus court
+- **Filtrage intelligent** : Uniquement périodes avec `wind_speed > cut-in`
+- **Agrégation journalière** : Évite les graphiques trop lourds avec des milliers de points
+
+**Caractéristiques du visualiseur :**
+- **2 subplots par turbine** :
+  1. Écart angulaire moyen journalier (ligne bleue) vs seuil 5° (ligne rouge)
+  2. Corrélation journalière (ligne verte) vs référence 0.95 (ligne orange)
+- **Annotation automatique** : `[OK]` (vert) ou `[!]` (rouge) selon critère
+- **Zone colorée** : Vert si critère satisfait, rouge sinon
+- **Format** : PNG (120K) + JSON (20K) pour dashboard web futur
+
+**Validation :**
+- Tous les tests unitaires passent (22 tests au total)
+- Exemple généré avec 3 turbines synthétiques (bonne, limite, mauvaise calibration)
+- Graphiques générés dans `output/charts/wind_direction_calibration.png`
+
+**Approche de conception :**
+- Fonction utilitaire `_calculate_angular_difference` pour wraparound : `min(|a1-a2|, 360-|a1-a2|)`
+- Pattern d'agrégation journalière inspiré de `DataAvailabilityAnalyzer`
+- Structure de retour similaire à `EbaManufacturerAnalyzer` (métriques globales + détails journaliers)
+- Visualiseur utilise `make_subplots` comme `TopErrorCodeFrequencyVisualizer`
+- Hauteur dynamique : `400 + (n_turbines * 350)` pixels
+
+**Notes techniques :**
+- Déjà intégré dans `scada_workflow.py` (ligne 11 : import existant)
+- Compatible avec le système de configuration YAML existant
+- Gère automatiquement les données manquantes (NaN dans `wind_direction` ou `nacelle_position`)
+- Corrélation = NaN si variance nulle (tous les angles identiques)
+
+### 2026-04-28 : Implémentation du PowerRoseChartVisualizer (Rose des Puissances)
+
+**Changements :**
+- Implémentation complète de `PowerRoseChartVisualizer` dans `visualizer/chart_builders/power_rose_chart_visualizer.py`
+- Tests unitaires dans `tests/test_power_rose_chart_visualizer.py` (10 tests ✓)
+- Exemple démontrant la relation avec `WindDirectionCalibrationVisualizer` : `tests/example_power_rose_calibration_relationship.py`
+
+**Objectif :** Visualiser la puissance moyenne produite selon la direction du vent pour identifier les secteurs sous-performants.
+
+**Relation avec WindDirectionCalibrationVisualizer :**
+- **Approche complémentaire** :
+  1. `WindDirectionCalibrationVisualizer` : **Diagnostic** → Détecte les écarts nacelle/vent
+  2. `PowerRoseChartVisualizer` : **Impact** → Quantifie la perte de production par secteur
+- **Utilisation combinée** : Secteur avec faible puissance + écart de calibration élevé = Priorité d'intervention
+
+**Caractéristiques du visualiseur :**
+- **16 secteurs directionnels** (22.5° chacun) : N, NNE, NE, ENE, E, ESE, SE, SSE, S, SSW, SW, WSW, W, WNW, NW, NNW
+- **Graphique polaire** : Longueur des barres = puissance moyenne (kW)
+- **Gradient de couleurs** : Rouge (faible) → Bleu (élevée) selon puissance normalisée
+- **Grille multi-turbines** : Max 3 colonnes, ajustement automatique de hauteur
+- **Tooltips interactifs** : Direction, puissance moyenne, nombre d'observations
+
+**Insights fournis :**
+- **Problèmes de calibration localisés** : Secteurs avec puissance réduite
+- **Effets de sillage** : Turbines en aval sous-performent sur secteurs spécifiques
+- **Obstacles environnementaux** : Bâtiments/arbres réduisent production sur certains secteurs
+- **Validation de calibration** : Rose équilibrée = bonne calibration
+
+**Validation :**
+- Tous les tests passent (10/10)
+- Exemple avec 3 turbines :
+  - E01 : Bonne calibration (3°) → Rose uniforme
+  - E02 : Problème secteur Nord → Puissance réduite 330-30°
+  - E03 : Mauvaise calibration (8°) → Production globalement réduite
+- Graphiques générés : `output/charts/power_rose_chart.png` (haute résolution)
+
+**Approche de conception :**
+- Inspiré de `WindRoseChartVisualizer` mais affiche puissance au lieu de fréquence
+- Utilise `go.Barpolar` de Plotly pour graphiques polaires
+- Binning directionnel avec gestion wraparound 360°/0° (décalage 11.25° pour centrer Nord)
+- Normalisation des couleurs sur le max global pour comparaison inter-turbines
+- Grille de subplots avec `specs=[{"type": "polar"}]`
+
+**Notes techniques :**
+- Requiert `chart_data` dans `AnalysisResult` avec colonnes `wind_direction` et `activation_power`
+- Calcul de puissance moyenne par secteur (pas de somme)
+- Échelle radiale en kW ajustée automatiquement
+- Compatible avec tous les analyseurs qui fournissent ces colonnes
 
 ---
 
