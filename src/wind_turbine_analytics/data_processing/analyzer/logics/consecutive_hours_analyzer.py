@@ -1,4 +1,3 @@
-from src.wind_turbine_analytics.application.utils.load_data import load_csv
 from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import (
     BaseAnalyzer,
 )

@@ -1,5 +1,4 @@
 from src.wind_turbine_analytics.application.utils.load_data import (
-    load_csv,
     prepare_log_dataframe_with_mapping,
 )
 from src.wind_turbine_analytics.data_processing.analyzer.base_analyzer import (

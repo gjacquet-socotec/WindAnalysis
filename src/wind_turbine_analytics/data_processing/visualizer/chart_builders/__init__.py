@@ -6,8 +6,8 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.consec
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.cutin_cutout_timeline_visualizer import (
     CutInCutoutTimelineVisualizer,
 )
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.energy_chart_visualizer import (
-    EnergyChartVisualizer,
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_cut_in_cut_out_visualizer import (
+    EbaCutInCutOutVisualizer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.heatmap_chart_visualizer import (
     HeatmapChartVisualizer,
@@ -31,7 +31,7 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_r
 __all__ = [
     "ConsecutiveHoursVisualizer",
     "CutInCutoutTimelineVisualizer",
-    "EnergyChartVisualizer",
+    "EbaCutInCutOutVisualizer",
     "HeatmapChartVisualizer",
     "PitchChart",
     "PowerCurveChartVisualizer",

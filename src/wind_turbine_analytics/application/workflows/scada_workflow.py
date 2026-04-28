@@ -12,16 +12,11 @@ from src.wind_turbine_analytics.application.workflows.base_workflow import BaseW
 from src.wind_turbine_analytics.data_processing.data_processing import (
     DataProcessingStep,
 )
-from src.wind_turbine_analytics.data_processing.analyzer.logics.eba_cut_in_cut_out_analyzer import (
+from src.wind_turbine_analytics.data_processing.analyzer.logics import (
     EbACutInCutOutAnalyzer,
-)
-
-from src.wind_turbine_analytics.data_processing.analyzer.logics.eba_manifacturer_analyzer import (
     EbaManufacturerAnalyzer,
-)
-
-from src.wind_turbine_analytics.data_processing.analyzer.logics.data_availability_analyzer import (
     DataAvailabilityAnalyzer,
+    CodeErrorAnalyzer,
 )
 
 
@@ -60,14 +55,20 @@ class ScadaWorkflow(BaseWorkflow):
             eba_manufacturer_results, "EBA Manufacturer Analysis"
         )
 
-        # Data Availability Analysis
-        data_availability_results = DataProcessingStep(
-            analyzer=DataAvailabilityAnalyzer(),
-            visualizers=None,  # [TODO] add visualizer for data availability analysis
+        code_error_results = DataProcessingStep(
+            analyzer=CodeErrorAnalyzer(),
+            visualizers=None,  # [TODO] add visualizer for code error analysis
         ).execute(self.turbine_sources, self.validation_criteria)
-        self._presenter.show_analysis_result(
-            data_availability_results, "Data Availability Analysis"
-        )
+        self._presenter.show_analysis_result(code_error_results, "Code Error Analysis")
+
+        # Data Availability Analysis
+        # data_availability_results = DataProcessingStep(
+        #     analyzer=DataAvailabilityAnalyzer(),
+        #     visualizers=None,  # [TODO] add visualizer for data availability analysis
+        # ).execute(self.turbine_sources, self.validation_criteria)
+        # self._presenter.show_analysis_result(
+        #     data_availability_results, "Data Availability Analysis"
+        # )
 
 
 def run_scada_pipeline(config: ScadaRunnerConfig, presenter) -> Any:

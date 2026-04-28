@@ -24,6 +24,9 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics.eba_cut_in_cut_o
 from src.wind_turbine_analytics.data_processing.analyzer.logics.eba_manifacturer_analyzer import (
     EbaManufacturerAnalyzer,
 )
+from src.wind_turbine_analytics.data_processing.analyzer.logics.code_error_analyzer import (
+    CodeErrorAnalyzer,
+)
 
 __all__ = [
     # RunTest analyzers
@@ -36,4 +39,5 @@ __all__ = [
     "DataAvailabilityAnalyzer",
     "EbACutInCutOutAnalyzer",
     "EbaManufacturerAnalyzer",
+    "CodeErrorAnalyzer",
 ]
