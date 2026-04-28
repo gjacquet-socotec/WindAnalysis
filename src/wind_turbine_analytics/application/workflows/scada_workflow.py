@@ -30,6 +30,7 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_lo
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.top_error_code_frequency_visualizer import (
     TopErrorCodeFrequencyVisualizer,
 )
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.treemap_error_code_visualizer import TreemapErrorCodeVisualizer
 
 
 class ScadaWorkflow(BaseWorkflow):
@@ -67,7 +68,8 @@ class ScadaWorkflow(BaseWorkflow):
         code_error_results = DataProcessingStep(
             analyzer=CodeErrorAnalyzer(),
             visualizers=[
-                TopErrorCodeFrequencyVisualizer()
+                TopErrorCodeFrequencyVisualizer(),
+                TreemapErrorCodeVisualizer()
             ],  # [TODO] add visualizer for code error analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
