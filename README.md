@@ -1,59 +1,56 @@
 # Wind Turbine Analytics 🌬️
 
-**Système d'analyse de performance et conformité pour parcs éoliens**
+**Système d'analyse de performance SCADA pour parcs éoliens**
 
-Génère automatiquement des rapports Word professionnels à partir de données SCADA et logs d'alarme pour deux types d'analyses : **RunTest** (réception d'éoliennes) et **SCADA** (analyse de performance).
+Génère automatiquement des rapports Word professionnels à partir de données SCADA et logs d'alarme pour l'analyse continue de performance opérationnelle.
 
 ---
 
-## 🎯 Deux Axes d'Analyse
+## 🎯 Analyse SCADA - Performance Continue
 
-### 1️⃣ RunTest - Validation de Mise en Service
+Analyse approfondie des performances opérationnelles sur périodes étendues :
 
-Vérifie la conformité des éoliennes lors de la réception selon 5 critères obligatoires :
-
-- ✅ **Heures consécutives** : ≥120h de fonctionnement ininterrompu
-- ✅ **Cut-in/Cut-out** : ≥72h dans la plage de vent opérationnelle (3-25 m/s)
-- ✅ **Puissance nominale** : ≥3h au-dessus de 97% de la puissance nominale
-- ✅ **Autonomie** : ≤3 redémarrages manuels locaux
-- ✅ **Disponibilité** : ≥92% de disponibilité pendant la période de test
-
-**Livrables** : Rapport Word avec tableaux de validation, graphiques de performance, et statuts Pass/Fail par turbine.
-
-### 2️⃣ SCADA - Analyse de Performance Continue
-
-Analyse les performances opérationnelles sur des périodes étendues :
-
-- 📊 **EBA (Energy-Based Availability)** : Disponibilité énergétique selon IEC 61400-26
+- 📊 **EBA (Energy-Based Availability)** : Disponibilité énergétique mensuelle selon IEC 61400-26
 - 📈 **Courbes de puissance** : Comparaison avec la courbe garantie du constructeur
-- 🌡️ **Analyse environnementale** : Corrélation température, vitesse de vent, production
-- ⚠️ **Statistiques d'alarmes** : Criticité, fréquence, impacts sur la production
+- 🌡️ **Analyse environnementale** : Rose des vents, distribution de vitesse, corrélations météo
+- ⚠️ **Analyse des codes d'erreur** : Criticité, fréquence, durée d'impact, top erreurs récurrentes
+- 📉 **Pertes de production** : Identification des sources de perte et quantification énergétique
 
-**Livrables** : Rapports d'analyse de disponibilité, pertes de production, recommandations d'optimisation.
+**Livrables** : Rapports d'analyse de disponibilité, pertes de production, visualisations interactives, recommandations d'optimisation.
 
 ---
 
 ## 📊 Visualisations Générées
 
 ### Rose des Vents
-<img src="./docs/wind_rose_chart.png" width="600" alt="Rose des vents" />
+<img src="./docs/wind_rose_chart.png" width="500" alt="Rose des vents" />
 
 Distribution directionnelle des vents avec bins de vitesse (0-3, 3-5, 5-10, 10-15+ m/s).
 
 ### Courbe de Puissance
-<img src="./docs/power_curve_chart.png" width="600" alt="Courbe de puissance" />
+<img src="./docs/power_curve_chart.png" width="500" alt="Courbe de puissance" />
 
 Relation vitesse du vent vs puissance active avec seuils de validation.
 
-### Histogramme des Vents
-<img src="./docs/wind_histogram_chart.png" width="600" alt="Histogramme des vents" />
+### EBA Mensuelle - Constructeur
+<img src="./docs/eba_manufacturer.png" width="500" alt="EBA Manufacturer" />
 
-Distribution des fréquences de vent par classe de vitesse.
+Disponibilité énergétique mensuelle par turbine avec codes couleur de performance.
 
-### Timeline Cut-In/Cut-Out
-<img src="./docs/cutin_cutout_timeline_chart.png" width="600" alt="Timeline" />
+### Pertes d'Énergie Mensuelles
+<img src="./docs/eba_cut_in_cut_out_chart.png" width="500" alt="Pertes EBA" />
 
-Périodes RUN (vert) et STOP (rouge) avec codes d'alarme sur timeline Gantt.
+Histogramme des pertes d'énergie par turbine avec gradient de criticité (bleu → rouge).
+
+### Top Codes d'Erreur
+<img src="./docs/top_error_frequency.png" width="500" alt="Top erreurs" />
+
+Top 10 des codes par fréquence et durée avec criticité colorée (CRITICAL, HIGH, MEDIUM, LOW).
+
+### Répartition des Erreurs (Treemap)
+<img src="./docs/error_code_treemap.png" width="500" alt="Treemap erreurs" />
+
+Arborescence hiérarchique des codes d'erreur par système fonctionnel et criticité.
 
 ---
 
@@ -64,12 +61,7 @@ Périodes RUN (vert) et STOP (rouge) avec codes d'alarme sur timeline Gantt.
 pip install -r requirements.txt
 ```
 
-### Exemple RunTest
-```bash
-python run_test_main.py ./experiments/real_run_test
-```
-
-### Exemple SCADA
+### Lancer une Analyse SCADA
 ```bash
 python scada_main.py ./experiments/scada_analyse
 ```
@@ -77,9 +69,10 @@ python scada_main.py ./experiments/scada_analyse
 ### Configuration
 Fichiers YAML dans `experiments/*/config.yml` définissent :
 - Chemins des données (CSV SCADA + logs d'alarme)
-- Critères de validation (seuils, durées)
-- Mapping des colonnes (noms de colonnes variables selon constructeur)
-- Template Word et chemin de sortie
+- Période d'analyse (date_range: start/end)
+- Critères de performance (seuils EBA, puissance nominale)
+- Mapping des colonnes (adapté au format constructeur)
+- Template Word et destination du rapport généré
 
 ---
 
@@ -109,4 +102,11 @@ WindAnalysis/
 
 ---
 
-**Développé pour l'analyse de conformité et performance de parcs éoliens Nordex, Vestas, Siemens Gamesa.**
+## 📖 Documentation Complémentaire
+
+- [Visualiseur EBA](./docs/EBA_VISUALIZER.md) : Guide complet des visualisations de disponibilité énergétique
+- [CLAUDE.md](./CLAUDE.md) : Architecture technique et conventions de développement
+
+---
+
+**Développé pour l'analyse de performance de parcs éoliens Nordex, Vestas, Siemens Gamesa.**

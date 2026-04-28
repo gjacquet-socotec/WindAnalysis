@@ -18,6 +18,7 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics import (
     DataAvailabilityAnalyzer,
     CodeErrorAnalyzer,
 )
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.data_availability_visualizer import DataAvailabilityVisualizer
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_cut_in_cut_out_visualizer import (
     EbaCutInCutOutVisualizer,
 )
@@ -74,13 +75,11 @@ class ScadaWorkflow(BaseWorkflow):
         ).execute(self.turbine_sources, self.validation_criteria)
 
         # Data Availability Analysis
-        # data_availability_results = DataProcessingStep(
-        #     analyzer=DataAvailabilityAnalyzer(),
-        #     visualizers=None,  # [TODO] add visualizer for data availability analysis
-        # ).execute(self.turbine_sources, self.validation_criteria)
-        # self._presenter.show_analysis_result(
-        #     data_availability_results, "Data Availability Analysis"
-        # )
+        data_availability_results = DataProcessingStep(
+            analyzer=DataAvailabilityAnalyzer(),
+            visualizers=[
+                DataAvailabilityVisualizer()],  # [TODO] add visualizer for data availability analysis
+        ).execute(self.turbine_sources, self.validation_criteria)
 
 
 def run_scada_pipeline(config: ScadaRunnerConfig, presenter) -> Any:

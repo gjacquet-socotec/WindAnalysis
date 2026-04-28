@@ -48,18 +48,7 @@ class DataAvailabilityAnalyzer(BaseAnalyzer):
             & (operation_data[timestamp_col] <= test_end)
         ].copy()
 
-        # Créer une plage de temps par tranches de 10 minutes avec le même timezone
-        time_range = pd.date_range(start=test_start, end=test_end, freq="10min")
-
-        # Initialiser les listes pour construire le DataFrame
-        timestamps = []
-        wind_speed_availability = []
-        active_power_availability = []
-        wind_direction_availability = []
-        overall_availability = []
-        temperature_availability = [] if temperature_col else None
-
-        # Pour chaque tranche de 10 minutes
+        # Vérifier les types numériques
         if not pd.api.types.is_float_dtype(test_data[wind_speed_col]):
             logger.warning(
                 f"Wind speed column '{wind_speed_col}' is not numeric, "
@@ -77,55 +66,69 @@ class DataAvailabilityAnalyzer(BaseAnalyzer):
                 test_data[active_power_col], errors="coerce"
             )
 
-        for i in range(len(time_range) - 1):
-            start_interval = time_range[i]
-            end_interval = time_range[i + 1]
+        # Créer des plages horaires (1h)
+        hourly_range = pd.date_range(start=test_start, end=test_end, freq="1h")
 
-            # Ajouter le timestamp de début de l'intervalle
-            timestamps.append(start_interval)
-            # Filtrer les données dans cette tranche
-            interval_data = test_data[
-                (test_data[timestamp_col] >= start_interval)
-                & (test_data[timestamp_col] < end_interval)
-            ]
+        # Initialiser les listes pour construire le DataFrame
+        timestamps = []
+        wind_speed_availability = []
+        active_power_availability = []
+        wind_direction_availability = []
+        overall_availability = []
+        temperature_availability = [] if temperature_col else None
 
-            # Vérifier la présence de données pour chaque variable
-            wind_speed_present = (
-                1
-                if not interval_data[wind_speed_col].isna().all()
-                and len(interval_data) > 0
-                else 0
-            )
-            active_power_present = (
-                1
-                if not interval_data[active_power_col].isna().all()
-                and len(interval_data) > 0
-                else 0
-            )
-            wind_direction_present = (
-                1
-                if not interval_data[wind_direction_col].isna().all()
-                and len(interval_data) > 0
-                else 0
-            )
+        # Pour chaque plage horaire
+        for i in range(len(hourly_range) - 1):
+            hour_start = hourly_range[i]
+            hour_end = hourly_range[i + 1]
 
-            wind_speed_availability.append(wind_speed_present)
-            active_power_availability.append(active_power_present)
-            wind_direction_availability.append(wind_direction_present)
+            timestamps.append(hour_start)
 
-            # Temperature (optionnel)
+            # Créer des sous-intervalles de 5 minutes dans cette heure
+            five_min_range = pd.date_range(start=hour_start, end=hour_end, freq="5min")
+
+            # Vérifier chaque variable sur les plages de 5 minutes
+            wind_speed_available = True
+            active_power_available = True
+            wind_direction_available = True
+            temperature_available = True if temperature_col else None
+
+            # Pour chaque plage de 5 minutes dans l'heure
+            for j in range(len(five_min_range) - 1):
+                interval_start = five_min_range[j]
+                interval_end = five_min_range[j + 1]
+
+                # Filtrer les données dans cette plage de 5 minutes
+                interval_data = test_data[
+                    (test_data[timestamp_col] >= interval_start)
+                    & (test_data[timestamp_col] < interval_end)
+                ]
+
+                # Si une seule plage de 5 minutes est indisponible, toute l'heure est indisponible
+                if interval_data[wind_speed_col].isna().all() or len(interval_data) == 0:
+                    wind_speed_available = False
+
+                if interval_data[active_power_col].isna().all() or len(interval_data) == 0:
+                    active_power_available = False
+
+                if interval_data[wind_direction_col].isna().all() or len(interval_data) == 0:
+                    wind_direction_available = False
+
+                if temperature_col:
+                    if interval_data[temperature_col].isna().all() or len(interval_data) == 0:
+                        temperature_available = False
+
+            # Affecter 1 (disponible) ou 0 (indisponible) pour l'heure entière
+            wind_speed_availability.append(1 if wind_speed_available else 0)
+            active_power_availability.append(1 if active_power_available else 0)
+            wind_direction_availability.append(1 if wind_direction_available else 0)
+
             if temperature_col:
-                temperature_present = (
-                    1
-                    if not interval_data[temperature_col].isna().all()
-                    and len(interval_data) > 0
-                    else 0
-                )
-                temperature_availability.append(temperature_present)
+                temperature_availability.append(1 if temperature_available else 0)
 
-            # Disponibilité globale : toutes les variables obligatoires sont présentes
+            # Disponibilité globale : toutes les variables obligatoires sont disponibles
             overall_present = (
-                wind_speed_present and active_power_present and wind_direction_present
+                wind_speed_available and active_power_available and wind_direction_available
             )
             overall_availability.append(1 if overall_present else 0)
 
@@ -144,7 +147,7 @@ class DataAvailabilityAnalyzer(BaseAnalyzer):
         availability_df = pd.DataFrame(availability_data)
 
         # Calculer les statistiques de disponibilité
-        total_intervals = len(time_range) - 1
+        total_intervals = len(hourly_range) - 1
         summary = {
             "total_intervals": total_intervals,
             "wind_speed_availability_pct": (
