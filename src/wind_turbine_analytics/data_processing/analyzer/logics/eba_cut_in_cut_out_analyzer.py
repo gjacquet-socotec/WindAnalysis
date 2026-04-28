@@ -38,7 +38,6 @@ class EbACutInCutOutAnalyzer(BaseAnalyzer):
         # Logics :
         # Production > 0, wind speed between cut-in and cut-out,
         # including all downtimes (curtailments, maintenance, grid issues,
-        #  etc.).
 
         mapping = turbine_config.mapping_operation_data
         wind_speed_col = mapping.wind_speed

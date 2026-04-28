@@ -45,6 +45,7 @@ class ScadaWorkflow(BaseWorkflow):
         eba_cut_in_cut_out_results = DataProcessingStep(
             analyzer=EbACutInCutOutAnalyzer(),
             visualizers=None,  # [TODO] add visualizer for cut-in/cut-out analysis
+            tabler=None,  # [TODO] add tabler for cut-in/cut-out analysis
         ).execute(self.turbine_sources, self.validation_criteria)
         self._presenter.show_analysis_result(
             eba_cut_in_cut_out_results, "EBA Cut-In/Cut-Out Analysis"

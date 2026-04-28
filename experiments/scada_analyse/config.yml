@@ -21,6 +21,11 @@ general_information:
   verficator_phone: "+33 6 12 34 56 78"
   date_archive: "2024-06-01"
 
+# Paramètres de génération de rapport Word
+render_template: true
+template_path: "./assets/templates/template_scada.docx"
+output_path: "./output/scada_report.docx"
+
 validation_criteria:
   consecutive_hours:
     value: 120
@@ -47,6 +52,7 @@ validation_criteria:
     unit: "%"
     specification: null
     description: null
+
 log_data:
   authorized_stop: [ 6, 7, 615, 920, 921 ]
   unauthorized_stop: [ FM3, FM300, FM615, FM954, FE1613, FE1208 ]

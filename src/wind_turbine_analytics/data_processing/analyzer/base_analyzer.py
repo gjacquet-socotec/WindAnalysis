@@ -9,7 +9,11 @@ from src.wind_turbine_analytics.data_processing.data_result_models import (
 from typing import Dict, Any
 from src.wind_turbine_analytics.application.utils.load_data import (
     load_csv,
+    prepare_log_dataframe_with_mapping,
     CSVLoadError,
+)
+from src.wind_turbine_analytics.application.utils.date_parser import (
+    robust_date_parser,
 )
 import pandas as pd
 import numpy as np
@@ -29,6 +33,7 @@ class BaseAnalyzer:
         self, turbines_farm: TurbineFarm, criteria: ValidationCriteria
     ) -> AnalysisResult:
         results = {}
+
         for turbine_id, turbine_data in turbines_farm.farm.items():
             try:
                 # Extraire le path des données d'opération
@@ -80,14 +85,17 @@ class BaseAnalyzer:
                     operation_data[active_power_col] = pd.to_numeric(
                         operation_data[active_power_col], errors="coerce"
                     )
-
                 log_data = load_csv(path_log_data)
-                log_data["timestamp"] = log_data["timestamp"].str.replace(
-                    r":(\d{3})$", r".\1", regex=True
+
+                # prepare the mappping for log_data
+                log_data, start_col, end_col = prepare_log_dataframe_with_mapping(
+                    log_data, turbine_data.mapping_log_data
                 )
-                log_data["timestamp"] = pd.to_datetime(
-                    log_data["timestamp"], dayfirst=True, errors="coerce"
-                )
+                if start_col == end_col:  # case of unique timestamp column
+                    log_data[start_col] = robust_date_parser(log_data[start_col])
+                else:
+                    log_data[start_col] = robust_date_parser(log_data[start_col])
+                    log_data[end_col] = robust_date_parser(log_data[end_col])
 
                 # TODO: Implémenter la logique d'analyse des heures consécutives
                 results[turbine_id] = self._compute(
