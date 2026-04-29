@@ -9,7 +9,12 @@ from src.wind_turbine_analytics.application.configuration.config_models import (
     ScadaRunnerConfig,
 )
 from src.wind_turbine_analytics.application.workflows.base_workflow import BaseWorkflow
-from src.wind_turbine_analytics.data_processing.analyzer.logics.wind_direction_calibration_analyzer import WindDirectionCalibrationAnalyzer
+from src.wind_turbine_analytics.data_processing.analyzer.logics.tip_speed_ratio import (
+    TipSpeedRatioAnalyzer,
+)
+from src.wind_turbine_analytics.data_processing.analyzer.logics.wind_direction_calibration_analyzer import (
+    WindDirectionCalibrationAnalyzer,
+)
 from src.wind_turbine_analytics.data_processing.data_processing import (
     DataProcessingStep,
 )
@@ -31,15 +36,24 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_ma
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.eba_loss_visualizer import (
     EbaLossVisualizer,
 )
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.power_rose_chart_visualizer import PowerRoseChartVisualizer
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.power_rose_chart_visualizer import (
+    PowerRoseChartVisualizer,
+)
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.rpm_visualizer import (
+    RPMVisualizer,
+)
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.top_error_code_frequency_visualizer import (
     TopErrorCodeFrequencyVisualizer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.treemap_error_code_visualizer import (
     TreemapErrorCodeVisualizer,
 )
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_direction_calibration_visualizer import WindDirectionCalibrationVisualizer
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_rose_chart_visualizer import WindRoseChartVisualizer
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_direction_calibration_visualizer import (
+    WindDirectionCalibrationVisualizer,
+)
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_rose_chart_visualizer import (
+    WindRoseChartVisualizer,
+)
 
 
 class ScadaWorkflow(BaseWorkflow):
@@ -97,6 +111,13 @@ class ScadaWorkflow(BaseWorkflow):
                 PowerRoseChartVisualizer(),
                 WindRoseChartVisualizer(),
             ],  # [TODO] add visualizer for wind direction calibration analysis
+        ).execute(self.turbine_sources, self.validation_criteria)
+
+        DataProcessingStep(
+            analyzer=TipSpeedRatioAnalyzer(),
+            visualizers=[
+                RPMVisualizer(),
+            ],  # [TODO] add visualizer for tip speed ratio analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
 

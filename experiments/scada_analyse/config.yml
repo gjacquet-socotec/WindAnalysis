@@ -6,7 +6,7 @@ general_information:
   client_location: "17510 - Romazieres, Charente-Maritime, France"
   client_contact: nordex@sssd.dt
   number_wtg: 3
-  model_wtg: "Nordex N131 - 3.78MW"
+  model_wtg: "N131"
   nominal_power: "3.78 MW"
   v_rated: 11.5 m/s
   constructor: Nordex
@@ -61,7 +61,7 @@ dynamic_fields:
   turbines:
     - turbine_id: LU09
       general_information:
-        model: Nordex N131 – 3.78MW
+        model: N131
         nominal_power: 3.78
         constructor: Nordex
         path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU09\\WTG_LU09.csv"
@@ -89,7 +89,7 @@ dynamic_fields:
       test_end: "2025-12-03 11:35:00"
     - turbine_id: LU10
       general_information:
-        model: Nordex N131 – 3.78MW
+        model: N131
         nominal_power: 3.78
         constructor: Nordex
         path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU10\\WTG_LU10.csv"
@@ -117,7 +117,7 @@ dynamic_fields:
       test_end: "2025-12-03 11:35:00"
     - turbine_id: LU11
       general_information:
-        model: Nordex N131 – 3.78MW
+        model: N131
         nominal_power: 3.78
         constructor: Nordex
         path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU11\\WTG_LU11.csv"
@@ -145,7 +145,7 @@ dynamic_fields:
       test_end: "2025-12-03 11:35:00"
     - turbine_id: LU12
       general_information:
-        model: Nordex N131 – 3.78MW
+        model: N131
         nominal_power: 3.78
         constructor: Nordex
         path_operation_data: ".\\experiments\\scada_analyse\\DATA\\LU12\\WTG_LU12.csv"

@@ -18,8 +18,8 @@ from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.pitch_
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.power_curve_chart_visualizer import (
     PowerCurveChartVisualizer,
 )
-from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.rpm_chart_visualizer import (
-    RPMChartVisualizer,
+from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.rpm_visualizer import (
+    RPMVisualizer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.wind_histogram_chart_visualizer import (
     WindHistogramChartVisualizer,
