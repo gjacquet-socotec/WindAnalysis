@@ -10,6 +10,8 @@ from docx import Document
 from docx.table import Table
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.shared import RGBColor
+
 import re
 from .word_presenter import WordPresenter
 from src.logger_config import get_logger
@@ -42,23 +44,29 @@ class ScadaWordPresenter(WordPresenter):
     """
 
     def _set_table_borders(self, table):
-        """Force l'affichage des bordures noires sur tout le tableau."""
+        """Bordures fines et élégantes (couleur gris bleu)."""
         tbl = table._element
         tblPr = tbl.xpath("w:tblPr")[0]
-
-        # Création de l'élément de bordures
         tblBorders = OxmlElement("w:tblBorders")
 
-        # Définition des types de bordures (top, left, bottom, right, insideH, insideV)
+        # Couleur des bordures : un bleu/gris discret
+        border_color = "A6ACAF"
         for border_name in ["top", "left", "bottom", "right", "insideH", "insideV"]:
             border = OxmlElement(f"w:{border_name}")
-            border.set(qn("w:val"), "single")  # Ligne simple
-            border.set(qn("w:sz"), "4")  # Épaisseur (1/8 pt)
+            border.set(qn("w:val"), "single")
+            border.set(qn("w:sz"), "4")  # Très fin
             border.set(qn("w:space"), "0")
-            border.set(qn("w:color"), "000000")  # Noir
+            border.set(qn("w:color"), border_color)
             tblBorders.append(border)
 
         tblPr.append(tblBorders)
+
+    def _set_cell_shading(self, cell, color):
+        """Applique une couleur de fond à une cellule (Ex: '2F5597' pour bleu foncé)."""
+        tcPr = cell._element.get_or_add_tcPr()
+        shd = OxmlElement("w:shd")
+        shd.set(qn("w:fill"), color)
+        tcPr.append(shd)
 
     def _process_tables(self, doc: Document, context: Dict[str, Any]) -> None:
         logger.info("Replacing markers with dynamic tables...")
@@ -123,25 +131,43 @@ class ScadaWordPresenter(WordPresenter):
     def _populate_table_dynamically(
         self, table: Table, data: List[Dict[str, Any]]
     ) -> None:
-        """
-        Remplit le tableau fraîchement créé.
-        """
         headers = list(data[0].keys())
 
-        # 1. Remplir et formater le Header (Ligne 0)
+        # --- STYLE DE L'ENTÊTE (Bleu foncé, Texte blanc) ---
+        header_bg_color = "2F5597"  # Bleu pro
         for i, header_text in enumerate(headers):
             cell = table.cell(0, i)
             cell.text = str(header_text)
-            # Mettre le texte en gras pour que ça ressemble à un vrai header
+            # Fond bleu foncé
+            self._set_cell_shading(cell, header_bg_color)
+
+            # Texte blanc et gras
             paragraph = cell.paragraphs[0]
             run = paragraph.runs[0]
             run.font.bold = True
+            run.font.color.rgb = RGBColor(255, 255, 255)  # Blanc
 
-        # 2. Remplir les données
-        for row_dict in data:
+        # --- STYLE DES LIGNES (Alternance de blanc et bleu très clair) ---
+        alternate_row_color = "EBF1DE"  # Ou "D9E1F2" pour un bleu très léger
+        for row_idx, row_dict in enumerate(data):
             new_row = table.add_row()
+
+            # Déterminer si c'est une ligne alternée
+            is_alternate = row_idx % 2 == 0  # Changez à 0 ou 1 selon votre préférence
+
             for col_idx, header_name in enumerate(headers):
+                cell = new_row.cells[col_idx]
                 val = row_dict.get(header_name, "")
-                # Formatage des nombres
-                text_val = f"{val:.2f}" if isinstance(val, float) else str(val)
-                new_row.cells[col_idx].text = text_val
+
+                # Injection de la valeur
+                cell.text = f"{val:.2f}" if isinstance(val, float) else str(val)
+
+                # Appliquer la couleur de fond alternée
+                if is_alternate:
+                    self._set_cell_shading(cell, "D9E1F2")  # Bleu très clair
+
+                # Optionnel : alignement à gauche pour le texte, droite pour les chiffres
+                if isinstance(val, (int, float)):
+                    cell.paragraphs[0].alignment = (
+                        2  # Droite (WD_ALIGN_PARAGRAPH.RIGHT)
+                    )
