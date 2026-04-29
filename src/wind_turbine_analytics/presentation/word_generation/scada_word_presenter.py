@@ -7,6 +7,10 @@ Le template contient des marqueurs [TABLE:xxx] avant chaque tableau.
 
 from typing import Dict, Any, List
 from docx import Document
+from docx.table import Table
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+import re
 from .word_presenter import WordPresenter
 from src.logger_config import get_logger
 
@@ -37,102 +41,107 @@ class ScadaWordPresenter(WordPresenter):
     - [TABLE:NORMATIVE_YIELD_TABLE]
     """
 
+    def _set_table_borders(self, table):
+        """Force l'affichage des bordures noires sur tout le tableau."""
+        tbl = table._element
+        tblPr = tbl.xpath("w:tblPr")[0]
+
+        # Création de l'élément de bordures
+        tblBorders = OxmlElement("w:tblBorders")
+
+        # Définition des types de bordures (top, left, bottom, right, insideH, insideV)
+        for border_name in ["top", "left", "bottom", "right", "insideH", "insideV"]:
+            border = OxmlElement(f"w:{border_name}")
+            border.set(qn("w:val"), "single")  # Ligne simple
+            border.set(qn("w:sz"), "4")  # Épaisseur (1/8 pt)
+            border.set(qn("w:space"), "0")
+            border.set(qn("w:color"), "000000")  # Noir
+            tblBorders.append(border)
+
+        tblPr.append(tblBorders)
+
     def _process_tables(self, doc: Document, context: Dict[str, Any]) -> None:
-        logger.info("Filling tables using SCADA marker-based strategy...")
+        logger.info("Replacing markers with dynamic tables...")
 
-        # On fait une copie de la liste des paragraphes pour pouvoir les manipuler
-        for para_idx, para in enumerate(doc.paragraphs):
-            clean_text = para.text.strip().upper()
+        table_regex = re.compile(r"\[TABLE:\s*(.*?)\s*\]", re.IGNORECASE)
 
-            if clean_text.startswith("[TABLE:") and clean_text.endswith("]"):
-                # On extrait le nom sans les crochets et sans le préfixe
-                table_key = clean_text[7:-1].strip()
-                logger.info(f"Marker found: {table_key}")
+        # On parcourt les paragraphes du document
+        for para in list(
+            doc.paragraphs
+        ):  # On utilise list() pour pouvoir modifier le doc en bouclant
+            match = table_regex.search(para.text)
 
-                table = self._find_next_table(doc, para_idx)
+            if match:
+                tag_content = match.group(1).strip().upper()
+                logger.info(f"Marker found: {tag_content}")
 
-                # On cherche dans le contexte (en ignorant la casse)
+                # Chercher les données
                 data = None
                 for k, v in context.items():
-                    if k.upper() == table_key:
+                    if k.strip().upper() == tag_content:
                         data = v
                         break
 
-                if table and data is not None:
-                    if isinstance(data, list) and len(data) > 0:
-                        self._populate_table_dynamically(table, data)
-                        # SUPPRIMER LE MARQUEUR DU DOCUMENT
-                        para.text = ""
-                        logger.info(f"✅ Table '{table_key}' filled")
-                    else:
-                        logger.warning(f"⚠️ Empty data for '{table_key}'")
+                if data and isinstance(data, list) and len(data) > 0:
+                    # 1. Créer le tableau à l'endroit du paragraphe
+                    new_table = self._insert_table_at_paragraph(doc, para, data)
+
+                    # 2. Remplir le tableau
+                    self._populate_table_dynamically(new_table, data)
+
+                    # 3. Supprimer le paragraphe qui contenait le tag [TABLE:XXX]
+                    self._remove_paragraph(para)
+
+                    logger.info(
+                        f"✅ Table '{tag_content}' created and replaced marker."
+                    )
                 else:
-                    logger.warning(f"⚠️ Table or Data missing for '{table_key}'")
+                    logger.warning(
+                        f"⚠️ No data or empty list for '{tag_content}'. Marker left as is."
+                    )
 
-    def _find_next_table(self, doc: Document, para_idx: int):
+    def _insert_table_at_paragraph(
+        self, doc: Document, para, data: List[Dict[str, Any]]
+    ) -> Table:
+        num_cols = len(data[0].keys())
+        num_rows = 1
+
+        table = doc.add_table(rows=num_rows, cols=num_cols)
+
+        # On applique nos bordures manuelles au lieu du style qui plante
+        self._set_table_borders(table)
+
+        # Déplacer le tableau après le marqueur
+        para._element.addnext(table._element)
+        return table
+
+    def _remove_paragraph(self, paragraph):
+        """Supprime proprement un paragraphe du document."""
+        p = paragraph._element
+        p.getparent().remove(p)
+
+    def _populate_table_dynamically(
+        self, table: Table, data: List[Dict[str, Any]]
+    ) -> None:
         """
-        Trouve la première table après le paragraphe marqueur.
-
-        Utilise l'arbre XML du document pour parcourir les éléments.
-
-        Args:
-            doc: Document Word
-            para_idx: Index du paragraphe marqueur
-
-        Returns:
-            Le tableau suivant ou None si non trouvé
+        Remplit le tableau fraîchement créé.
         """
-        # Parcourir les éléments après le paragraphe
-        para_element = doc.paragraphs[para_idx]._element
-        next_element = para_element.getnext()
-
-        while next_element is not None:
-            # Si c'est un tableau (<w:tbl> en XML)
-            if next_element.tag.endswith("tbl"):
-                # Trouver l'objet Table correspondant
-                for table in doc.tables:
-                    if table._element == next_element:
-                        return table
-            next_element = next_element.getnext()
-
-        return None
-
-    def _populate_table_dynamically(self, table, data: List[Dict[str, Any]]) -> None:
-        """
-        Remplit une table en ajustant dynamiquement le nombre de colonnes et de lignes.
-        """
-        if not data:
-            return
-
-        # 1. Récupérer les headers (clés du premier dictionnaire)
         headers = list(data[0].keys())
-        num_cols_needed = len(headers)
 
-        # 2. Ajuster le nombre de colonnes du header si nécessaire
-        current_cols = len(table.columns)
-        while len(table.columns) < num_cols_needed:
-            table.add_column(
-                table.columns[0].width
-            )  # Ajoute une colonne avec la même largeur
-
-        # 3. Mettre à jour les textes des headers (première ligne)
+        # 1. Remplir et formater le Header (Ligne 0)
         for i, header_text in enumerate(headers):
-            table.cell(0, i).text = str(header_text)
-            # Optionnel : mettre en gras (nécessite d'accéder aux runs)
-            # table.cell(0, i).paragraphs[0].runs[0].font.bold = True
+            cell = table.cell(0, i)
+            cell.text = str(header_text)
+            # Mettre le texte en gras pour que ça ressemble à un vrai header
+            paragraph = cell.paragraphs[0]
+            run = paragraph.runs[0]
+            run.font.bold = True
 
-        # 4. Supprimer les lignes de données existantes (sauf le header)
-        while len(table.rows) > 1:
-            table._element.remove(table.rows[-1]._element)
-
-        # 5. Ajouter les nouvelles lignes de données
+        # 2. Remplir les données
         for row_dict in data:
             new_row = table.add_row()
-            # On parcourt les headers pour garantir que la donnée va dans la bonne colonne
             for col_idx, header_name in enumerate(headers):
                 val = row_dict.get(header_name, "")
-                # Formatage spécial si c'est un float (pour les pourcentages)
-                if isinstance(val, float):
-                    new_row.cells[col_idx].text = f"{val:.2f}"
-                else:
-                    new_row.cells[col_idx].text = str(val)
+                # Formatage des nombres
+                text_val = f"{val:.2f}" if isinstance(val, float) else str(val)
+                new_row.cells[col_idx].text = text_val

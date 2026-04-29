@@ -50,7 +50,9 @@ class WordPresenter(ABC):
                 f"Please provide a valid template path."
             )
 
-        logger.info(f"WordPresenter initialized with template: {self.template_path.name}")
+        logger.info(
+            f"WordPresenter initialized with template: {self.template_path.name}"
+        )
 
     def render_report(
         self, context: Dict[str, Any], metadata: Dict[str, Any] = None
@@ -190,37 +192,35 @@ class WordPresenter(ABC):
 
         replacements = {
             # Métadonnées générales
-            '{{generation_date}}': context.get('generation_date', ''),
-            '{{test_start}}': context.get('test_start', ''),
-            '{{test_end}}': context.get('test_end', ''),
-            '{{analysis_start}}': context.get('analysis_start', ''),
-            '{{analysis_end}}': context.get('analysis_end', ''),
-            '{{turbine_list}}': context.get('turbine_list', ''),
-            '{{turbine_count}}': str(context.get('turbine_count', '')),
-
+            "{{generation_date}}": context.get("generation_date", ""),
+            "{{test_start}}": context.get("test_start", ""),
+            "{{test_end}}": context.get("test_end", ""),
+            "{{analysis_start}}": context.get("analysis_start", ""),
+            "{{analysis_end}}": context.get("analysis_end", ""),
+            "{{turbine_list}}": context.get("turbine_list", ""),
+            "{{turbine_count}}": str(context.get("turbine_count", "")),
             # Informations sur le parc
-            '{{park_name}}': context.get('park_name', ''),
-            '{{Nom_du_parc}}': context.get('park_name', ''),
-            '{{Nombre_WTG}}': str(context.get('turbine_count', '')),
-            '{{model_wtg}}': context.get('model_wtg', ''),
-            '{{Modèle_turbine}}': context.get('model_wtg', ''),
-            '{{nominal_power}}': context.get('nominal_power', ''),
-            '{{Puissance_nominale}}': context.get('nominal_power', ''),
-
+            "{{park_name}}": context.get("park_name", ""),
+            "{{Nom_du_parc}}": context.get("park_name", ""),
+            "{{Nombre_WTG}}": str(context.get("turbine_count", "")),
+            "{{model_wtg}}": context.get("model_wtg", ""),
+            "{{Modèle_turbine}}": context.get("model_wtg", ""),
+            "{{nominal_power}}": context.get("nominal_power", ""),
+            "{{Puissance_nominale}}": context.get("nominal_power", ""),
             # Valeurs des critères de validation (RunTest)
-            '{{consecutive_hours_h}}': str(context.get('consecutive_hours_h', '120')),
-            '{{cut_in_to_cut_out_h}}': str(context.get('cut_in_to_cut_out_h', '72')),
-            '{{cut_in_v_min}}': str(context.get('cut_in_v_min', '3')),
-            '{{cut_in_v_max}}': str(context.get('cut_in_v_max', '25')),
-            '{{nominal_power_h}}': str(context.get('nominal_power_h', '3')),
-            '{{ nominal_power_h}}': str(context.get('nominal_power_h', '3')),
-            '{{nominal_power_pct}}': str(context.get('nominal_power_pct', '97')),
-            '{{nominal_power_pct }}': str(context.get('nominal_power_pct', '97')),
-            '{{ nominal_power_pct}}': str(context.get('nominal_power_pct', '97')),
-            '{{local_restarts_max}}': str(context.get('local_restarts_max', '3')),
-            '{{local_restarts_max }}': str(context.get('local_restarts_max', '3')),
-            '{{availability_min_pct}}': str(context.get('availability_min_pct', '92')),
-            '{{availability_min_pct }}': str(context.get('availability_min_pct', '92')),
+            "{{consecutive_hours_h}}": str(context.get("consecutive_hours_h", "120")),
+            "{{cut_in_to_cut_out_h}}": str(context.get("cut_in_to_cut_out_h", "72")),
+            "{{cut_in_v_min}}": str(context.get("cut_in_v_min", "3")),
+            "{{cut_in_v_max}}": str(context.get("cut_in_v_max", "25")),
+            "{{nominal_power_h}}": str(context.get("nominal_power_h", "3")),
+            "{{ nominal_power_h}}": str(context.get("nominal_power_h", "3")),
+            "{{nominal_power_pct}}": str(context.get("nominal_power_pct", "97")),
+            "{{nominal_power_pct }}": str(context.get("nominal_power_pct", "97")),
+            "{{ nominal_power_pct}}": str(context.get("nominal_power_pct", "97")),
+            "{{local_restarts_max}}": str(context.get("local_restarts_max", "3")),
+            "{{local_restarts_max }}": str(context.get("local_restarts_max", "3")),
+            "{{availability_min_pct}}": str(context.get("availability_min_pct", "92")),
+            "{{availability_min_pct }}": str(context.get("availability_min_pct", "92")),
         }
 
         # Parcourir tous les paragraphes
@@ -240,29 +240,29 @@ class WordPresenter(ABC):
                 if para.runs:
                     first_run = para.runs[0]
                     first_run_format = {
-                        'bold': first_run.bold,
-                        'italic': first_run.italic,
-                        'underline': first_run.underline,
-                        'font_name': first_run.font.name,
-                        'font_size': first_run.font.size,
+                        "bold": first_run.bold,
+                        "italic": first_run.italic,
+                        "underline": first_run.underline,
+                        "font_name": first_run.font.name,
+                        "font_size": first_run.font.size,
                     }
 
                 # Supprimer tous les runs
                 for run in para.runs:
-                    run.text = ''
+                    run.text = ""
 
                 # Ajouter le nouveau texte dans le premier run
                 if para.runs:
                     para.runs[0].text = full_text
                     # Restaurer le formatage
                     if first_run_format:
-                        para.runs[0].bold = first_run_format['bold']
-                        para.runs[0].italic = first_run_format['italic']
-                        para.runs[0].underline = first_run_format['underline']
-                        if first_run_format['font_name']:
-                            para.runs[0].font.name = first_run_format['font_name']
-                        if first_run_format['font_size']:
-                            para.runs[0].font.size = first_run_format['font_size']
+                        para.runs[0].bold = first_run_format["bold"]
+                        para.runs[0].italic = first_run_format["italic"]
+                        para.runs[0].underline = first_run_format["underline"]
+                        if first_run_format["font_name"]:
+                            para.runs[0].font.name = first_run_format["font_name"]
+                        if first_run_format["font_size"]:
+                            para.runs[0].font.size = first_run_format["font_size"]
                 else:
                     para.add_run(full_text)
 
@@ -279,7 +279,7 @@ class WordPresenter(ABC):
         logger.info("Inserting visualization images...")
 
         # Récupérer les chemins des images depuis le contexte
-        chart_paths = context.get('chart_paths', {})
+        chart_paths = context.get("chart_paths", {})
 
         if not chart_paths:
             logger.warning("⚠️ No chart paths found in context")
@@ -287,25 +287,25 @@ class WordPresenter(ABC):
 
         # Mapping des balises vers les noms de charts (RunTest)
         runtest_image_tags = {
-            '{{wind_rose_visualizer}}': 'wind_rose_chart',
-            '{{wind_bin_visualizer}}': 'wind_histogram_chart',
-            '{{power_curve_visualizer}}': 'power_curve_chart',
-            '{{cut_in_cut_out_timeline_visualizer}}': 'cutin_cutout_timeline_chart',
-            '{{heatmap_chart}}': 'heatmap_chart',
+            "{{wind_rose_visualizer}}": "wind_rose_chart",
+            "{{wind_bin_visualizer}}": "wind_histogram_chart",
+            "{{power_curve_visualizer}}": "power_curve_chart",
+            "{{cut_in_cut_out_timeline_visualizer}}": "cutin_cutout_timeline_chart",
+            "{{heatmap_chart}}": "heatmap_chart",
         }
 
         # Mapping des balises SCADA
         scada_image_tags = {
-            '{{eba_cut_in_cut_out_chart}}': 'eba_cut_in_cut_out_chart',
-            '{{eba_manifacturer_chart}}': 'eba_manifacturer_chart',
-            '{{eba_loss_chart}}': 'eba_loss_chart',
-            '{{top_error_code_frequency}}': 'top_error_code_frequency',
-            '{{treemap_error_code}}': 'treemap_error_code',
-            '{{data_availability_chart}}': 'data_availability_chart',
-            '{{wind_direction_calibration}}': 'wind_direction_calibration',
-            '{{power_rose_chart}}': 'power_rose_chart',
-            '{{wind_rose_chart}}': 'wind_rose_chart',
-            '{{rpm_chart}}': 'rpm_chart',
+            "{{eba_cut_in_cut_out_chart}}": "eba_cut_in_cut_out_chart",
+            "{{eba_manifacturer_chart}}": "eba_manifacturer_chart",
+            "{{eba_loss_chart}}": "eba_loss_chart",
+            "{{top_error_code_frequency}}": "top_error_code_frequency",
+            "{{treemap_error_code}}": "treemap_error_code",
+            "{{data_availability_chart}}": "data_availability_chart",
+            "{{wind_direction_calibration}}": "wind_direction_calibration",
+            "{{power_rose_chart}}": "power_rose_chart",
+            "{{wind_rose_chart}}": "wind_rose_chart",
+            "{{rpm_chart}}": "rpm_chart",
         }
 
         # Fusionner les deux mappings
