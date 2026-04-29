@@ -61,6 +61,7 @@ from src.wind_turbine_analytics.data_processing.tabler.tables.scada import (
     EbaLossTabler,
     ScadaSummaryTabler,
     ErrorCodeParetoFrequencyTabler,
+    ErrorCodeParetoDurationTabler,
 )
 from src.wind_turbine_analytics.data_processing.tabler.tables.runtest import (
     CsvFilesTabler,
@@ -122,7 +123,10 @@ class ScadaWorkflow(BaseWorkflow):
                 TopErrorCodeFrequencyVisualizer(),
                 TreemapErrorCodeVisualizer(),
             ],
-            tabler=[ErrorCodeParetoFrequencyTabler()],
+            tabler=[
+                ErrorCodeParetoFrequencyTabler(),
+                ErrorCodeParetoDurationTabler(),
+            ],
         ).execute(self.turbine_sources, self.validation_criteria)
         all_results["error_codes"] = error_codes_result
 
