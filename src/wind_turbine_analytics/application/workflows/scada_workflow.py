@@ -60,6 +60,7 @@ from src.wind_turbine_analytics.data_processing.tabler.tables.scada import (
     EbaManufacturerTabler,
     EbaLossTabler,
     ScadaSummaryTabler,
+    ErrorCodeParetoFrequencyTabler,
 )
 from src.wind_turbine_analytics.data_processing.tabler.tables.runtest import (
     CsvFilesTabler,
@@ -121,7 +122,7 @@ class ScadaWorkflow(BaseWorkflow):
                 TopErrorCodeFrequencyVisualizer(),
                 TreemapErrorCodeVisualizer(),
             ],
-            tabler=None,  # TODO: ErrorCodesTabler si nécessaire
+            tabler=[ErrorCodeParetoFrequencyTabler()],
         ).execute(self.turbine_sources, self.validation_criteria)
         all_results["error_codes"] = error_codes_result
 
@@ -261,12 +262,11 @@ class ScadaWorkflow(BaseWorkflow):
 
         except FileNotFoundError as e:
             logger.error(f"Template file not found: {e}")
-            logger.info(
-                f"Please create template at: {self._config.template_path}"
-            )
+            logger.info(f"Please create template at: {self._config.template_path}")
         except Exception as e:
             logger.error(f"Failed to render SCADA Word report: {e}")
             import traceback
+
             logger.error(traceback.format_exc())
 
 
