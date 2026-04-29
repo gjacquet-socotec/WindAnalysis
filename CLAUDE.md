@@ -831,6 +831,126 @@ mask = manager.create_time_mask(
 ✅ **Type-safe** : Validation par `TurbineLogMapping` dataclass  
 ✅ **Rétrocompatible** : Fonctionne avec l'ancien format string
 
+### 2026-04-29 : Implémentation de l'Analyseur Normatif IEC 61400-12-2
+
+**Changements :**
+- Implémentation complète de `NormativeYieldAnalyzer` dans `analyzer/logics/normative_power_analyzer.py`
+- Tests unitaires dans `tests/test_normative_yield_analyzer.py` (10 tests ✓)
+- Exemple d'utilisation dans `tests/example_normative_yield_analyzer.py`
+
+**Objectif :** Analyser les courbes de puissance des éoliennes selon la norme IEC 61400-12-2 pour permettre des comparaisons de performance dans des conditions homogènes.
+
+**Pipeline de traitement (5 étapes) :**
+1. **STEP 1 - Nettoyage** : Filtrer périodes "Run" (wind_speed > cut_in ET power > 1% P_nom)
+2. **STEP 2 - Environnement** : Exclure bridage acoustique via code FM733 ("SSF WTG Noise Disconnect")
+3. **STEP 3 - Sillage** : Ignoré dans cette version (ajout futur via config YAML `wake_exclusion_sectors`)
+4. **STEP 4 - Correction Physique** : Corriger vitesse du vent à densité de référence IEC (ρ_ref = 1.225 kg/m³)
+5. **STEP 5 - Synchronisation** : Retourner `valid_timestamps` pour intersection multi-turbines
+
+**Formules IEC 61400-12-2 implémentées :**
+- Densité de l'air : `ρ = P / (R * T)` où P=101325 Pa (standard), R=287.05 J/(kg·K), T en Kelvin
+- Correction vitesse : `v_corrected = v_measured × (ρ / ρ_ref)^(1/3)` (exposant 1/3 basé sur théorie de Betz)
+
+**Constantes physiques définies :**
+```python
+R_AIR = 287.05      # J/(kg·K) - Constante gaz parfait air sec
+RHO_REF = 1.225     # kg/m³ - Densité de référence IEC
+P0 = 101325         # Pa - Pression atmosphérique standard (niveau mer)
+```
+
+**Utilisation typique :**
+```python
+from src.wind_turbine_analytics.data_processing.analyzer.logics.normative_power_analyzer import NormativeYieldAnalyzer
+
+analyzer = NormativeYieldAnalyzer()
+result = analyzer.analyze(turbine_farm, criteria)
+
+# Résultats par turbine
+for turbine_id, turbine_result in result.detailed_results.items():
+    chart_data = turbine_result["chart_data"]  # DataFrame avec vitesses corrigées
+    filtering_stats = turbine_result["filtering_stats"]  # Compteurs de filtrage
+    density_stats = turbine_result["density_stats"]  # Statistiques densité/correction
+    quality_metrics = turbine_result["quality_metrics"]  # Taux de rétention, plages
+    
+# Synchronisation multi-turbines (optionnelle)
+common_timestamps = result_E1['valid_timestamps'].intersection(result_E2['valid_timestamps'])
+```
+
+**Structure de sortie :**
+```python
+{
+    "chart_data": pd.DataFrame({
+        "timestamp": [...],
+        "wind_speed_corrected": [...],  # Vitesse corrigée densité
+        "wind_speed_raw": [...],        # Vitesse brute (traçabilité)
+        "activation_power": [...],
+        "temperature": [...],
+        "air_density": [...],
+        "correction_factor": [...]
+    }),
+    "valid_timestamps": pd.DatetimeIndex([...]),  # Pour synchro externe
+    "filtering_stats": {
+        "original_count": int,
+        "step1_status_removed": int,
+        "step2_curtailment_removed": int,
+        "step4_points_corrected": int,
+        "final_count": int
+    },
+    "density_stats": {
+        "mean_density": float,           # Typiquement 1.0-1.4 kg/m³
+        "min_density": float,
+        "max_density": float,
+        "mean_correction_factor": float, # Typiquement proche de 1.0
+        "std_correction_factor": float
+    },
+    "quality_metrics": {
+        "data_retention_percent": float,       # (final/original) × 100
+        "temperature_range": [float, float],   # [min, max] en °C
+        "wind_speed_range_corrected": [float, float]  # [min, max] en m/s
+    }
+}
+```
+
+**Approche de conception :**
+- Hérite de `BaseAnalyzer` (pattern standard du projet)
+- Utilise `NordexN311LogCodeManager.create_time_mask()` pour filtrage bridage acoustique
+- Validation plausibilité température : warning si hors [-40°C, +50°C]
+- Gestion multi-turbines : chaque turbine analysée individuellement, synchronisation en post-traitement
+- Conservation vitesse brute + corrigée pour traçabilité et audit
+
+**Validation :**
+- Tests unitaires : 10/10 passés
+  - Filtrage périodes Run
+  - Exclusion bridage acoustique
+  - Calcul densité (formule `ρ = P / (R * T)`)
+  - Correction vitesse (formule `v × (ρ/ρ_ref)^(1/3)`)
+  - Plausibilité température
+  - Structure output complète
+  - Extraction valid_timestamps
+  - Colonnes chart_data
+  - Calcul taux de rétention
+
+**Notes techniques :**
+- **Code FM733** : "SSF WTG Noise Disconnect" avec `availability=no`, `dead_level=300`, `reset_mode=A`
+- **Masque `create_time_mask()`** : Retourne `True` pour périodes normales, `False` pour périodes avec erreur
+- **Température en Kelvin** : Conversion critique `T_K = T_C + 273.15` avant calcul densité
+- **Pression standard** : P0 = 101325 Pa utilisé (pas de données pression disponibles)
+- **Synchronisation** : L'intersection des timestamps entre turbines doit être faite au niveau workflow car `BaseAnalyzer.analyze()` traite chaque turbine isolément
+
+**Évolutions futures prévues :**
+1. **STEP 3 - Filtrage sillage** : Ajouter `wake_exclusion_sectors` dans config YAML par turbine
+2. **Support pression mesurée** : Ajouter colonne `pressure` dans `TurbineMappingOperationData`
+3. **Altitude site** : Calculer pression via formule barométrique `P = P0 × (1 - 0.0065h/288.15)^5.255`
+4. **Visualiseur dédié** : `PowerCurveNormativeVisualizer` pour tracer courbes normalisées superposées
+5. **Binning statistique** : Créer bins 0.5 m/s et calculer métriques par bin (médiane, P95, count)
+6. **Analyseur multi-turbines** : `MultiTurbineNormativeAnalyzer` pour intersection automatique
+
+**Impact :**
+- Permet comparaisons équitables entre turbines (corrections IEC)
+- Identifie turbines sous-performantes via courbes de puissance normalisées
+- Base pour calcul AEP (Annual Energy Production) et performance ratio
+- Compatible avec audits et certifications selon IEC 61400-12-2
+
 ---
 
 ## 📚 Ressources et références

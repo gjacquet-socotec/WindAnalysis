@@ -23,6 +23,7 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics import (
     EbaManufacturerAnalyzer,
     DataAvailabilityAnalyzer,
     CodeErrorAnalyzer,
+    NormativeYieldAnalyzer,
 )
 from src.wind_turbine_analytics.data_processing.visualizer.chart_builders.data_availability_visualizer import (
     DataAvailabilityVisualizer,
@@ -118,6 +119,12 @@ class ScadaWorkflow(BaseWorkflow):
             visualizers=[
                 RPMVisualizer(),
             ],  # [TODO] add visualizer for tip speed ratio analysis
+        ).execute(self.turbine_sources, self.validation_criteria)
+
+        DataProcessingStep(
+            analyzer=NormativeYieldAnalyzer(),
+            visualizers=None,
+            tabler=None,  # [TODO] add visualizer and tabler for normative power curve analysis
         ).execute(self.turbine_sources, self.validation_criteria)
 
 

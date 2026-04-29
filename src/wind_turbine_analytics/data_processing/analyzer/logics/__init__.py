@@ -27,6 +27,15 @@ from src.wind_turbine_analytics.data_processing.analyzer.logics.eba_manifacturer
 from src.wind_turbine_analytics.data_processing.analyzer.logics.code_error_analyzer import (
     CodeErrorAnalyzer,
 )
+from src.wind_turbine_analytics.data_processing.analyzer.logics.wind_direction_calibration_analyzer import (
+    WindDirectionCalibrationAnalyzer,
+)
+from src.wind_turbine_analytics.data_processing.analyzer.logics.tip_speed_ratio import (
+    TipSpeedRatioAnalyzer,
+)
+from src.wind_turbine_analytics.data_processing.analyzer.logics.normative_power_analyzer import (
+    NormativeYieldAnalyzer,
+)
 
 __all__ = [
     # RunTest analyzers
@@ -40,4 +49,7 @@ __all__ = [
     "EbACutInCutOutAnalyzer",
     "EbaManufacturerAnalyzer",
     "CodeErrorAnalyzer",
+    "WindDirectionCalibrationAnalyzer",
+    "TipSpeedRatioAnalyzer",
+    "NormativeYieldAnalyzer",
 ]
