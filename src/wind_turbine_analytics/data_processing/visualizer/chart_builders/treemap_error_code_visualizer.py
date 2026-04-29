@@ -8,7 +8,7 @@ from src.wind_turbine_analytics.data_processing.visualizer.base_visualizer impor
 
 class TreemapErrorCodeVisualizer(BaseVisualizer):
     def __init__(self):
-        super().__init__(chart_name="error_code_treemap", use_plotly=True)
+        super().__init__(chart_name="treemap_error_code", use_plotly=True)
 
     def _create_figure(self, result: AnalysisResult) -> go.Figure:
         if not result.detailed_results:

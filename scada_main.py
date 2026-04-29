@@ -1,13 +1,15 @@
 import sys
 
-from src.wind_turbine_analytics.presentation.console_presenter import ConsolePipelinePresenter
+from src.wind_turbine_analytics.presentation.console_presenter import (
+    ConsolePipelinePresenter,
+)
 from src.wind_turbine_analytics.application import ScadaRunnerConfig, run_scada_pipeline
 
 
 # scada_main.py (ajuster les defaults)
 DEFAULT_RUNTEST_ROOT = "./experiments/scada_analyse"
-DEFAULT_TEMPLATE_PATH = "./assets/template_scada.docx"
-DEFAULT_OUTPUT_PATH = "./output/scada_output.docx"
+DEFAULT_TEMPLATE_PATH = "./assets/templates/template_scada.docx"
+DEFAULT_OUTPUT_PATH = "./output/scada/scada_output.docx"
 
 
 if __name__ == "__main__":

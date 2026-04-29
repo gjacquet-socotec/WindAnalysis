@@ -46,7 +46,7 @@ from src.wind_turbine_analytics.data_processing.tabler.tables.runtest import (
     RunTestSummaryTabler,
     CsvFilesTabler,
 )
-from src.wind_turbine_analytics.presentation.word_presenter import WordPresenter
+from src.wind_turbine_analytics.presentation.word_generation import RunTestWordPresenter
 
 
 class RunTestWorkflow(BaseWorkflow):
@@ -277,12 +277,10 @@ class RunTestWorkflow(BaseWorkflow):
                 ),
             }
 
-            # Rendre le rapport Word
-            # Le template optimisé sera créé automatiquement s'il n'existe pas
-            presenter = WordPresenter(
+            # Rendre le rapport Word avec RunTestWordPresenter
+            presenter = RunTestWordPresenter(
                 template_path=self._config.template_path,
                 output_path=self._config.output_path,
-                auto_create_template=False,
             )
             presenter.render_report(context, metadata=metadata)
 

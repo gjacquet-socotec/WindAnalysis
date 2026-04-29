@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 
 class RPMVisualizer(BaseVisualizer):
     def __init__(self):
-        super().__init__(chart_name="rpm_vs_active_power", use_plotly=True)
+        super().__init__(chart_name="rpm_chart", use_plotly=True)
 
     def _create_figure(self, result: AnalysisResult) -> go.Figure:
         if not result.detailed_results:

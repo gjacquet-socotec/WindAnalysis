@@ -44,7 +44,6 @@ class BaseTabler(ABC):
                 - table_name_raw: Données brutes (liste de dicts) pour debug
         """
         self._table_data = []
-
         if result.detailed_results:
             logger.info(
                 f"Génération du tableau '{self.table_name}' "
@@ -54,6 +53,7 @@ class BaseTabler(ABC):
                 self._add_table_row(turbine_id, turbine_result)
 
         # Générer le tableau Word formaté
+
         formatted_table = self._format_as_word_table()
 
         logger.info(
@@ -66,9 +66,7 @@ class BaseTabler(ABC):
         }
 
     @abstractmethod
-    def _add_table_row(
-        self, turbine_id: str, turbine_result: Dict[str, Any]
-    ) -> None:
+    def _add_table_row(self, turbine_id: str, turbine_result: Dict[str, Any]) -> None:
         """
         Méthode abstraite pour ajouter une ligne au tableau.
 
@@ -98,6 +96,7 @@ class BaseTabler(ABC):
         Returns:
             Liste de dictionnaires (une ligne = un dict)
         """
+
         if not self._table_data:
             logger.warning(f"Tableau '{self.table_name}' vide (aucune donnée)")
             return []
@@ -127,9 +126,7 @@ class BaseTabler(ABC):
         else:
             return f"{false_label} FAIL"
 
-    def _format_number(
-        self, value: float, decimals: int = 2, unit: str = ""
-    ) -> str:
+    def _format_number(self, value: float, decimals: int = 2, unit: str = "") -> str:
         """
         Formate un nombre avec décimales et unité.
 

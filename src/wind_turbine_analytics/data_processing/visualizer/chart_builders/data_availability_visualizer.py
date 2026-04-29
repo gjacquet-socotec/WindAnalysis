@@ -24,7 +24,7 @@ class DataAvailabilityVisualizer(BaseVisualizer):
     """
 
     def __init__(self):
-        super().__init__(chart_name="data_availability", use_plotly=True)
+        super().__init__(chart_name="data_availability_chart", use_plotly=True)
 
     def _calculate_optimal_tickformat(self, timestamps: pd.Series) -> dict:
         """

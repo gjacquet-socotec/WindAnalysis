@@ -23,7 +23,7 @@ class EbaCutInCutOutVisualizer(BaseVisualizer):
     """
 
     def __init__(self):
-        super().__init__(chart_name="eba_cut_in_cut_out", use_plotly=True)
+        super().__init__(chart_name="eba_cut_in_cut_out_chart", use_plotly=True)
 
     def _create_figure(self, result: AnalysisResult) -> go.Figure:
         """
