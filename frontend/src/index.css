@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Styles custom pour les tableaux */
+.data-table {
+  @apply w-full border-collapse;
+}
+
+.data-table thead {
+  @apply bg-primary-dark text-white;
+}
+
+.data-table th {
+  @apply px-4 py-3 text-left font-semibold;
+}
+
+.data-table tbody tr:nth-child(odd) {
+  @apply bg-primary-light;
+}
+
+.data-table tbody tr:nth-child(even) {
+  @apply bg-white;
+}
+
+.data-table td {
+  @apply px-4 py-2 border-b border-gray-200;
+}
