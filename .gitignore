@@ -31,3 +31,12 @@ dist/
 build/
 outputs/
 output/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.production
+
+# API logs
+*.log
