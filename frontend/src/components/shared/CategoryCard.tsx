@@ -30,7 +30,7 @@ export function CategoryCard({
       {/* Header */}
       <div
         className={cn(
-          'bg-primary-dark text-white px-6 py-4 flex items-center justify-between',
+          'bg-primary-dark text-white px-4 py-3 flex items-center justify-between',
           collapsible && 'cursor-pointer hover:bg-blue-700 transition-colors'
         )}
         onClick={toggleOpen}
@@ -50,7 +50,7 @@ export function CategoryCard({
       </div>
 
       {/* Content */}
-      {isOpen && <div className="p-6">{children}</div>}
+      {isOpen && <div className="p-4">{children}</div>}
     </div>
   );
 }

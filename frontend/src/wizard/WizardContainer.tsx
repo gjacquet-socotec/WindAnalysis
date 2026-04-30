@@ -19,12 +19,14 @@ export function WizardContainer() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {/* Step Indicator */}
-        <StepIndicator currentStep={state.currentStep} />
+      <main className="container mx-auto px-4 py-8 max-w-[95%]">
+        {/* Step Indicator - Centered */}
+        <div className="max-w-4xl mx-auto">
+          <StepIndicator currentStep={state.currentStep} />
+        </div>
 
-        {/* Step Content */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        {/* Step Content - Centered */}
+        <div className="bg-white rounded-lg shadow-lg p-6">
           {state.currentStep === 'dataSource' && <Step1DataSource />}
           {state.currentStep === 'configReview' && <Step2ConfigReview />}
           {state.currentStep === 'results' && <Step3Results />}

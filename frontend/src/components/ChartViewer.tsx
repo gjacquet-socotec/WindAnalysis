@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChartData } from "../types/analysis";
 
 // @ts-ignore - Plotly types
@@ -17,13 +17,10 @@ export const ChartViewer = ({ charts }: ChartViewerProps) => {
   }
 
   return (
-    <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4 text-primary-dark">Visualisations</h2>
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {charts.map((chart, idx) => (
-          <ChartContainer key={idx} chart={chart} />
-        ))}
-      </div>
+    <div className="space-y-6">
+      {charts.map((chart, idx) => (
+        <ChartContainer key={`${chart.name}-${idx}`} chart={chart} />
+      ))}
     </div>
   );
 };
@@ -34,25 +31,50 @@ interface ChartContainerProps {
 
 const ChartContainer = ({ chart }: ChartContainerProps) => {
   const plotRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
-    if (plotRef.current && chart.plotly_json) {
+    if (plotRef.current && containerRef.current && chart.plotly_json) {
       try {
+        const layout = chart.plotly_json.layout || {};
+        const containerWidth = containerRef.current.offsetWidth - 32; // Soustraire le padding (p-4 = 16px de chaque côté)
+
+        // Calculer la hauteur en fonction du type de graphique
+        let height = layout.height || 600;
+
+        // Si c'est un graphique avec plusieurs subplots (grille), augmenter la hauteur
+        if (layout.grid || (layout.xaxis && layout.xaxis2)) {
+          height = Math.max(height, 800);
+        }
+
         Plotly.newPlot(
           plotRef.current,
           chart.plotly_json.data || [],
           {
-            ...chart.plotly_json.layout,
-            autosize: true,
-            responsive: true,
+            ...layout,
+            autosize: false, // Désactiver autosize pour contrôler manuellement
+            width: containerWidth, // Forcer la largeur
+            height: height,
+            margin: layout.margin || { l: 50, r: 30, t: 50, b: 50 },
           },
           {
             responsive: true,
             displayModeBar: true,
+            displaylogo: false,
           }
         );
 
-        console.log("✅ Chart rendered:", chart.name);
+        setIsRendered(true);
+        console.log("✅ Chart rendered:", chart.name, "width:", containerWidth);
+
+        // Force un resize après un court délai pour s'assurer que tout est bien affiché
+        setTimeout(() => {
+          if (plotRef.current && containerRef.current) {
+            const newWidth = containerRef.current.offsetWidth - 32;
+            Plotly.relayout(plotRef.current, { width: newWidth });
+          }
+        }, 100);
       } catch (error) {
         console.error("❌ Failed to render chart:", chart.name, error);
       }
@@ -66,10 +88,25 @@ const ChartContainer = ({ chart }: ChartContainerProps) => {
     };
   }, [chart]);
 
+  // Re-render sur resize de la fenêtre
+  useEffect(() => {
+    if (!isRendered || !plotRef.current || !containerRef.current) return;
+
+    const handleResize = () => {
+      if (plotRef.current && containerRef.current) {
+        const newWidth = containerRef.current.offsetWidth - 32;
+        Plotly.relayout(plotRef.current, { width: newWidth });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isRendered]);
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <h3 className="text-lg font-semibold mb-2 text-gray-700">{chart.name}</h3>
-      <div ref={plotRef} style={{ width: "100%", height: "500px" }} />
+    <div ref={containerRef} className="bg-white p-4 rounded-lg shadow-md w-full">
+      <h3 className="text-lg font-semibold mb-3 text-gray-700">{chart.name}</h3>
+      <div ref={plotRef} className="w-full min-h-[600px] overflow-hidden" />
     </div>
   );
 };

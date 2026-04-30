@@ -104,10 +104,12 @@ export function RunTestResults({ result }: RunTestResultsProps) {
         <CategoryCard title="120 heures consécutives" icon={Clock} defaultOpen={true}>
           <div className="space-y-6">
             {consecutiveHoursCharts.map((chart, idx) => (
-              <ChartViewer key={idx} charts={[chart]} />
+              <div key={idx} className="mb-6">
+                <ChartViewer charts={[chart]} />
+              </div>
             ))}
             {consecutiveHoursTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -121,10 +123,12 @@ export function RunTestResults({ result }: RunTestResultsProps) {
         <CategoryCard title="Test Cut-In à Cut-Out" icon={Activity} defaultOpen={true}>
           <div className="space-y-6">
             {cutInOutCharts.map((chart, idx) => (
-              <ChartViewer key={idx} charts={[chart]} />
+              <div key={idx} className="mb-6">
+                <ChartViewer charts={[chart]} />
+              </div>
             ))}
             {cutInOutTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -138,10 +142,12 @@ export function RunTestResults({ result }: RunTestResultsProps) {
         <CategoryCard title="Puissance nominale" icon={Zap} defaultOpen={true}>
           <div className="space-y-6">
             {nominalPowerCharts.map((chart, idx) => (
-              <ChartViewer key={idx} charts={[chart]} />
+              <div key={idx} className="mb-6">
+                <ChartViewer charts={[chart]} />
+              </div>
             ))}
             {nominalPowerTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>

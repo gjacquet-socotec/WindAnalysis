@@ -79,13 +79,12 @@ export function ScadaResults({ result }: ScadaResultsProps) {
         <CategoryCard title="Analyse EBA (Energy-Based Availability)" icon={Zap} defaultOpen={true}>
           <div className="space-y-6">
             {ebaCharts.map((chart, idx) => (
-              <div key={idx}>
-                <h4 className="text-md font-semibold mb-3">{chart.name}</h4>
+              <div key={idx} className="mb-6">
                 <ChartViewer charts={[chart]} />
               </div>
             ))}
             {ebaTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -99,13 +98,12 @@ export function ScadaResults({ result }: ScadaResultsProps) {
         <CategoryCard title="Analyse des codes d'erreur" icon={AlertTriangle} defaultOpen={true}>
           <div className="space-y-6">
             {errorCodeCharts.map((chart, idx) => (
-              <div key={idx}>
-                <h4 className="text-md font-semibold mb-3">{chart.name}</h4>
+              <div key={idx} className="mb-6">
                 <ChartViewer charts={[chart]} />
               </div>
             ))}
             {errorCodeTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -119,13 +117,12 @@ export function ScadaResults({ result }: ScadaResultsProps) {
         <CategoryCard title="Disponibilité des données" icon={Database} defaultOpen={true}>
           <div className="space-y-6">
             {dataAvailabilityCharts.map((chart, idx) => (
-              <div key={idx}>
-                <h4 className="text-md font-semibold mb-3">{chart.name}</h4>
+              <div key={idx} className="mb-6">
                 <ChartViewer charts={[chart]} />
               </div>
             ))}
             {dataAvailabilityTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -139,13 +136,12 @@ export function ScadaResults({ result }: ScadaResultsProps) {
         <CategoryCard title="Calibration de la direction du vent" icon={Wind} defaultOpen={true}>
           <div className="space-y-6">
             {windDirectionCharts.map((chart, idx) => (
-              <div key={idx}>
-                <h4 className="text-md font-semibold mb-3">{chart.name}</h4>
+              <div key={idx} className="mb-6">
                 <ChartViewer charts={[chart]} />
               </div>
             ))}
             {windDirectionTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -159,13 +155,12 @@ export function ScadaResults({ result }: ScadaResultsProps) {
         <CategoryCard title="Tip Speed Ratio" icon={Gauge} defaultOpen={true}>
           <div className="space-y-6">
             {tipSpeedCharts.map((chart, idx) => (
-              <div key={idx}>
-                <h4 className="text-md font-semibold mb-3">{chart.name}</h4>
+              <div key={idx} className="mb-6">
                 <ChartViewer charts={[chart]} />
               </div>
             ))}
             {tipSpeedTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -179,13 +174,12 @@ export function ScadaResults({ result }: ScadaResultsProps) {
         <CategoryCard title="Rendement normatif (IEC 61400-12-2)" icon={TrendingUp} defaultOpen={true}>
           <div className="space-y-6">
             {normativeCharts.map((chart, idx) => (
-              <div key={idx}>
-                <h4 className="text-md font-semibold mb-3">{chart.name}</h4>
+              <div key={idx} className="mb-6">
                 <ChartViewer charts={[chart]} />
               </div>
             ))}
             {normativeTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
@@ -199,13 +193,12 @@ export function ScadaResults({ result }: ScadaResultsProps) {
         <CategoryCard title="Autres résultats" icon={Database} defaultOpen={false}>
           <div className="space-y-6">
             {otherCharts.map((chart, idx) => (
-              <div key={idx}>
-                <h4 className="text-md font-semibold mb-3">{chart.name}</h4>
+              <div key={idx} className="mb-6">
                 <ChartViewer charts={[chart]} />
               </div>
             ))}
             {otherTables.map((table, idx) => (
-              <div key={idx} className="mt-4">
+              <div key={idx} className="mt-6">
                 <h4 className="text-md font-semibold mb-3">{table.name}</h4>
                 <PaginatedTable table={table} itemsPerPage={10} />
               </div>
