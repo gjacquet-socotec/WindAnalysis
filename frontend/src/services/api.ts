@@ -22,6 +22,16 @@ export const analyzeAPI = {
   },
 
   /**
+   * Lit le fichier config.yml sans lancer l'analyse
+   */
+  readConfig: async (folderPath: string): Promise<any> => {
+    const response = await apiClient.get("/config", {
+      params: { folder_path: folderPath },
+    });
+    return response.data;
+  },
+
+  /**
    * Vérifie l'état de santé de l'API
    */
   healthCheck: async (): Promise<{ status: string; version: string }> => {

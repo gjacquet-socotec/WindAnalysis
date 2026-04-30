@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.logger_config import get_logger
-from src.wind_turbine_analytics.api.routes import analyze_router, health_router
+from src.wind_turbine_analytics.api.routes import analyze_router, health_router, config_router
 
 logger = get_logger(__name__)
 
@@ -44,6 +44,7 @@ app.add_middleware(
 # Register routers
 app.include_router(health_router)
 app.include_router(analyze_router)
+app.include_router(config_router)
 
 logger.info("FastAPI application initialized successfully")
 
