@@ -40,3 +40,6 @@ frontend/.env.production
 
 # API logs
 *.log
+
+/frontend/dist/
+/frontend/node_modules/
